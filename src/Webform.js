@@ -1174,6 +1174,14 @@ export default class Webform extends NestedDataComponent {
 
       components.forEach((path) => {
         const component = this.getComponent(path, _.identity);
+        if (err.fromServer) {
+          if (component.serverErrors) {
+            component.serverErrors.push(err);
+          }
+          else {
+            component.serverErrors = [err];
+          }
+        }
         const components = _.compact(Array.isArray(component) ? component : [component]);
 
         components.forEach((component) => component.setCustomValidity(err.message, true));
@@ -1200,7 +1208,7 @@ export default class Webform extends NestedDataComponent {
           this.appendTo(span, li);
 
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
-          const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key);
+          const keyOrPath = (messageFromIndex && messageFromIndex.path) || (err.component && err.component.key) || err.fromServer && err.path;
           if (keyOrPath) {
             const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
             li.dataset.componentKey = formattedKeyOrPath;
@@ -1211,8 +1219,8 @@ export default class Webform extends NestedDataComponent {
 
         if (err.messages && err.messages.length) {
           const { component } = err;
-          err.messages.forEach(({ message, context }, index) => {
-            const text = context?.hasLabel ? this.t('alertMessage', { message }) : this.t('alertMessageWithLabel', { label: this.t(component.label), message });
+          err.messages.forEach(({ message, context, fromServer }, index) => {
+            const text = context?.hasLabel || fromServer ? this.t('alertMessage', { message }) : this.t('alertMessageWithLabel', { label: this.t(component.label), message });
             createListItem(text, index);
           });
         }
@@ -1272,6 +1280,10 @@ export default class Webform extends NestedDataComponent {
       if ('details' in error) {
         error = error.details;
       }
+      this.serverErrors = error.map((err) => {
+        err.fromServer = true;
+        return err;
+      });
     }
 
     this.submitting = false;
@@ -1474,9 +1486,22 @@ export default class Webform extends NestedDataComponent {
   executeSubmit(options) {
     this.submitted = true;
     this.submitting = true;
+    this.clearServerErrors();
     return this.submitForm(options)
       .then(({ submission, saved }) => this.onSubmit(submission, saved))
       .catch((err) => NativePromise.reject(this.onSubmissionError(err)));
+  }
+
+  clearServerErrors() {
+    this.serverErrors?.forEach((error) => {
+      if (error.path) {
+        const component = this.getComponent(error.path[0], _.identity);
+        if (component) {
+          component.serverErrors = [];
+        }
+      }
+    });
+    this.serverErrors = [];
   }
 
   /**
