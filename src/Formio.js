@@ -10,6 +10,8 @@ import _defaults from 'lodash/defaults';
 import _get from 'lodash/get';
 import _has from 'lodash/has';
 import _intersection from 'lodash/intersection';
+import _isBoolean from 'lodash/isBoolean';
+import _isNil from 'lodash/isNil';
 import NativePromise from 'native-promise-only';
 
 import EventEmitter from './EventEmitter';
@@ -22,9 +24,8 @@ const { fetch, Headers } = fetchPonyfill({
     Promise: NativePromise,
 });
 
-const isBoolean = val => typeof val === typeof true;
-const isNil = val => val === null || val === undefined;
 const isObject = val => val && typeof val === 'object';
+// It makes sure that we use global Formio.
 
 function cloneResponse(response) {
     const copy = _cloneDeep(response);
@@ -539,7 +540,7 @@ class Formio {
         const request = Formio.pluginWait('preRequest', requestArgs)
             .then(() => Formio.pluginGet('fileRequest', requestArgs)
                 .then(result => {
-                    if (storage && isNil(result)) {
+                    if (storage && _isNil(result)) {
                         const Provider = Providers.getProvider('storage', storage);
                         if (Provider) {
                             const provider = new Provider(this);
@@ -566,7 +567,7 @@ class Formio {
         const request = Formio.pluginWait('preRequest', requestArgs)
             .then(() => Formio.pluginGet('fileRequest', requestArgs)
                 .then(result => {
-                    if (file.storage && isNil(result)) {
+                    if (file.storage && _isNil(result)) {
                         const Provider = Providers.getProvider('storage', file.storage);
                         if (Provider) {
                             const provider = new Provider(this);
@@ -761,7 +762,7 @@ class Formio {
         const request = getFormio().pluginWait('preRequest', requestArgs)
             .then(() => getFormio().pluginGet('staticRequest', requestArgs)
                 .then(result => {
-                    if (isNil(result)) {
+                    if (_isNil(result)) {
                         return getFormio().request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
                     }
                     return result;
@@ -790,7 +791,7 @@ class Formio {
         const request = getFormio().pluginWait('preRequest', requestArgs)
             .then(() => getFormio().pluginGet('request', requestArgs)
                 .then(result => {
-                    if (isNil(result)) {
+                    if (_isNil(result)) {
                         return getFormio().request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
                     }
                     return result;
@@ -807,7 +808,7 @@ class Formio {
 
         // For reverse compatibility, if they provided the ignoreCache parameter,
         // then change it back to the options format where that is a parameter.
-        if (isBoolean(opts)) {
+        if (_isBoolean(opts)) {
             opts = { ignoreCache: opts };
         }
         if (!opts || !isObject(opts)) {
@@ -1195,7 +1196,7 @@ class Formio {
 
             return NativePromise.resolve((plugin[pluginFn] || getFormio().noop).call(plugin, ...args))
                 .then(result => {
-                    if (!isNil(result)) {
+                    if (!_isNil(result)) {
                         return result;
                     }
 
@@ -1329,11 +1330,11 @@ class Formio {
 
     static oktaInit(options) {
         options = options || {};
-        if (typeof OktaAuth !== undefined) {
+        if (OktaAuth !== undefined) {
             options.OktaAuth = OktaAuth;
         }
 
-        if (typeof options.OktaAuth === undefined) {
+        if (options.OktaAuth === undefined) {
             const errorMessage = 'Cannot find OktaAuth. Please include the Okta JavaScript SDK within your application. See https://developer.okta.com/code/javascript/okta_auth_sdk for an example.';
             console.warn(errorMessage);
             return NativePromise.reject(errorMessage);
@@ -1511,21 +1512,19 @@ Formio.events = new EventEmitter({
     wildcard: false,
     maxListeners: 0,
 });
-
-if (typeof global !== 'undefined') {
-    Formio.addToGlobal(global);
-}
-if (typeof window !== 'undefined') {
-    Formio.addToGlobal(window);
-}
-
-// It makes sure that we use global Formio.
 function getFormio() {
     if (typeof (window || global) === 'object' && typeof (window || global).Formio !== 'undefined') {
         return (window || global).Formio;
     }
 
     return Formio;
+}
+
+if (typeof global !== 'undefined') {
+    Formio.addToGlobal(global);
+}
+if (typeof window !== 'undefined') {
+    Formio.addToGlobal(window);
 }
 
 export default getFormio();
