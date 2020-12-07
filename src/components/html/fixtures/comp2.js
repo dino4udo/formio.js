@@ -14,7 +14,7 @@ export default {
     tags: [
 
     ],
-    customConditional:'show = false;',
+    customConditional: 'show = false;',
     conditional: {
         show: '',
         when: '',

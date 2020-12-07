@@ -24,12 +24,12 @@ export default class ModalEditComponent extends TextAreaComponent {
         };
     }
 
-    /** @override **/
+    /** @override * */
     renderElement(content = '') {
         return this.renderTemplate('modaledit', { content });
     }
 
-    /** @override **/
+    /** @override * */
     attach(element) {
         this.loadRefs(element, {
             container: 'single',
@@ -38,7 +38,7 @@ export default class ModalEditComponent extends TextAreaComponent {
         return super.attach(element);
     }
 
-    /** @override **/
+    /** @override * */
     attachElement(element) {
     // Allow work with div as if it would be plain input
         Object.defineProperty(element, 'value', {
@@ -57,7 +57,7 @@ export default class ModalEditComponent extends TextAreaComponent {
         this.addEventListener(this.refs.edit, 'click', show);
     }
 
-    /** @override **/
+    /** @override * */
     createModal(element) {
         const self = this;
         const dialog = this.ce('div');
@@ -86,7 +86,7 @@ export default class ModalEditComponent extends TextAreaComponent {
             this.removeChildFrom(dialog, document.body);
         });
 
-        dialog.close = function() {
+        dialog.close = function () {
             dialog.dispatchEvent(new CustomEvent('close'));
             self.removeChildFrom(dialog, document.body);
         };
@@ -95,7 +95,7 @@ export default class ModalEditComponent extends TextAreaComponent {
         return dialog;
     }
 
-    /** @override **/
+    /** @override * */
     updateOnChange(flags, changed = false) {
         if (super.updateOnChange(flags, changed)) {
             this.updateContentView(this.dataValue);

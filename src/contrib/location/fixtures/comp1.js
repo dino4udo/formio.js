@@ -13,9 +13,9 @@ export default {
         gmapId: '',
         region: '',
         key: '',
-        autocompleteOptions : {
-            componentRestrictions : {
-                country : [
+        autocompleteOptions: {
+            componentRestrictions: {
+                country: [
                     '',
                 ],
             },

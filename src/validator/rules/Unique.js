@@ -20,8 +20,8 @@ export default class Unique extends Rule {
       }
 
       return new NativePromise(resolve => {
-          const {form} = this.config;
-          const {submission} = this.config;
+          const { form } = this.config;
+          const { submission } = this.config;
           const path = `data.${this.component.path}`;
 
           // Build the query
@@ -34,13 +34,13 @@ export default class Unique extends Rule {
               };
           }
           else if (
-              _.isPlainObject(value) &&
-        value.address &&
-        value.address['address_components'] &&
-        value.address['place_id']
+              _.isPlainObject(value)
+            && value.address
+            && value.address.address_components
+            && value.address.place_id
           ) {
               query[`${path}.address.place_id`] = {
-                  $regex: new RegExp(`^${escapeRegExCharacters(value.address['place_id'])}$`),
+                  $regex: new RegExp(`^${escapeRegExCharacters(value.address.place_id)}$`),
                   $options: 'i',
               };
           }
@@ -60,13 +60,12 @@ export default class Unique extends Rule {
               if (err) {
                   return resolve(false);
               }
-              else if (result) {
+              if (result) {
                   // Only OK if it matches the current submission
                   return resolve(submission._id && (result._id.toString() === submission._id));
               }
-              else {
-                  return resolve(true);
-              }
+
+              return resolve(true);
           });
       }).catch(() => false);
   }

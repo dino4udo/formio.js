@@ -85,9 +85,8 @@ export default class DataGridComponent extends NestedArrayComponent {
         if (this.hasRowGroups()) {
             return _.sum(this.getGroupSizes());
         }
-        else {
-            return _.get(this.component, 'validate.minLength', 0);
-        }
+
+        return _.get(this.component, 'validate.minLength', 0);
     }
 
     get defaultValue() {
@@ -177,12 +176,10 @@ export default class DataGridComponent extends NestedArrayComponent {
         }, [ 0 ]);
 
         return groups.reduce(
-                (gidxs, group, idx) => {
-                    return {
-                        ...gidxs,
-                        [indexes[idx]]: group,
-                    };
-                },
+                (gidxs, group, idx) => ({
+                    ...gidxs,
+                    [indexes[idx]]: group,
+                }),
                 {},
         );
     }
@@ -212,11 +209,11 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
 
     hasRemoveButtons() {
-        return !this.component.disableAddingRemovingRows &&
-      !this.options.readOnly &&
-      !this.disabled &&
-      this.fullMode &&
-      (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
+        return !this.component.disableAddingRemovingRows
+      && !this.options.readOnly
+      && !this.disabled
+      && this.fullMode
+      && (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
     }
 
     hasTopSubmit() {
@@ -268,16 +265,14 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
 
     getColumns() {
-        return this.component.components.filter(comp => {
-            return (!_.has(this.visibleColumns, comp.key) || this.visibleColumns[comp.key]);
-        });
+        return this.component.components.filter(comp => (!_.has(this.visibleColumns, comp.key) || this.visibleColumns[comp.key]));
     }
 
     hasHeader() {
-        return this.component.components.reduce((hasHeader, col) => {
+        return this.component.components.reduce((hasHeader, col) =>
             // If any of the components has a title and it isn't hidden, display the header.
-            return hasHeader || ((col.label || col.title) && !col.hideLabel);
-        }, false);
+            hasHeader || ((col.label || col.title) && !col.hideLabel),
+        false);
     }
 
     attach(element) {
@@ -338,18 +333,18 @@ export default class DataGridComponent extends NestedArrayComponent {
         }
 
         const oldPosition = element.dragInfo.index;
-        //should drop at next sibling position; no next sibling means drop to last position
+        // should drop at next sibling position; no next sibling means drop to last position
         const newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;
         const movedBelow = newPosition > oldPosition;
         const dataValue = fastCloneDeep(this.dataValue);
         const draggedRowData = dataValue[oldPosition];
 
-        //insert element at new position
+        // insert element at new position
         dataValue.splice(newPosition, 0, draggedRowData);
-        //remove element from old position (if was moved above, after insertion it's at +1 index)
+        // remove element from old position (if was moved above, after insertion it's at +1 index)
         dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
 
-        //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
+        // need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
         this.setValue(dataValue, { isReordered: true });
         this.redraw();
     }
@@ -363,8 +358,8 @@ export default class DataGridComponent extends NestedArrayComponent {
         }
 
         let row;
-        const {dataValue} = this;
-        const {defaultValue} = this;
+        const { dataValue } = this;
+        const { defaultValue } = this;
 
         if (this.initEmpty && defaultValue[index]) {
             row = defaultValue[index];
@@ -492,12 +487,12 @@ export default class DataGridComponent extends NestedArrayComponent {
 
         const visibility = {};
 
-        const {dataValue} = this;
+        const { dataValue } = this;
         this.rows.forEach((row, rowIndex) => {
             _.each(row, (col, key) => {
                 if (col && (typeof col.checkConditions === 'function')) {
-                    visibility[key] = !!visibility[key] ||
-            (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
+                    visibility[key] = !!visibility[key]
+            || (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
                 }
             });
         });

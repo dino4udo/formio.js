@@ -67,7 +67,7 @@ export default class TagsComponent extends Input {
         });
         this.choices.itemList.element.tabIndex = element.tabIndex;
         this.addEventListener(this.choices.input.element, 'blur', () => {
-            const {value} = this.choices.input;
+            const { value } = this.choices.input;
             const maxTagsNumber = this.component.maxTags;
             const valuesCount = this.choices.getValue(true).length;
 
@@ -100,7 +100,7 @@ export default class TagsComponent extends Input {
         if (this.component.storeas === 'string' && Array.isArray(value)) {
             return value.join(this.delimiter);
         }
-        else if (this.component.storeas === 'array' && typeof value === 'string') {
+        if (this.component.storeas === 'array' && typeof value === 'string') {
             return value.split(this.delimiter).filter(result => result);
         }
         return value;
@@ -109,7 +109,7 @@ export default class TagsComponent extends Input {
     setValue(value, flags = {}) {
         const changed = super.setValue(value, flags);
         if (this.choices) {
-            let {dataValue} = this;
+            let { dataValue } = this;
             this.choices.removeActiveItems();
             if (dataValue) {
                 if (typeof dataValue === 'string') {

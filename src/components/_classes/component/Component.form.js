@@ -9,7 +9,7 @@ import ComponentEditLogic from './editForm/Component.edit.logic';
 import ComponentEditValidation from './editForm/Component.edit.validation';
 import EditFormUtils from './editForm/utils';
 
-export default function(...extend) {
+export default function (...extend) {
     const components = _.cloneDeep([
         {
             type: 'tabs',

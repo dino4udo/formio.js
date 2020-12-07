@@ -19,9 +19,8 @@ export default class MinDate extends Rule {
       if (_.isNull(minDate)) {
           return true;
       }
-      else {
-          minDate.setHours(0, 0, 0, 0);
-      }
+
+      minDate.setHours(0, 0, 0, 0);
 
       return date.isAfter(minDate) || date.isSame(minDate);
   }

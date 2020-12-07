@@ -1,5 +1,6 @@
 import _trim from 'lodash/trim';
 import NativePromise from 'native-promise-only';
+
 export const setXhrHeaders = (formio, xhr) => {
     const { headers } = formio.options;
     if (headers) {

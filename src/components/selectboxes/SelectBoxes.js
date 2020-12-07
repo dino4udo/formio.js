@@ -176,12 +176,10 @@ export default class SelectBoxesComponent extends RadioComponent {
                 this.setCustomValidity(message, dirty);
                 return false;
             }
-            else {
-                if (this.refs.input) {
-                    this.refs.input.forEach(item => {
-                        item.disabled = false;
-                    });
-                }
+            else if (this.refs.input) {
+                this.refs.input.forEach(item => {
+                    item.disabled = false;
+                });
             }
         }
 

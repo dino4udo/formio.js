@@ -53,12 +53,10 @@ export default class TimeComponent extends TextFieldComponent {
     get defaultValue() {
         let value = super.defaultValue;
         if (this.component.multiple && Array.isArray(value)) {
-            value = value.map(item => item ? this.getStringAsValue(item) : item);
+            value = value.map(item => (item ? this.getStringAsValue(item) : item));
         }
-        else {
-            if (value) {
-                value = this.getStringAsValue(value);
-            }
+        else if (value) {
+            value = this.getStringAsValue(value);
         }
         return value;
     }
@@ -108,9 +106,8 @@ export default class TimeComponent extends TextFieldComponent {
         if (index && Array.isArray(this.rawData)) {
             return this.rawData[index] || this.emptyValue;
         }
-        else {
-            return this.rawData;
-        }
+
+        return this.rawData;
     }
 
     getValueAt(index) {

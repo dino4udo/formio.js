@@ -1,4 +1,3 @@
-
 import fetchPonyfill from 'fetch-ponyfill';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
@@ -41,10 +40,10 @@ export default class Select extends Rule {
           requestOptions.url = !!requestOptions.url;
 
           if (
-              !requestOptions.url ||
-        schema.dataSrc !== 'url' ||
-        !schema.data.url ||
-        !schema.searchField
+              !requestOptions.url
+            || schema.dataSrc !== 'url'
+            || !schema.data.url
+            || !schema.searchField
           ) {
               return true;
           }
@@ -103,9 +102,7 @@ export default class Select extends Rule {
 
               return response.json();
           })
-          .then(results => {
-              return results && results.length;
-          })
+          .then(results => results && results.length)
           .catch(() => false);
   }
 };

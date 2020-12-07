@@ -12,7 +12,7 @@ import Evaluator from './Evaluator';
 import { getValue } from './formUtils';
 import { lodashOperators } from './jsonlogic/operators';
 
-const {interpolate} = Evaluator;
+const { interpolate } = Evaluator;
 const { fetch } = fetchPonyfill({
     Promise: NativePromise,
 });
@@ -23,19 +23,13 @@ export * from './formUtils';
 lodashOperators.forEach(name => jsonLogic.add_operation(`_${name}`, _[name]));
 
 // Retrieve Any Date
-jsonLogic.add_operation('getDate', date => {
-    return moment(date).toISOString();
-});
+jsonLogic.add_operation('getDate', date => moment(date).toISOString());
 
 // Set Relative Minimum Date
-jsonLogic.add_operation('relativeMinDate', relativeMinDate => {
-    return moment().subtract(relativeMinDate, 'days').toISOString();
-});
+jsonLogic.add_operation('relativeMinDate', relativeMinDate => moment().subtract(relativeMinDate, 'days').toISOString());
 
 // Set Relative Maximum Date
-jsonLogic.add_operation('relativeMaxDate', relativeMaxDate => {
-    return moment().add(relativeMaxDate, 'days').toISOString();
-});
+jsonLogic.add_operation('relativeMaxDate', relativeMaxDate => moment().add(relativeMaxDate, 'days').toISOString());
 
 export { jsonLogic, moment };
 
@@ -74,7 +68,7 @@ export function evaluate(func, args, ret, tokenize) {
                 if ($2.indexOf('data.') === 0) {
                     return _.get(args.data, $2.replace('data.', ''));
                 }
-                else if ($2.indexOf('row.') === 0) {
+                if ($2.indexOf('row.') === 0) {
                     return _.get(args.row, $2.replace('row.', ''));
                 }
 
@@ -161,12 +155,11 @@ export function boolValue(value) {
     if (_.isBoolean(value)) {
         return value;
     }
-    else if (_.isString(value)) {
+    if (_.isString(value)) {
         return (value.toLowerCase() === 'true');
     }
-    else {
-        return !!value;
-    }
+
+    return !!value;
 }
 
 /**
@@ -251,9 +244,10 @@ export function checkCustomConditional(component, custom, row, data, form, varia
     if (typeof custom === 'string') {
         custom = `var ${variable} = true; ${custom}; return ${variable};`;
     }
-    const value = (instance && instance.evaluate) ?
-    instance.evaluate(custom, { row, data, form }) :
-    evaluate(custom, { row, data, form });
+    const value = (instance && instance.evaluate)
+        ? instance.evaluate(custom, { row, data, form })
+        : evaluate(custom, { row, data, form });
+
     if (value === null) {
         return onError;
     }
@@ -292,7 +286,7 @@ export function checkCondition(component, row, data, form, instance) {
     if (customConditional) {
         return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
     }
-    else if (conditional && conditional.when) {
+    if (conditional && conditional.when) {
     // If no component's instance passed (happens only in 6.x server), calculate its path based on the schema
         if (!instance) {
             instance = _.cloneDeep(component);
@@ -307,7 +301,7 @@ export function checkCondition(component, row, data, form, instance) {
         }
         return checkSimpleConditional(component, conditional, row, data);
     }
-    else if (conditional && conditional.json) {
+    if (conditional && conditional.json) {
         return checkJsonConditional(component, conditional.json, row, data, form, true);
     }
 
@@ -415,7 +409,7 @@ export function convertStringToHTMLElement(str, selector) {
  */
 export function uniqueName(name, template, evalContext) {
     template = template || '{{fileName}}-{{guid}}';
-    //include guid in template anyway, to prevent overwriting issue if filename matches existing file
+    // include guid in template anyway, to prevent overwriting issue if filename matches existing file
     if (!template.includes('{{guid}}')) {
         template = `${template}-{{guid}}`;
     }
@@ -424,23 +418,23 @@ export function uniqueName(name, template, evalContext) {
     const extension = parts.length > 1
     ? `.${_.last(parts)}`
     : '';
-    //allow only 100 characters from original name to avoid issues with filename length restrictions
+    // allow only 100 characters from original name to avoid issues with filename length restrictions
     fileName = fileName.substr(0, 100);
     evalContext = Object.assign(evalContext || {}, {
         fileName,
         guid: guid(),
     });
-    //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
+    // only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
     const uniqueName = `${Evaluator.interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
     return uniqueName;
 }
 
 export function guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-        const r = Math.random()*16|0;
+        const r = Math.random() * 16 | 0;
         const v = c === 'x'
       ? r
-      : (r&0x3|0x8);
+      : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 }
@@ -459,7 +453,7 @@ export function getDateSetting(date) {
     if (date instanceof Date) {
         return date;
     }
-    else if (typeof date.toDate === 'function') {
+    if (typeof date.toDate === 'function') {
         return date.isValid() ? date.toDate() : null;
     }
 
@@ -571,19 +565,19 @@ export function loadZones(timezone) {
     if (moment.zonesPromise) {
         return moment.zonesPromise;
     }
-    return moment.zonesPromise = fetch(
-            'https://cdn.form.io/moment-timezone/data/packed/latest.json',
-    ).then(resp => resp.json().then(zones => {
-        moment.tz.load(zones);
-        moment.zonesLoaded = true;
+    return moment.zonesPromise = fetch('https://cdn.form.io/moment-timezone/data/packed/latest.json')
+        .then(resp => resp.json()
+            .then(zones => {
+                moment.tz.load(zones);
+                moment.zonesLoaded = true;
 
-        // Trigger a global event that the timezones have finished loading.
-        if (document && document.createEvent && document.body && document.body.dispatchEvent) {
-            const event = document.createEvent('Event');
-            event.initEvent('zonesLoaded', true, true);
-            document.body.dispatchEvent(event);
-        }
-    }));
+                // Trigger a global event that the timezones have finished loading.
+                if (document && document.createEvent && document.body && document.body.dispatchEvent) {
+                    const event = document.createEvent('Event');
+                    event.initEvent('zonesLoaded', true, true);
+                    document.body.dispatchEvent(event);
+                }
+            }));
 }
 
 /**
@@ -622,9 +616,8 @@ export function formatDate(value, format, timezone, flatPickrInputFormat) {
             if (moment.zonesLoaded) {
                 return momentDate.tz(timezone).format(convertFormatToMoment(format));
             }
-            else {
-                return momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')));
-            }
+
+            return momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')));
         }
 
         // Return the standard format.
@@ -640,9 +633,8 @@ export function formatDate(value, format, timezone, flatPickrInputFormat) {
     if (moment.zonesLoaded && timezone) {
         return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
     }
-    else {
-        return momentDate.format(convertFormatToMoment(format));
-    }
+
+    return momentDate.format(convertFormatToMoment(format));
 }
 
 /**
@@ -668,9 +660,8 @@ export function formatOffset(formatFn, date, format, timezone) {
         const offset = offsetDate(date, timezone);
         return `${formatFn(offset.date, format)} ${offset.abbr}`;
     }
-    else {
-        return formatFn(date, format);
-    }
+
+    return formatFn(date, format);
 }
 
 export function getLocaleDateFormatInfo(locale) {
@@ -913,19 +904,18 @@ export function fieldData(data, component) {
         }
         return value;
     }
-    else {
+
     // Convert old single field data in submissions to multiple
-        if (component.multiple && !Array.isArray(data[component.key])) {
-            data[component.key] = [ data[component.key] ];
-        }
-
-        // Fix for checkbox type radio submission values in tableView
-        if (component.type === 'checkbox' && component.inputType === 'radio') {
-            return data[component.name] === component.value;
-        }
-
-        return data[component.key];
+    if (component.multiple && !Array.isArray(data[component.key])) {
+        data[component.key] = [ data[component.key] ];
     }
+
+    // Fix for checkbox type radio submission values in tableView
+    if (component.type === 'checkbox' && component.inputType === 'radio') {
+        return data[component.name] === component.value;
+    }
+
+    return data[component.key];
 }
 
 /**
@@ -967,9 +957,7 @@ export function iterateKey(key) {
         return `${key}1`;
     }
 
-    return key.replace(/(\d+)$/, suffix => {
-        return Number(suffix) + 1;
-    });
+    return key.replace(/(\d+)$/, suffix => Number(suffix) + 1);
 }
 
 /**
@@ -1179,7 +1167,7 @@ export function getArrayFromComponentPath(pathStr) {
         .map(part => _.defaultTo(_.toNumber(part), part));
 }
 
-export function  hasInvalidComponent(component) {
+export function hasInvalidComponent(component) {
     return component.getComponents().some(comp => {
         if (Array.isArray(comp.components)) {
             return hasInvalidComponent(comp);
@@ -1221,7 +1209,7 @@ export function getIEBrowserVersion() {
         return null;
     }
 
-    return document['documentMode'];
+    return document.documentMode;
 }
 
 export function getComponentPathWithoutIndicies(path = '') {
@@ -1253,9 +1241,8 @@ export function getDataParentComponent(componentInstance) {
     if (parent && (parent.isInputComponent || parent.input)) {
         return parent;
     }
-    else {
-        return getDataParentComponent(parent);
-    }
+
+    return getDataParentComponent(parent);
 }
 
 // Export lodash to save space with other libraries.

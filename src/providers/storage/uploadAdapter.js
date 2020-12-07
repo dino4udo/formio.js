@@ -18,7 +18,7 @@ class FormioUploadAdapter {
                     uploadStorage,
                     file,
                     uniqueName(file.name),
-                    uploadDir || '', //should pass empty string if undefined
+                    uploadDir || '', // should pass empty string if undefined
                     evt => this.onUploadProgress(evt),
                     uploadUrl,
                     uploadOptions,
@@ -30,13 +30,11 @@ class FormioUploadAdapter {
                 const uploadPromise = this.fileService.uploadFile(
                         ...uploadParams,
                         () => this.component.emit('fileUploadingStart', uploadPromise),
-                ).then(result => {
-                    return this.fileService.downloadFile(result);
-                }).then(result => {
-                    return resolve({
+                )
+                    .then(result => this.fileService.downloadFile(result))
+                    .then(result => resolve({
                         default: result.url,
-                    });
-                })
+                    }))
                     .catch(err => {
                         console.warn('An Error occured while uploading file', err);
                         reject(err);
@@ -58,9 +56,7 @@ class FormioUploadAdapter {
 }
 
 const getFormioUploadAdapterPlugin = (fileService, component) => editor => {
-    editor.plugins.get('FileRepository').createUploadAdapter = loader => {
-        return new FormioUploadAdapter(loader, fileService, component);
-    };
+    editor.plugins.get('FileRepository').createUploadAdapter = loader => new FormioUploadAdapter(loader, fileService, component);
 };
 
 export { getFormioUploadAdapterPlugin };

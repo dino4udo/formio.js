@@ -16,7 +16,7 @@ export default [
                 {
                     value: 'html',
                     label: 'HTML',
-                },{
+                }, {
                     value: 'raw',
                     label: 'Raw (Insecure)',
                 },
@@ -40,7 +40,7 @@ export default [
             {
                 value: 'uppercase',
                 label: 'Uppercase',
-            },{
+            }, {
                 value: 'lowercase',
                 label: 'Lowercase',
             },

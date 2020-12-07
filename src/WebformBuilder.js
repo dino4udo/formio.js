@@ -1,3 +1,4 @@
+// Import from "dist" because it would require and "global" would not be defined in Angular apps.
 import dragula from 'dragula/dist/dragula';
 import _ from 'lodash';
 import _has from 'lodash/has';
@@ -8,20 +9,18 @@ import Formio from './Formio';
 import Webform from './Webform';
 import Components from './components/Components';
 import Component from './components/_classes/component/Component';
-// Import from "dist" because it would require and "global" would not be defined in Angular apps.
-
 import Templates from './templates/Templates';
 import BuilderUtils from './utils/builder';
 import { eachComponent, getComponent } from './utils/formUtils';
 import { fastCloneDeep, bootstrapVersion } from './utils/utils';
-
 
 require('./components/builder');
 
 export default class WebformBuilder extends Component {
     // eslint-disable-next-line max-statements
     constructor() {
-        let element, options;
+        let element;
+        let options;
         if (arguments[0] instanceof HTMLElement || arguments[1]) {
             element = arguments[0];
             options = arguments[1];
@@ -91,7 +90,7 @@ export default class WebformBuilder extends Component {
             if (component.builderInfo) {
                 this.schemas[type] = component.builderInfo.schema;
                 component.type = type;
-                const {builderInfo} = component;
+                const { builderInfo } = component;
                 builderInfo.key = component.type;
                 this.addBuilderComponentInfo(builderInfo);
             }
@@ -147,9 +146,9 @@ export default class WebformBuilder extends Component {
                 return html;
             }
 
-            if (!components ||
-        (!components.length && !components.nodrop) ||
-        (self.type === 'form' && components.length <= 1 && (components.length === 0 || components[0].type === 'button'))
+            if (!components
+                || (!components.length && !components.nodrop)
+                || (self.type === 'form' && components.length <= 1 && (components.length === 0 || components[0].type === 'button'))
             ) {
                 html = this.renderTemplate('builderPlaceholder', {
                     position: 0,
@@ -236,8 +235,7 @@ export default class WebformBuilder extends Component {
                     title: this.t('Copy'),
                 });
 
-                component.addEventListener(component.refs.copyComponent, 'click', () =>
-                    this.copyComponent(component));
+                component.addEventListener(component.refs.copyComponent, 'click', () => this.copyComponent(component));
             }
 
             if (component.refs.pasteComponent) {
@@ -270,8 +268,7 @@ export default class WebformBuilder extends Component {
                     title: this.t('Edit'),
                 });
 
-                component.addEventListener(component.refs.editComponent, 'click', () =>
-                    this.editComponent(component.schema, parent, false, false, component.component));
+                component.addEventListener(component.refs.editComponent, 'click', () => this.editComponent(component.schema, parent, false, false, component.component));
             }
 
             if (component.refs.editJson) {
@@ -281,8 +278,7 @@ export default class WebformBuilder extends Component {
                     title: this.t('Edit JSON'),
                 });
 
-                component.addEventListener(component.refs.editJson, 'click', () =>
-                    this.editComponent(component.schema, parent, false, true, component.component));
+                component.addEventListener(component.refs.editJson, 'click', () => this.editComponent(component.schema, parent, false, true, component.component));
             }
 
             if (component.refs.removeComponent) {
@@ -292,8 +288,7 @@ export default class WebformBuilder extends Component {
                     title: this.t('Remove'),
                 });
 
-                component.addEventListener(component.refs.removeComponent, 'click', () =>
-                    this.removeComponent(component.schema, parent, component.component));
+                component.addEventListener(component.refs.removeComponent, 'click', () => this.removeComponent(component.schema, parent, component.component));
             }
 
             return element;
@@ -368,9 +363,9 @@ export default class WebformBuilder extends Component {
             eachComponent(resource.components, component => {
                 if (component.type === 'button') return;
                 if (
-                    this.options &&
-          this.options.resourceFilter &&
-          (!component.tags || component.tags.indexOf(this.options.resourceFilter) === -1)
+                    this.options
+                    && this.options.resourceFilter
+                    && (!component.tags || component.tags.indexOf(this.options.resourceFilter) === -1)
                 ) return;
 
                 let componentName = component.label;
@@ -381,8 +376,8 @@ export default class WebformBuilder extends Component {
                 subgroup.componentOrder.push(component.key);
                 subgroup.components[component.key] = _.merge(
                         fastCloneDeep(Components.components[component.type]
-            ? Components.components[component.type].builderInfo
-            : Components.components['unknown'].builderInfo),
+                            ? Components.components[component.type].builderInfo
+                            : Components.components.unknown.builderInfo),
                         {
                             key: component.key,
                             title: componentName,
@@ -583,12 +578,11 @@ export default class WebformBuilder extends Component {
                             const groupId = group.getAttribute('id').slice('group-'.length);
                             const groupParent = group.getAttribute('data-parent').slice('#builder-sidebar-'.length);
 
-                            group.style.display =
-                (
-                  (openByDefault && groupParent === clickedId) ||
-                  groupId === clickedParentId ||
-                  groupIndex === index
-                )
+                            group.style.display = (
+                                (openByDefault && groupParent === clickedId)
+                                || groupId === clickedParentId
+                                || groupIndex === index
+                            )
                   ? 'inherit' : 'none';
                         });
                     }, true);
@@ -599,8 +593,7 @@ export default class WebformBuilder extends Component {
                     _.debounce(e => {
                         const searchString = e.target.value;
                         this.searchFields(searchString);
-                    }, 300),
-            );
+                    }, 300));
 
             if (this.dragDropEnabled) {
                 this.initDragula();
@@ -614,7 +607,7 @@ export default class WebformBuilder extends Component {
 
     searchFields(searchString = '') {
         const searchValue = searchString.toLowerCase();
-        const {sidebar} = this.refs;
+        const { sidebar } = this.refs;
         const sidebarGroups = this.refs['sidebar-groups'];
 
         if (!sidebar || !sidebarGroups) {
@@ -657,20 +650,18 @@ export default class WebformBuilder extends Component {
                 .filter(subgroup => !_.isNull(subgroup));
         };
 
-        const toTemplate = groupKey => {
-            return {
-                group: filterGroupBy(this.groups[groupKey], searchValue),
-                groupKey,
-                groupId: sidebar.id || sidebarGroups.id,
-                subgroups: filterSubgroups(this.groups[groupKey].subgroups, searchValue)
-                    .map(group => this.renderTemplate('builderSidebarGroup', {
-                        group,
-                        groupKey: group.key,
-                        groupId: `group-container-${groupKey}`,
-                        subgroups: [],
-                    })),
-            };
-        };
+        const toTemplate = groupKey => ({
+            group: filterGroupBy(this.groups[groupKey], searchValue),
+            groupKey,
+            groupId: sidebar.id || sidebarGroups.id,
+            subgroups: filterSubgroups(this.groups[groupKey].subgroups, searchValue)
+                .map(group => this.renderTemplate('builderSidebarGroup', {
+                    group,
+                    groupKey: group.key,
+                    groupId: `group-container-${groupKey}`,
+                    subgroups: [],
+                })),
+        });
 
         sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchValue)
             .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
@@ -696,15 +687,13 @@ export default class WebformBuilder extends Component {
     }
 
     initDragula() {
-        const {options} = this;
+        const { options } = this;
 
         if (this.dragula) {
             this.dragula.destroy();
         }
 
-        const containersArray = Array.prototype.slice.call(this.refs['sidebar-container']).filter(item => {
-            return item.id !== 'group-container-resource';
-        });
+        const containersArray = Array.prototype.slice.call(this.refs['sidebar-container']).filter(item => item.id !== 'group-container-resource');
 
         this.dragula = dragula(containersArray, {
             moves(el) {
@@ -764,7 +753,7 @@ export default class WebformBuilder extends Component {
                 info = fastCloneDeep(resourceGroup.components[key].schema);
             }
         }
-        else if (group === 'searchFields') {//Search components go into this group
+        else if (group === 'searchFields') { // Search components go into this group
             const resourceGroups = this.groups.resource.subgroups;
             for (let ix = 0; ix < resourceGroups.length; ix++) {
                 const resourceGroup = resourceGroups[ix];
@@ -778,11 +767,11 @@ export default class WebformBuilder extends Component {
         if (info) {
             if (!info.key) {
                 info.key = _.camelCase(
-                        info.key ||
-          info.title ||
-          info.label ||
-          info.placeholder ||
-          info.type,
+                        info.key
+                        || info.title
+                        || info.label
+                        || info.placeholder
+                        || info.type,
                 );
             }
         }
@@ -829,7 +818,10 @@ export default class WebformBuilder extends Component {
         const key = element.getAttribute('data-key');
         const type = element.getAttribute('data-type');
         const group = element.getAttribute('data-group');
-        let info, isNew, path, index;
+        let info;
+        let isNew;
+        let path;
+        let index;
 
         if (key) {
             // This is a new component.
@@ -865,7 +857,6 @@ export default class WebformBuilder extends Component {
             eachComponent(this.webform.components, component => {
                 if (component.key === draggableComponent.key) {
                     isCompAlreadyExists = true;
-                    return;
                 }
             }, true);
             if (isCompAlreadyExists) {
@@ -970,8 +961,8 @@ export default class WebformBuilder extends Component {
         }
 
         if (this.webform) {
-            const shouldRebuild = !this.webform.form.components ||
-        (form.components.length !== this.webform.form.components.length);
+            const shouldRebuild = !this.webform.form.components
+                || (form.components.length !== this.webform.form.components.length);
             return this.webform.setForm(form).then(() => {
                 if (this.refs.form) {
                     this.builderHeight = this.refs.form.offsetHeight;
@@ -986,7 +977,7 @@ export default class WebformBuilder extends Component {
     }
 
     populateRecaptchaSettings(form) {
-    //populate isEnabled for recaptcha form settings
+        // populate isEnabled for recaptcha form settings
         let isRecaptchaEnabled = false;
         if (this.form.components) {
             eachComponent(form.components, component => {
@@ -1013,12 +1004,12 @@ export default class WebformBuilder extends Component {
         }
         let remove = true;
         if (
-            !component.skipRemoveConfirm &&
-      (
-          (Array.isArray(component.components) && component.components.length) ||
-        (Array.isArray(component.rows) && component.rows.length) ||
-        (Array.isArray(component.columns) && component.columns.length)
-      )
+            !component.skipRemoveConfirm
+            && (
+                (Array.isArray(component.components) && component.components.length)
+                || (Array.isArray(component.rows) && component.rows.length)
+                || (Array.isArray(component.columns) && component.columns.length)
+            )
         ) {
             const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
             remove = window.confirm(this.t(message));
@@ -1205,8 +1196,7 @@ export default class WebformBuilder extends Component {
                         path,
                         index,
                         isNew,
-                        originalComponentSchema,
-                );
+                        originalComponentSchema);
                 this.emit('change', this.form);
                 this.highlightInvalidComponents();
             });
@@ -1316,10 +1306,10 @@ export default class WebformBuilder extends Component {
                             this.editForm.everyComponent(component => {
                                 if (component.key === 'key' && component.parent.component.key === 'tabs') {
                                     component.setValue(_.camelCase(
-                                            event.data.title ||
-                    event.data.label ||
-                    event.data.placeholder ||
-                    event.data.type,
+                                            event.data.title
+                                            || event.data.label
+                                            || event.data.placeholder
+                                            || event.data.type,
                                     ).replace(/^[0-9]*/, ''));
 
                                     return false;

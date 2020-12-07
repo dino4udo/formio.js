@@ -14,7 +14,6 @@ import Form from '../../Form';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
 
-
 export default class FormComponent extends Component {
     static schema(...extend) {
         return Component.schema({
@@ -55,9 +54,9 @@ export default class FormComponent extends Component {
         }
 
         if (
-            !this.component.src &&
-      !this.options.formio &&
-      (this.component.form || this.component.path)
+            !this.component.src
+            && !this.options.formio
+            && (this.component.form || this.component.path)
         ) {
             if (this.component.project) {
                 this.formSrc = Formio.getBaseUrl();
@@ -237,34 +236,32 @@ export default class FormComponent extends Component {
             return super.attach(element);
         }
         return super.attach(element)
-            .then(() => {
-                return this.subFormReady.then(() => {
-                    this.empty(element);
-                    if (this.options.builder) {
-                        this.setContent(element, this.ce('div', {
-                            class: 'text-muted text-center p-2',
-                        }, this.text(this.formObj.title)));
-                        return;
-                    }
+            .then(() => this.subFormReady.then(() => {
+                this.empty(element);
+                if (this.options.builder) {
+                    this.setContent(element, this.ce('div', {
+                        class: 'text-muted text-center p-2',
+                    }, this.text(this.formObj.title)));
+                    return;
+                }
 
-                    this.setContent(element, this.render());
-                    if (this.subForm) {
-                        this.subForm.attach(element);
-                        if (!this.valueChanged && this.dataValue.state !== 'submitted') {
-                            this.setDefaultValue();
-                        }
-                        else {
-                            this.restoreValue();
-                        }
+                this.setContent(element, this.render());
+                if (this.subForm) {
+                    this.subForm.attach(element);
+                    if (!this.valueChanged && this.dataValue.state !== 'submitted') {
+                        this.setDefaultValue();
                     }
-                    if (!this.builderMode && this.component.modalEdit) {
-                        const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
-                        const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
-                        this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
-                        this.setOpenModalElement();
+                    else {
+                        this.restoreValue();
                     }
-                });
-            });
+                }
+                if (!this.builderMode && this.component.modalEdit) {
+                    const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
+                    const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
+                    this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
+                    this.setOpenModalElement();
+                }
+            }));
     }
 
     detach() {
@@ -382,8 +379,7 @@ export default class FormComponent extends Component {
     }
 
     hideSubmitButton(component) {
-        const isSubmitButton = (component.type === 'button') &&
-      ((component.action === 'submit') || !component.action);
+        const isSubmitButton = (component.type === 'button') && ((component.action === 'submit') || !component.action);
 
         if (isSubmitButton) {
             component.hidden = true;
@@ -405,7 +401,7 @@ export default class FormComponent extends Component {
             }
             return NativePromise.resolve(this.formObj);
         }
-        else if (this.formSrc) {
+        if (this.formSrc) {
             return (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
                 .then(formObj => {
                     this.formObj = formObj;
@@ -470,9 +466,8 @@ export default class FormComponent extends Component {
         if (_.get(this.subForm, 'form.display') === 'pdf') {
             return this.subForm.getSubmission();
         }
-        else {
-            return NativePromise.resolve(this.dataValue);
-        }
+
+        return NativePromise.resolve(this.dataValue);
     }
 
     /**
@@ -499,9 +494,8 @@ export default class FormComponent extends Component {
                         this.subForm.onSubmissionError(err);
                         return NativePromise.reject(err);
                     }
-                    else {
-                        return {};
-                    }
+
+                    return {};
                 });
             });
         }
@@ -533,9 +527,7 @@ export default class FormComponent extends Component {
             return NativePromise.resolve(this.dataValue);
         }
         return this.submitSubForm(false)
-            .then(() => {
-                return this.dataValue;
-            })
+            .then(() => this.dataValue)
             .then(() => super.beforeSubmit());
     }
 
@@ -707,7 +699,7 @@ export default class FormComponent extends Component {
         });
         const nativeEmit = emitter.emit;
         const that = this;
-        emitter.emit = function(event, ...args) {
+        emitter.emit = function (event, ...args) {
             const eventType = event.replace(`${that.options.namespace}.`, '');
             nativeEmit.call(this, event, ...args);
             if (!that.isInternalEvent(eventType)) {

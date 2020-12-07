@@ -5,7 +5,7 @@ import FileEditDisplay from './editForm/File.edit.display';
 import FileEditFile from './editForm/File.edit.file';
 import FileEditValidation from './editForm/File.edit.validation';
 
-export default function(...extend) {
+export default function (...extend) {
     return baseEditForm([
         {
             key: 'display',

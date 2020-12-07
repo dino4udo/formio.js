@@ -324,9 +324,9 @@ export default [
                                 template: '<span>{{ item.label }}</span>',
                                 type: 'select',
                                 customConditional({ row }) {
-                                    return row.type === 'property' &&
-                    _has(row, 'property') &&
-                    row.property.type === 'boolean';
+                                    return row.type === 'property'
+                                        && _has(row, 'property')
+                                        && row.property.type === 'boolean';
                                 },
                             },
                             {
@@ -339,10 +339,10 @@ export default [
                                 tableView: false,
                                 description: 'Can use templating with {{ data.myfield }}. "data", "row", "component" and "result" variables are available.',
                                 customConditional({ row }) {
-                                    return row.type === 'property' &&
-                    _has(row, 'property') &&
-                    row.property.type === 'string' &&
-                    !row.property.component;
+                                    return row.type === 'property'
+                                        && _has(row, 'property')
+                                        && row.property.type === 'string'
+                                        && !row.property.component;
                                 },
                             },
                             {

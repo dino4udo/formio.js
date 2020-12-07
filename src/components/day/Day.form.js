@@ -7,7 +7,7 @@ import DayEditMonth from './editForm/Day.edit.month';
 import DayEditValidation from './editForm/Day.edit.validation';
 import DayEditYear from './editForm/Day.edit.year';
 
-export default function(...extend) {
+export default function (...extend) {
     return baseEditForm([
         {
             key: 'display',

@@ -73,10 +73,9 @@ export default class Form extends Element {
         if (Displays.displays[display]) {
             return new Displays.displays[display](this.element, this.options);
         }
-        else {
-            // eslint-disable-next-line new-cap
-            return new Displays.displays['webform'](this.element, this.options);
-        }
+
+        // eslint-disable-next-line new-cap
+        return new Displays.displays.webform(this.element, this.options);
     }
 
     /**
@@ -121,30 +120,28 @@ export default class Form extends Element {
                 .catch(err => {
                     error = err;
                 })
-                .then(submission => {
-                    return formio.loadForm()
+                .then(submission => formio.loadForm()
                     // If the form returned an error, show it instead of the form.
-                        .catch(err => {
-                            error = err;
-                        })
-                        .then(form => {
-                            // If the submission returned an error, show it instead of the form.
-                            if (error) {
-                                form = this.errorForm(error);
-                            }
-                            this.instance = this.instance || this.create(form.display);
-                            this.instance.url = formParam;
-                            this.instance.nosubmit = false;
-                            this._form = this.instance.form = form;
-                            if (submission) {
-                                this.instance.submission = submission;
-                            }
-                            if (error) {
-                                throw error;
-                            }
-                            return this.instance;
-                        });
-                });
+                    .catch(err => {
+                        error = err;
+                    })
+                    .then(form => {
+                        // If the submission returned an error, show it instead of the form.
+                        if (error) {
+                            form = this.errorForm(error);
+                        }
+                        this.instance = this.instance || this.create(form.display);
+                        this.instance.url = formParam;
+                        this.instance.nosubmit = false;
+                        this._form = this.instance.form = form;
+                        if (submission) {
+                            this.instance.submission = submission;
+                        }
+                        if (error) {
+                            throw error;
+                        }
+                        return this.instance;
+                    }));
         }
         else {
             this.instance = this.instance || this.create(formParam.display);
@@ -305,8 +302,6 @@ Formio.embedForm = embed => Form.embed(embed);
  *
  * @return {Promise} - When the form is instance is ready.
  */
-Formio.createForm = (...args) => {
-    return (new Form(...args)).ready;
-};
+Formio.createForm = (...args) => (new Form(...args)).ready;
 
 Formio.Form = Form;

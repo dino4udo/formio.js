@@ -122,9 +122,9 @@ export default [
             {
                 type: 'htmlelement',
                 tag: 'div',
-                content: '<h4>Example</h4>' +
-          `<pre>// Disable all weekends<br>date.getDay() === 0 || date.getDay() === 6</pre>
-          `,
+                content: '<h4>Example</h4>'
+                + `<pre>// Disable all weekends<br>date.getDay() === 0 || date.getDay() === 6</pre>
+                `,
             },
         ],
     },

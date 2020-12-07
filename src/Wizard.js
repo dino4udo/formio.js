@@ -22,7 +22,8 @@ export default class Wizard extends Webform {
    *    - allowPrevious: false (default) determines if the breadcrumb bar is clickable or not for visited tabs
    */
     constructor() {
-        let element, options;
+        let element;
+        let options;
         if (arguments[0] instanceof HTMLElement || arguments[1]) {
             element = arguments[0];
             options = arguments[1];
@@ -153,10 +154,10 @@ export default class Wizard extends Webform {
     get buttons() {
         const buttons = {};
         [
-            { name: 'cancel',    method: 'cancel' },
-            { name: 'previous',  method: 'prevPage' },
-            { name: 'next',      method: 'nextPage' },
-            { name: 'submit',    method: 'submit' },
+            { name: 'cancel', method: 'cancel' },
+            { name: 'previous', method: 'prevPage' },
+            { name: 'next', method: 'nextPage' },
+            { name: 'submit', method: 'submit' },
         ].forEach(button => {
             if (this.hasButton(button.name)) {
                 buttons[button.name] = button;
@@ -177,7 +178,7 @@ export default class Wizard extends Webform {
     }
 
     prepareNavigationSettings(ctx) {
-        const {currentPanel} = this;
+        const { currentPanel } = this;
 
         if (currentPanel && currentPanel.buttonSettings) {
             Object.keys(currentPanel.buttonSettings).forEach(() => {
@@ -537,9 +538,7 @@ export default class Wizard extends Webform {
                 const pageFromPages = this.pages[num];
                 const pageFromComponents = this.components[num];
                 if (!pageFromComponents || pageFromPages.id !== pageFromComponents.id) {
-                    parentNum = this.components.findIndex(comp => {
-                        return comp.id === this.pages[parentNum].rootPanelId;
-                    });
+                    parentNum = this.components.findIndex(comp => comp.id === this.pages[parentNum].rootPanelId);
                 }
             }
             if (!this._seenPages.includes(parentNum)) {
@@ -550,7 +549,7 @@ export default class Wizard extends Webform {
             });
             return NativePromise.resolve();
         }
-        else if (this.wizard.full || !this.pages.length) {
+        if (this.wizard.full || !this.pages.length) {
             this.redraw();
             return NativePromise.resolve();
         }
@@ -571,7 +570,7 @@ export default class Wizard extends Webform {
     }
 
     getNextPage() {
-        const {data} = this.submission;
+        const { data } = this.submission;
         const form = this.pages[this.page].component;
         // Check conditional nextPage
         if (form) {
@@ -653,21 +652,18 @@ export default class Wizard extends Webform {
         // Validate the form, before go to the next page
         if (this.checkValidity(this.submission.data, true, this.submission.data, true)) {
             this.checkData(this.submission.data);
-            return this.beforePage(true).then(() => {
-                return this.setPage(this.getNextPage()).then(() => {
-                    if (!(this.options.readOnly || this.editMode) && this.enabledIndex < this.page) {
-                        this.enabledIndex = this.page;
-                        this.redraw();
-                    }
+            return this.beforePage(true).then(() => this.setPage(this.getNextPage()).then(() => {
+                if (!(this.options.readOnly || this.editMode) && this.enabledIndex < this.page) {
+                    this.enabledIndex = this.page;
+                    this.redraw();
+                }
 
-                    this.emitNextPage();
-                });
-            });
+                this.emitNextPage();
+            }));
         }
-        else {
-            this.currentPage.components.forEach(comp => comp.setPristine(false));
-            return NativePromise.reject(this.showErrors([], true));
-        }
+
+        this.currentPage.components.forEach(comp => comp.setPristine(false));
+        return NativePromise.reject(this.showErrors([], true));
     }
 
     emitPrevPage() {
@@ -675,11 +671,9 @@ export default class Wizard extends Webform {
     }
 
     prevPage() {
-        return this.beforePage().then(() => {
-            return this.setPage(this.getPreviousPage()).then(() => {
-                this.emitPrevPage();
-            });
-        });
+        return this.beforePage().then(() => this.setPage(this.getPreviousPage()).then(() => {
+            this.emitPrevPage();
+        }));
     }
 
     cancel(noconfirm) {
@@ -762,9 +756,7 @@ export default class Wizard extends Webform {
         if (!ignoreEstablishment) {
             this.establishPages(submission.data);
         }
-        const changed = this.getPages({ all: true }).reduce((changed, page) => {
-            return this.setNestedValue(page, submission.data, flags, changed) || changed;
-        }, false);
+        const changed = this.getPages({ all: true }).reduce((changed, page) => this.setNestedValue(page, submission.data, flags, changed) || changed, false);
         this.pageFieldLogicHandler();
 
         if (!this.editMode && submission._id && !this.options.readOnly) {
@@ -810,15 +802,14 @@ export default class Wizard extends Webform {
             // Some panels have the same key....
             return `${page.key}-${page.title}`;
         }
-        else if (
-            page.components &&
-      page.components.length > 0
+        if (
+            page.components
+            && page.components.length > 0
         ) {
             return this.pageId(page.components[0]);
         }
-        else {
-            return page.title;
-        }
+
+        return page.title;
     }
 
     onChange(flags, changed, modified, changes) {
@@ -831,7 +822,7 @@ export default class Wizard extends Webform {
         // If the pages change, need to redraw the header.
         let currentPanels;
         let panels;
-        const {currentNextPage} = this;
+        const { currentNextPage } = this;
         if (this.hasExtraPages) {
             currentPanels = this.pages.map(page => page.component.key);
             this.establishPages();

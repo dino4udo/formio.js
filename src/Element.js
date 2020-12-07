@@ -16,14 +16,15 @@ export default class Element {
      * The options for this component.
      * @type {{}}
      */
-        this.options = Object.assign({
+        this.options = {
             language: 'en',
             highlightErrors: true,
             componentErrorClass: 'formio-error-wrapper',
             componentWarningClass: 'formio-warning-wrapper',
             row: '',
             namespace: 'formio',
-        }, options || {});
+            ...options || {},
+        };
 
         /**
      * The ID of this component. This value is auto-generated when the component is created, but
@@ -348,7 +349,7 @@ export default class Element {
    * @returns {string} - The placeholder that will exist within the input as they type.
    */
     maskPlaceholder(mask) {
-        return mask.map(char => (char instanceof RegExp) ? '_' : char).join('');
+        return mask.map(char => ((char instanceof RegExp) ? '_' : char)).join('');
     }
 
     /**
@@ -363,7 +364,7 @@ export default class Element {
             const mask = FormioUtils.getInputMask(inputMask);
             this.defaultMask = mask;
             try {
-                //destroy previous mask
+                // destroy previous mask
                 if (input.mask) {
                     input.mask.destroy();
                 }
@@ -505,7 +506,7 @@ export default class Element {
    * @return {*}
    */
     evalContext(additional) {
-        return Object.assign({
+        return {
             _,
             utils: FormioUtils,
             util: FormioUtils,
@@ -517,7 +518,9 @@ export default class Element {
                 decode: true,
             }),
             config: this.root && this.root.form && this.root.form.config ? this.root.form.config : {},
-        }, additional, _.get(this.root, 'options.evalContext', {}));
+            ...additional,
+            ..._.get(this.root, 'options.evalContext', {}),
+        };
     }
 
     /**
@@ -551,21 +554,19 @@ export default class Element {
     hook() {
         const name = arguments[0];
         if (
-            this.options &&
-      this.options.hooks &&
-      this.options.hooks[name]
+            this.options
+      && this.options.hooks
+      && this.options.hooks[name]
         ) {
             return this.options.hooks[name].apply(this, Array.prototype.slice.call(arguments, 1));
         }
-        else {
-            // If this is an async hook instead of a sync.
-            const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
-            if (fn) {
-                return fn(null, arguments[1]);
-            }
-            else {
-                return arguments[1];
-            }
+
+        // If this is an async hook instead of a sync.
+        const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
+        if (fn) {
+            return fn(null, arguments[1]);
         }
+
+        return arguments[1];
     }
 }

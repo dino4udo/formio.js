@@ -4,7 +4,7 @@ import TextAreaEditDisplay from './editForm/TextArea.edit.display';
 import TextAreaEditLayout from './editForm/TextArea.edit.layout';
 import TextAreaEditValidation from './editForm/TextArea.edit.validation';
 
-export default function(...extend) {
+export default function (...extend) {
     return textEditForm([
         {
             key: 'display',

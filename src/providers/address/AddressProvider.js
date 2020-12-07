@@ -56,7 +56,7 @@ export class AddressProvider {
         params[this.queryProperty] = query;
 
         return this.makeRequest(requestOptions)
-            .then(result => this.responseProperty ? _.get(result, this.responseProperty, []) : result);
+            .then(result => (this.responseProperty ? _.get(result, this.responseProperty, []) : result));
     }
 
     getDisplayValue(address) {

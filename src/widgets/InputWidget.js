@@ -2,6 +2,7 @@ import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
 import Element from '@/Element';
+
 export default class InputWidget extends Element {
     static get defaultSettings() {
         return {

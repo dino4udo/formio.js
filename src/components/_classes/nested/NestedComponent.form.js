@@ -1,6 +1,6 @@
 import baseEditForm from '../component/Component.form';
 
-export default function(...extend) {
+export default function (...extend) {
     return baseEditForm([
         {
             key: 'data',

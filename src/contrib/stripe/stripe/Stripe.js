@@ -7,10 +7,9 @@ import Formio from '@/Formio';
 import Component from '../../../components/_classes/component/Component';
 import Validator from '../../../validator/Validator';
 
-
 // Register a custom validor to use card validition from Stripe
 if (typeof Validator.validators.stripe === 'undefined') {
-    Validator.validators.stripe =  {
+    Validator.validators.stripe = {
         key: 'validate.stripe',
         message(component) {
             let stripeMessage = '';
@@ -165,9 +164,9 @@ export default class StripeComponent extends Component {
 
         // Force change when complete or when an error is thrown or fixed
         const changed = result.complete
-      || this.lastResult && (!!this.lastResult.error !== !!result.error)
-      || this.lastResult && this.lastResult.error && result.error && this.lastResult.error.code !== result.error.code
-      || false;
+            || this.lastResult && (!!this.lastResult.error !== !!result.error)
+            || this.lastResult && this.lastResult.error && result.error && this.lastResult.error.code !== result.error.code
+            || false;
         this.lastResult = result;
 
         // When the field is not empty, use "." as value to not trigger "required" validator

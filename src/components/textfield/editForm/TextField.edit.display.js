@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import Widgets from '../../../widgets';
+
 export default [
     {
         weight: 400,
@@ -38,8 +39,8 @@ export default [
             const { type } = context.data.widget;
 
             if (
-                _.isEmpty(_.omit(context.data.widget, 'type')) ||
-        _.isEmpty(_.omit(calculatedValue, 'type'))
+                _.isEmpty(_.omit(context.data.widget, 'type'))
+                || _.isEmpty(_.omit(calculatedValue, 'type'))
             ) {
                 if (calculatedValue && !calculatedValue.type) {
                     return context.data.widget;
@@ -49,7 +50,7 @@ export default [
                 if (existWidget && !_.isEmpty(_.omit(existWidget, 'type')) && type === existWidget.type) {
                     return _.omit(existWidget, 'language');
                 }
-                else if (type) {
+                if (type) {
                     return _.omit(Widgets[type].defaultSettings, 'language');
                 }
             }

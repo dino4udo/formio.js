@@ -1,6 +1,7 @@
 import NativePromise from 'native-promise-only';
 
 import { setXhrHeaders } from './xhr';
+
 const dropbox = formio => ({
     uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId) {
         return new NativePromise(((resolve, reject) => {
@@ -53,8 +54,7 @@ const dropbox = formio => ({
     },
     downloadFile(file) {
         const token = formio.getToken();
-        file.url =
-      `${formio.formUrl}/storage/dropbox?path_lower=${file.path_lower}${token ? `&x-jwt-token=${token}` : ''}`;
+        file.url = `${formio.formUrl}/storage/dropbox?path_lower=${file.path_lower}${token ? `&x-jwt-token=${token}` : ''}`;
         return NativePromise.resolve(file);
     },
 });

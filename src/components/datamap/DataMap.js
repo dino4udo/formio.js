@@ -6,7 +6,6 @@ import { uniqueKey } from '@/utils/utils';
 import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
 
-
 export default class DataMapComponent extends DataGridComponent {
     static schema(...extend) {
         return Component.schema({
@@ -76,8 +75,8 @@ export default class DataMapComponent extends DataGridComponent {
 
     get dataValue() {
         if (
-            !this.key ||
-      (!this.visible && this.component.clearOnHide)
+            !this.key
+      || (!this.visible && this.component.clearOnHide)
         ) {
             return this.emptyValue;
         }
@@ -115,7 +114,7 @@ export default class DataMapComponent extends DataGridComponent {
     }
 
     getRowValues() {
-        const {dataValue} = this;
+        const { dataValue } = this;
         if (this.builderMode) {
             return [ dataValue ];
         }
@@ -126,12 +125,10 @@ export default class DataMapComponent extends DataGridComponent {
     }
 
     get iteratableRows() {
-        return this.rows.map(row => {
-            return Object.keys(row).map(key => ({
-                components: row[key],
-                data: row[key].dataValue,
-            }));
-        });
+        return this.rows.map(row => Object.keys(row).map(key => ({
+            components: row[key],
+            data: row[key].dataValue,
+        })));
     }
 
     componentContext(component) {
@@ -143,20 +140,20 @@ export default class DataMapComponent extends DataGridComponent {
     }
 
     hasRemoveButtons() {
-        return !this.component.disableAddingRemovingRows &&
-      !this.options.readOnly &&
-      !this.disabled &&
-      this.fullMode;
+        return !this.component.disableAddingRemovingRows
+      && !this.options.readOnly
+      && !this.disabled
+      && this.fullMode;
     }
 
     getColumns() {
-        const keySchema = Object.assign({}, this.keySchema);
-        const valueSchema = Object.assign({}, this.component.valueComponent);
+        const keySchema = { ...this.keySchema };
+        const valueSchema = { ...this.component.valueComponent };
         keySchema.hideLabel = false;
         valueSchema.hideLabel = false;
-        return this.component.keyBeforeValue ?
-      [ keySchema, valueSchema ] :
-      [ valueSchema, keySchema ];
+        return this.component.keyBeforeValue
+      ? [ keySchema, valueSchema ]
+      : [ valueSchema, keySchema ];
     }
 
     getRowKey(rowIndex) {
@@ -193,9 +190,9 @@ export default class DataMapComponent extends DataGridComponent {
         options.row = `${rowIndex}`;
 
         const components = {};
-        components['__key'] = this.createComponent(this.keySchema, options, { __key: key });
-        components['__key'].on('componentChange', event => {
-            const {dataValue} = this;
+        components.__key = this.createComponent(this.keySchema, options, { __key: key });
+        components.__key.on('componentChange', event => {
+            const { dataValue } = this;
             const newKey = uniqueKey(dataValue, event.value);
             dataValue[newKey] = dataValue[key];
             delete dataValue[key];

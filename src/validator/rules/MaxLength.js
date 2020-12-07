@@ -1,6 +1,7 @@
 import _has from 'lodash/has';
 
 import Rule from './Rule';
+
 export default class MaxLength extends Rule {
   defaultMessage = '{{field}} must have no more than {{- settings.length}} characters.';
 

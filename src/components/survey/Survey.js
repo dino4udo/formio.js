@@ -72,7 +72,7 @@ export default class SurveyComponent extends Field {
 
     get defaultValue() {
         const defaultValue = super.defaultValue;
-        //support for default values created in old formio.js versions
+        // support for default values created in old formio.js versions
         if (defaultValue && !_.isObject(defaultValue) && this.component.values.some(value => value.value === defaultValue)) {
             const adoptedDefaultValue = {};
 
@@ -117,8 +117,7 @@ export default class SurveyComponent extends Field {
         if (!boolValue(setting)) {
             return true;
         }
-        return this.component.questions.reduce((result, question) =>
-            result && Boolean(value[question.value]), true);
+        return this.component.questions.reduce((result, question) => result && Boolean(value[question.value]), true);
     }
 
     getInputName(question) {

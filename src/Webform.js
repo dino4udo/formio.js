@@ -66,7 +66,8 @@ export default class Webform extends NestedDataComponent {
    */
     /* eslint-disable max-statements */
     constructor() {
-        let element, options;
+        let element;
+        let options;
         if (arguments[0] instanceof HTMLElement || arguments[1]) {
             element = arguments[0];
             options = arguments[1];
@@ -93,7 +94,7 @@ export default class Webform extends NestedDataComponent {
         if (options && options.i18n && !options.i18nReady) {
             // Support legacy way of doing translations.
             if (options.i18n.resources) {
-                ({i18n} = options);
+                ({ i18n } = options);
             }
             else {
                 _.each(options.i18n, (lang, code) => {
@@ -372,10 +373,10 @@ export default class Webform extends NestedDataComponent {
       }
 
       const ctrl = event.ctrlKey || event.metaKey;
-      const {keyCode} = event;
+      const { keyCode } = event;
       let char = '';
 
-      if (65 <= keyCode && keyCode <= 90) {
+      if (keyCode >= 65 && keyCode <= 90) {
           char = String.fromCharCode(keyCode);
       }
       else if (keyCode === 13) {
@@ -477,7 +478,8 @@ export default class Webform extends NestedDataComponent {
                       const setForm = this.setForm(form);
                       this.loadSubmission();
                       return setForm;
-                  }).catch(err => {
+                  },
+          ).catch(err => {
               console.warn(err);
               this.formReadyReject(err);
           });
@@ -518,11 +520,7 @@ export default class Webform extends NestedDataComponent {
    * @param options
    */
   setUrl(value, options) {
-      if (
-          !value ||
-      (typeof value !== 'string') ||
-      (value === this._src)
-      ) {
+      if (!value || (typeof value !== 'string') || (value === this._src)) {
           return false;
       }
       this._src = value;
@@ -551,11 +549,7 @@ export default class Webform extends NestedDataComponent {
    * @returns {Promise} - The promise to trigger when both form and submission have loaded.
    */
   get ready() {
-      return this.formReady.then(() => {
-          return super.ready.then(() => {
-              return this.loadingSubmission ? this.submissionReady : true;
-          });
-      });
+      return this.formReady.then(() => super.ready.then(() => (this.loadingSubmission ? this.submissionReady : true)));
   }
 
   /**
@@ -770,23 +764,21 @@ export default class Webform extends NestedDataComponent {
           ...flags,
           fromSubmission: _.has(flags, 'fromSubmission') ? flags.fromSubmission : true,
       };
-      return this.onSubmission = this.formReady.then(
-              resolveFlags => {
-                  if (resolveFlags) {
-                      flags = {
-                          ...flags,
-                          ...resolveFlags,
-                      };
-                  }
-                  this.submissionSet = true;
-                  this.triggerChange(flags);
-                  this.setValue(submission, flags);
-                  return this.submissionReadyResolve(submission);
-              },
-              err => this.submissionReadyReject(err),
-      ).catch(
-              err => this.submissionReadyReject(err),
-      );
+      return this.onSubmission = this.formReady
+          .then(resolveFlags => {
+              if (resolveFlags) {
+                  flags = {
+                      ...flags,
+                      ...resolveFlags,
+                  };
+              }
+              this.submissionSet = true;
+              this.triggerChange(flags);
+              this.setValue(submission, flags);
+              return this.submissionReadyResolve(submission);
+          },
+          err => this.submissionReadyReject(err))
+          .catch(this.submissionReadyReject);
   }
 
   /**
@@ -876,9 +868,9 @@ export default class Webform extends NestedDataComponent {
 
       // Set the timezone in the options if available.
       if (
-          !this.options.submissionTimezone &&
-      submission.metadata &&
-      submission.metadata.timezone
+          !this.options.submissionTimezone
+        && submission.metadata
+        && submission.metadata.timezone
       ) {
           this.options.submissionTimezone = submission.metadata.timezone;
       }
@@ -932,7 +924,7 @@ export default class Webform extends NestedDataComponent {
       }, true);
 
       this.on('checkValidity', data => this.checkValidity(data, true, data), true);
-      this.on('requestUrl', args => (this.submitUrl(args.url,args.headers)), true);
+      this.on('requestUrl', args => (this.submitUrl(args.url, args.headers)), true);
       this.on('resetForm', () => this.resetValue(), true);
       this.on('deleteSubmission', () => this.deleteSubmission(), true);
       this.on('refreshData', () => this.updateValue(), true);
@@ -1145,7 +1137,7 @@ export default class Webform extends NestedDataComponent {
   /* eslint-disable no-unused-vars */
   showErrors(error, triggerEvent, onChange) {
       this.loading = false;
-      let {errors} = this;
+      let { errors } = this;
       if (error) {
           if (Array.isArray(error)) {
               errors = errors.concat(error);
@@ -1368,9 +1360,8 @@ export default class Webform extends NestedDataComponent {
           this.resetValue();
           return true;
       }
-      else {
-          return false;
-      }
+
+      return false;
   }
 
   setMetadata(submission) {
@@ -1508,9 +1499,8 @@ export default class Webform extends NestedDataComponent {
       if (!before) {
           return this.beforeSubmit(options).then(() => this.executeSubmit(options));
       }
-      else {
-          return this.executeSubmit(options);
-      }
+
+      return this.executeSubmit(options);
   }
 
   submitUrl(URL, headers) {
@@ -1519,7 +1509,7 @@ export default class Webform extends NestedDataComponent {
       }
 
       const submission = this.submission || {};
-      const API_URL  = URL;
+      const API_URL = URL;
       const settings = {
           method: 'POST',
           headers: {},
@@ -1533,12 +1523,12 @@ export default class Webform extends NestedDataComponent {
           });
       }
       if (API_URL && settings) {
-          Formio.makeStaticRequest(API_URL,settings.method,submission, { headers: settings.headers }).then(() => {
+          Formio.makeStaticRequest(API_URL, settings.method, submission, { headers: settings.headers }).then(() => {
               this.emit('requestDone');
               this.setAlert('success', '<p> Success </p>');
           }).catch(e => {
               this.showErrors(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-              this.emit('error',`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+              this.emit('error', `${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
               console.error(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
               this.setAlert('danger', `<p> ${e.statusText ? e.statusText : ''} ${e.status ? e.status : e} </p>`);
           });

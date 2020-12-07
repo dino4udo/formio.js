@@ -31,7 +31,7 @@ export default class EditTableComponent extends DataGridComponent {
     constructor(...args) {
         super(...args);
 
-        const groups  = _.get(this.component, 'rowGroups', []);
+        const groups = _.get(this.component, 'rowGroups', []);
 
         if (this.hasColumns()) {
             this.component.components = this.componentComponents;
@@ -50,13 +50,13 @@ export default class EditTableComponent extends DataGridComponent {
         return this.getColumns().length > 0;
     }
 
-    /** Don't show last col in header **/
-    /** @override **/
+    /** Don't show last col in header * */
+    /** @override * */
     hasExtraColumn() {
         return false;
     }
 
-    /** @override **/
+    /** @override * */
     hasAddButton() {
         return super.hasAddButton() && this.hasColumns();
     }
@@ -100,9 +100,7 @@ export default class EditTableComponent extends DataGridComponent {
     }
 
     get componentComponents() {
-        return this.getColumns().map(({ label, key }) => {
-            return this.componentSchema({ label, key });
-        });
+        return this.getColumns().map(({ label, key }) => this.componentSchema({ label, key }));
     }
 
     get tableClass() {
@@ -133,7 +131,7 @@ export default class EditTableComponent extends DataGridComponent {
         return _.get(this.component, 'enableRowGroups', false);
     }
 
-    /** @override **/
+    /** @override * */
     build(state = {}) {
         super.build(state);
 
@@ -181,7 +179,7 @@ export default class EditTableComponent extends DataGridComponent {
     getRowChunks(groups, coll) {
         const [ , chunks ] = groups.reduce(
                 ([ startIndex, acc ], size) => {
-                    const endIndex = startIndex +  size;
+                    const endIndex = startIndex + size;
                     return [ endIndex, [ ...acc, [ startIndex, endIndex ] ] ];
                 },
                 [ 0, [] ],
@@ -199,7 +197,7 @@ export default class EditTableComponent extends DataGridComponent {
         return this.ce('tr', null, cell);
     }
 
-    /** @override **/
+    /** @override * */
     buildRow(row, index, state = {}) {
         if (this.builderMode) {
             return null;
@@ -230,7 +228,7 @@ export default class EditTableComponent extends DataGridComponent {
         return this.ce('tr', null, columns);
     }
 
-    /** override **/
+    /** override * */
     removeButton(index) {
         const type = _.get(this.component, 'type', 'edittable');
         const button = this.ce(
@@ -268,9 +266,8 @@ export default class EditTableComponent extends DataGridComponent {
                 return info;
             }, {});
         }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     setMeta() {

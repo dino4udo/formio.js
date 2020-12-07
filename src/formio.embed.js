@@ -16,7 +16,7 @@ if (thisScript) {
     let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
     scriptSrc.pop();
     scriptSrc = scriptSrc.join('/');
-    const queryString = thisScript.src.replace(/^[^?]+\??/,'');
+    const queryString = thisScript.src.replace(/^[^?]+\??/, '');
     queryString.replace(/\?/g, '&').split('&').forEach(item => {
         query[item.split('=')[0]] = item.split('=')[1] && decodeURIComponent(item.split('=')[1]);
     });
@@ -27,16 +27,7 @@ if (thisScript) {
             let returnUrl = query.return || query.redirect;
 
             // Allow form based configuration for return url.
-            if (
-                !returnUrl &&
-        (
-            instance._form &&
-          instance._form.settings &&
-          (
-              instance._form.settings.returnUrl ||
-            instance._form.settings.redirect
-          )
-        )
+            if (!returnUrl && (instance._form && instance._form.settings && (instance._form.settings.returnUrl || instance._form.settings.redirect))
             ) {
                 returnUrl = instance._form.settings.returnUrl || instance._form.settings.redirect;
             }

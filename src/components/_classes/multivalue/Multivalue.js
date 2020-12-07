@@ -53,7 +53,7 @@ export default class Multivalue extends Field {
         }
 
         // Make sure dataValue is in the correct array format.
-        let {dataValue} = this;
+        let { dataValue } = this;
         if (!Array.isArray(dataValue)) {
             dataValue = dataValue ? [ dataValue ] : [];
         }
@@ -112,9 +112,7 @@ export default class Multivalue extends Field {
                 this.addValue();
             });
         });
-        return superAttach.then(() => {
-            return NativePromise.all(promises);
-        });
+        return superAttach.then(() => NativePromise.all(promises));
     }
 
     detach() {
@@ -172,11 +170,9 @@ export default class Multivalue extends Field {
 
             // If a mask is present, delay the update to allow mask to update first.
             if (element.mask) {
-                setTimeout(() => {
-                    return this.updateValue(null, {
-                        modified: (this.component.type !== 'hidden'),
-                    }, index);
-                }, 1);
+                setTimeout(() => this.updateValue(null, {
+                    modified: (this.component.type !== 'hidden'),
+                }, index), 1);
             }
             else {
                 return this.updateValue(null, {
@@ -238,8 +234,7 @@ export default class Multivalue extends Field {
    */
     addNewValue(value) {
         if (value === undefined) {
-            value = this.component.defaultValue ?
-      this.component.defaultValue : this.emptyValue;
+            value = this.component.defaultValue ? this.component.defaultValue : this.emptyValue;
             // If default is an empty aray, default back to empty value.
             if (Array.isArray(value) && value.length === 0) {
                 value = this.emptyValue;

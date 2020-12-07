@@ -7,4 +7,3 @@ export default {
     type: 'tags',
     input: true,
 };
-

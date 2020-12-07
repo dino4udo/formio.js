@@ -5,7 +5,7 @@ import EditGridEditDisplay from './editForm/EditGrid.edit.display';
 import EditGridEditTemplates from './editForm/EditGrid.edit.templates';
 import EditGridEditValidation from './editForm/EditGrid.edit.validation';
 
-export default function(...extend) {
+export default function (...extend) {
     return baseEditForm([
         {
             label: 'Templates',

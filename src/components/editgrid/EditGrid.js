@@ -209,11 +209,11 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     hasRemoveButtons() {
-        return !this.component.disableAddingRemovingRows &&
-      !this.options.readOnly &&
-      !this.disabled &&
-      this.fullMode &&
-      (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
+        return !this.component.disableAddingRemovingRows
+            && !this.options.readOnly
+            && !this.disabled
+            && this.fullMode
+            && (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
     }
 
     init() {
@@ -383,32 +383,31 @@ export default class EditGridComponent extends NestedArrayComponent {
         if (this.isOpen(row)) {
             return this.renderComponents(row.components);
         }
-        else {
-            const flattenedComponents = this.flattenComponents(rowIndex);
-            const rowTemplate = Evaluator.noeval ? templates.row : _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
 
-            return this.renderString(
-                    rowTemplate,
-                    {
-                        row: dataValue[rowIndex] || {},
-                        data: this.data,
-                        rowIndex,
-                        components: this.component.components,
-                        flattenedComponents,
-                        getView: (component, data) => {
-                            const instance = flattenedComponents[component.key];
-                            const view = instance ? instance.getView(data || instance.dataValue) : '';
+        const flattenedComponents = this.flattenComponents(rowIndex);
+        const rowTemplate = Evaluator.noeval ? templates.row : _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
 
-                            // If there is an html tag in view, don't allow it to be injected in template
-                            const htmlTagRegExp = new RegExp('<(.*?)>');
-                            return typeof view === 'string' && view.length && !instance.component?.template && htmlTagRegExp.test(view)
+        return this.renderString(
+                rowTemplate,
+                {
+                    row: dataValue[rowIndex] || {},
+                    data: this.data,
+                    rowIndex,
+                    components: this.component.components,
+                    flattenedComponents,
+                    getView: (component, data) => {
+                        const instance = flattenedComponents[component.key];
+                        const view = instance ? instance.getView(data || instance.dataValue) : '';
+
+                        // If there is an html tag in view, don't allow it to be injected in template
+                        const htmlTagRegExp = new RegExp('<(.*?)>');
+                        return typeof view === 'string' && view.length && !instance.component?.template && htmlTagRegExp.test(view)
               ? `<input type="text" value="${view.replace(/"/g, '&quot;')}" readonly/>`
               : view;
-                        },
-                        state: this.editRows[rowIndex].state,
                     },
-            );
-        }
+                    state: this.editRows[rowIndex].state,
+                },
+        );
     }
 
     eachComponent(fn, rowIndex) {
@@ -800,10 +799,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     validateRow(editRow, dirty) {
         let valid = true;
         const errorsSnapshot = [ ...this.errors ];
-        const shouldValidateDraft = editRow.state === EditRowState.Draft &&
-      !this.pristine &&
-      !this.root?.pristine &&
-      !this.hasOpenRows();
+        const shouldValidateDraft = editRow.state === EditRowState.Draft
+            && !this.pristine
+            && !this.root?.pristine
+            && !this.hasOpenRows();
 
         if (editRow.state === EditRowState.Editing || dirty || shouldValidateDraft) {
             editRow.components.forEach(comp => {
@@ -904,7 +903,7 @@ export default class EditGridComponent extends NestedArrayComponent {
             this.setCustomValidity('Please correct invalid rows before proceeding.', dirty);
             return false;
         }
-        else if (rowsEditing && this.saveEditMode) {
+        if (rowsEditing && this.saveEditMode) {
             this.setCustomValidity('Please save all rows before proceeding.', dirty);
             return false;
         }

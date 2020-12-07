@@ -222,7 +222,7 @@ export default [
         onChange(context) {
             if (context && context.flags && context.flags.modified) {
                 const valueProp = context.instance.data.valueProperty;
-                const templateProp = valueProp ? valueProp : 'data';
+                const templateProp = valueProp || 'data';
                 const template = `<span>{{ item.${templateProp} }}</span>`;
                 const searchField = valueProp ? `${valueProp}__regex` : '';
                 context.instance.root.getComponent('template').setValue(template);
@@ -444,7 +444,7 @@ export default [
         weight: 18,
         tooltip: 'The HTML template for the result data items.',
         allowCalculateOverride: true,
-        calculateValue:context => {
+        calculateValue: context => {
             if (!context.data.template) {
                 if (context.instance && context.instance._currentForm.options.editComponent) {
                     return context.instance._currentForm.options.editComponent.template;

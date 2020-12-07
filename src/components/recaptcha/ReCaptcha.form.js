@@ -2,7 +2,7 @@ import baseEditForm from '../_classes/component/Component.form';
 
 import ReCaptchaEditDisplay from './editForm/ReCaptcha.edit.display';
 
-export default function() {
+export default function () {
     return baseEditForm([
         {
             key: 'display',

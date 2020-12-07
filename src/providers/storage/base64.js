@@ -1,4 +1,5 @@
 import NativePromise from 'native-promise-only';
+
 const base64 = () => ({
     title: 'Base64',
     name: 'base64',
@@ -17,9 +18,7 @@ const base64 = () => ({
                 });
             };
 
-            reader.onerror = () => {
-                return reject(this);
-            };
+            reader.onerror = () => reject(this);
 
             reader.readAsDataURL(file);
         });

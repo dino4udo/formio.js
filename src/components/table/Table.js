@@ -138,11 +138,7 @@ export default class TableComponent extends NestedComponent {
         return super.render(this.renderTemplate('table', {
             cellClassName: this.cellClassName,
             tableKey: this.tableKey,
-            tableComponents: this.table.map(row =>
-                row.map(column =>
-                    this.renderComponents(column),
-                ),
-            ),
+            tableComponents: this.table.map(row => row.map(column => this.renderComponents(column))),
         }));
     }
 

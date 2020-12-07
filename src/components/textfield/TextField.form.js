@@ -4,7 +4,7 @@ import TextFieldEditData from './editForm/TextField.edit.data';
 import TextFieldEditDisplay from './editForm/TextField.edit.display';
 import TextFieldEditValidation from './editForm/TextField.edit.validation';
 
-export default function(...extend) {
+export default function (...extend) {
     return baseEditForm([
         {
             key: 'display',

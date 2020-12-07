@@ -169,7 +169,7 @@ export default class ButtonComponent extends Field {
                 if (index !== -1) {
                     this.filesUploading.splice(index, 1);
                 }
-                this.disabled = this.shouldDisabled ? true : false;
+                this.disabled = !!this.shouldDisabled;
                 this.setDisabled(this.refs.button, this.disabled);
             }, true);
 
@@ -206,9 +206,9 @@ export default class ButtonComponent extends Field {
         }
 
         this.on('change', (value, flags) => {
-            let {isValid} = value;
+            let { isValid } = value;
             const isSilent = flags && flags.silent;
-            //check root validity only if disableOnInvalid is set and when it is not possible to make submission because of validation errors
+            // check root validity only if disableOnInvalid is set and when it is not possible to make submission because of validation errors
             if (flags && flags.noValidate && (this.component.disableOnInvalid || this.hasError)) {
                 isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
                 flags.rootValidity = isValid;
@@ -379,7 +379,7 @@ export default class ButtonComponent extends Field {
             return;
         }
 
-        /*eslint-disable camelcase */
+        /* eslint-disable camelcase */
         let params = {
             response_type: 'code',
             client_id: settings.clientId,
@@ -387,16 +387,14 @@ export default class ButtonComponent extends Field {
             state: settings.state,
             scope: settings.scope,
         };
-        /*eslint-enable camelcase */
+        /* eslint-enable camelcase */
 
         // Make display optional.
         if (settings.display) {
             params.display = settings.display;
         }
 
-        params = Object.keys(params).map(key => {
-            return `${key}=${encodeURIComponent(params[key])}`;
-        }).join('&');
+        params = Object.keys(params).map(key => `${key}=${encodeURIComponent(params[key])}`).join('&');
 
         const url = `${settings.authURI}?${params}`;
         const popup = window.open(url, settings.provider, 'width=1020,height=618');
@@ -465,11 +463,9 @@ export default class ButtonComponent extends Field {
         if (!this.root) {
             return;
         }
-        const recaptchaComponent = this.root.components.find(component => {
-            return component.component.type === 'recaptcha' &&
-        component.component.eventType === 'buttonClick' &&
-        component.component.buttonKey === this.component.key;
-        });
+        const recaptchaComponent = this.root.components.find(component => component.component.type === 'recaptcha'
+        && component.component.eventType === 'buttonClick'
+        && component.component.buttonKey === this.component.key);
         if (recaptchaComponent) {
             recaptchaComponent.verify(`${this.component.key}Click`);
         }

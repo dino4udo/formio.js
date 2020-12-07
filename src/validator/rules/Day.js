@@ -11,11 +11,11 @@ export default class Day extends Rule {
           return false;
       }
       const [ DAY, MONTH, YEAR ] = this.component.dayFirst ? [ 0, 1, 2 ] : [ 1, 0, 2 ];
-      const values = value.split('/').map(x => Number.parseInt(x, 10)),
-          day = values[DAY],
-          month = values[MONTH],
-          year = values[YEAR],
-          maxDay = getDaysInMonthCount(month, year);
+      const values = value.split('/').map(x => Number.parseInt(x, 10));
+      const day = values[DAY];
+      const month = values[MONTH];
+      const year = values[YEAR];
+      const maxDay = getDaysInMonthCount(month, year);
 
       if (isNaN(day) || day < 0 || day > maxDay) {
           return false;
@@ -35,20 +35,20 @@ export default class Day extends Rule {
 
       function getDaysInMonthCount(month, year) {
           switch (month) {
-              case 1:     // January
-              case 3:     // March
-              case 5:     // May
-              case 7:     // July
-              case 8:     // August
-              case 10:    // October
-              case 12:    // December
+              case 1: // January
+              case 3: // March
+              case 5: // May
+              case 7: // July
+              case 8: // August
+              case 10: // October
+              case 12: // December
                   return 31;
-              case 4:     // April
-              case 6:     // June
-              case 9:     // September
-              case 11:    // November
+              case 4: // April
+              case 6: // June
+              case 9: // September
+              case 11: // November
                   return 30;
-              case 2:     // February
+              case 2: // February
                   return isLeapYear(year) ? 29 : 28;
               default:
                   return 31;

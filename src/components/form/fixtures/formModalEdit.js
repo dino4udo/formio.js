@@ -47,4 +47,3 @@ export default {
     name: 'nestedModal',
     path: 'nestedmodal',
 };
-

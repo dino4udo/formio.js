@@ -101,9 +101,7 @@ export default class ColumnsComponent extends NestedComponent {
         this.loadRefs(element, { [this.columnKey]: 'multiple' });
         const superAttach = super.attach(element);
         if (this.refs[this.columnKey]) {
-            this.refs[this.columnKey].forEach((column, index) =>
-                this.attachComponents(column, this.columns[index], this.component.columns[index].components),
-            );
+            this.refs[this.columnKey].forEach((column, index) => this.attachComponents(column, this.columns[index], this.component.columns[index].components));
         }
         return superAttach;
     }
@@ -151,11 +149,10 @@ export default class ColumnsComponent extends NestedComponent {
                 acc.stack = stack;
                 return acc;
             }
-            else {
-                acc.rows = [ ...acc.rows, acc.stack ];
-                acc.stack = [ next ];
-                return acc;
-            }
+
+            acc.rows = [ ...acc.rows, acc.stack ];
+            acc.stack = [ next ];
+            return acc;
         }, initVal);
 
         return _.concat(result.rows, [ result.stack ]);
@@ -171,9 +168,8 @@ export default class ColumnsComponent extends NestedComponent {
             this.justify();
             return result;
         }
-        else {
-            return super.checkComponentConditions(data, flags, row);
-        }
+
+        return super.checkComponentConditions(data, flags, row);
     }
 
     detach(all) {

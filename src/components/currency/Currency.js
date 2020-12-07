@@ -106,11 +106,11 @@ export default class CurrencyComponent extends NumberComponent {
         const hasSuffix = this.currencySuffix ? value.includes(this.currencySuffix) : false;
         const isNegative = value.includes(negativeValueSymbol) || false;
 
-        value = this.stripPrefixSuffix(isNegative ? value.replace(negativeValueSymbol,'') : value);
+        value = this.stripPrefixSuffix(isNegative ? value.replace(negativeValueSymbol, '') : value);
 
         if (value.includes(this.decimalSeparator)) {
             [ integerPart, decimalPart ] = value.split(this.decimalSeparator);
-            decimalPartNumbers =[ ...decimalPart.split('') ] ;
+            decimalPartNumbers = [ ...decimalPart.split('') ];
         }
         else {
             integerPart = value;
@@ -122,7 +122,7 @@ export default class CurrencyComponent extends NumberComponent {
             }
         }
 
-        const formattedValue = `${isNegative ? negativeValueSymbol:''}${hasPrefix ? this.currencyPrefix : ''}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${hasSuffix ? this.currencySuffix : ''}`;
+        const formattedValue = `${isNegative ? negativeValueSymbol : ''}${hasPrefix ? this.currencyPrefix : ''}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${hasSuffix ? this.currencySuffix : ''}`;
 
         return super.formatValue(formattedValue);
     }
@@ -160,9 +160,9 @@ export default class CurrencyComponent extends NumberComponent {
                 if (this.currencySuffix) {
                     value = value.replace(this.currencySuffix, '');
                 }
-                //when we enter $ in the field using dashboard, it contains '_' that is NaN
+                // when we enter $ in the field using dashboard, it contains '_' that is NaN
                 if ((hasPrefix || hasSuffix) && !hasDelimiter && !hasDecimalSeparator && (Number.isNaN(+value) || !value)) {
-                    value ='0';
+                    value = '0';
                 }
             }
             catch (err) {

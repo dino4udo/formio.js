@@ -48,7 +48,7 @@ export function lessOrGreater(value, format, maxDate, minDate) {
     if (maxDate && value.isValid()) {
         const maxDateMoment = moment(maxDate, format);
 
-        if (value >  maxDateMoment) {
+        if (value > maxDateMoment) {
             message = CALENDAR_ERROR_MESSAGES.greater(maxDateMoment, format);
             result = false;
         }
@@ -96,7 +96,7 @@ export function checkInvalidDate(value, format, minDate, maxDate) {
         const timeIndex = _.findIndex(formatParts, (part, index) => part.length === 1 && index === formatParts.length - 1);
         const yearIndex = _.findIndex(formatParts, part => part.match(/yyyy/gi));
 
-        if (inputParts[yearIndex]/ 1000 < 1) {
+        if (inputParts[yearIndex] / 1000 < 1) {
             return buildResponse(CALENDAR_ERROR_MESSAGES.INVALID, false);
         }
 
@@ -127,15 +127,13 @@ export function checkInvalidDate(value, format, minDate, maxDate) {
 
                 return buildResponse(CALENDAR_ERROR_MESSAGES.INCOMPLETE, false);
             }
-            else {
-                return buildResponse(CALENDAR_ERROR_MESSAGES.INVALID, false);
-            }
-        }
-        else {
+
             return buildResponse(CALENDAR_ERROR_MESSAGES.INVALID, false);
         }
+
+        return buildResponse(CALENDAR_ERROR_MESSAGES.INVALID, false);
     }
-    else if (isValidDate && value.indexOf('_') === -1) {
+    if (isValidDate && value.indexOf('_') === -1) {
         const checkedLessOrGreater = lessOrGreater(date, format[0], maxDate, minDate);
         if (!checkedLessOrGreater.result) {
             const { message, result } = checkedLessOrGreater;

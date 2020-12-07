@@ -124,9 +124,8 @@ export default class SelectComponent extends Field {
             if (firstValue && typeof firstValue === 'string') {
                 return '';
             }
-            else {
-                return {};
-            }
+
+            return {};
         }
         if (this.valueProperty) {
             return '';
@@ -209,9 +208,8 @@ export default class SelectComponent extends Field {
             if (!label || !this.t(label)) return;
             return template.replace(label, this.t(label));
         }
-        else {
-            return JSON.stringify(data);
-        }
+
+        return JSON.stringify(data);
     }
 
     /**
@@ -436,9 +434,9 @@ export default class SelectComponent extends Field {
         // See if they have not met the minimum search requirements.
         const minSearch = Number.parseInt(this.component.minSearch, 10);
         if (
-            this.component.searchField &&
-      (minSearch > 0) &&
-      (!search || (search.length < minSearch))
+            this.component.searchField
+      && (minSearch > 0)
+      && (!search || (search.length < minSearch))
         ) {
             // Set empty items.
             return this.setItems([]);
@@ -677,9 +675,9 @@ export default class SelectComponent extends Field {
                     method = 'GET';
                 }
                 else {
-                    ({method} = this.component.data);
+                    ({ method } = this.component.data);
                     if (method.toUpperCase() === 'POST') {
-                        ({body} = this.component.data);
+                        ({ body } = this.component.data);
                     }
                     else {
                         body = null;
@@ -856,14 +854,12 @@ export default class SelectComponent extends Field {
             searchFields: _.get(this, 'component.searchFields', [ 'label' ]),
             fuseOptions: this.component.useExactSearch
         ? {}
-        : Object.assign(
-                {},
-                _.get(this, 'component.fuseOptions', {}),
-                {
-                    include: 'score',
-                    threshold: _.get(this, 'component.searchThreshold', 0.3),
-                },
-        ),
+        : ({
+
+            ..._.get(this, 'component.fuseOptions', {}),
+            include: 'score',
+            threshold: _.get(this, 'component.searchThreshold', 0.3),
+        }),
             valueComparer: _.isEqual,
             resetScrollPosition: false,
             ...customOptions,
@@ -878,8 +874,8 @@ export default class SelectComponent extends Field {
             addResource: 'single',
             autocompleteInput: 'single',
         });
-        //enable autocomplete for select
-        const {autocompleteInput} = this.refs;
+        // enable autocomplete for select
+        const { autocompleteInput } = this.refs;
         if (autocompleteInput) {
             this.addEventListener(autocompleteInput, 'change', event => {
                 this.setValue(event.target.value);
@@ -910,7 +906,7 @@ export default class SelectComponent extends Field {
             return;
         }
 
-        const {tabIndex} = input;
+        const { tabIndex } = input;
         this.addPlaceholder();
         input.setAttribute('dir', this.i18next.dir());
         if (this.choices) {
@@ -1128,7 +1124,7 @@ export default class SelectComponent extends Field {
                     }
                     const itemValue = keyValue ? choice.value : this.itemValue(choice, isSelectOptions);
                     found |= _.isEqual(itemValue, value);
-                    return found ? false : true;
+                    return !found;
                 });
             }
 
@@ -1178,15 +1174,15 @@ export default class SelectComponent extends Field {
 
             // Make sure we don't get the placeholder
             if (
-                !this.component.multiple &&
-        this.component.placeholder &&
-        (value === this.t(this.component.placeholder))
+                !this.component.multiple
+        && this.component.placeholder
+        && (value === this.t(this.component.placeholder))
             ) {
                 value = this.emptyValue;
             }
         }
         else if (this.refs.selectContainer) {
-            ({value} = this.refs.selectContainer);
+            ({ value } = this.refs.selectContainer);
 
             if (this.valueProperty === '') {
                 if (value === '') {
@@ -1195,7 +1191,7 @@ export default class SelectComponent extends Field {
 
                 const option = this.selectOptions[value];
                 if (option && _.isObject(option.value)) {
-                    ({value} = option);
+                    ({ value } = option);
                 }
             }
         }
@@ -1219,7 +1215,7 @@ export default class SelectComponent extends Field {
         if (_.isNil(value)) {
             return;
         }
-        //check if value equals to default emptyValue
+        // check if value equals to default emptyValue
         if (_.isObject(value) && Object.keys(value).length === 0) {
             return value;
         }
@@ -1315,10 +1311,8 @@ export default class SelectComponent extends Field {
                 return value;
             });
         }
-        else {
-            if (typeof value === 'boolean' || typeof value === 'number') {
-                value = value.toString();
-            }
+        else if (typeof value === 'boolean' || typeof value === 'number') {
+            value = value.toString();
         }
 
         // Do not set the value if we are loading... that will happen after it is done.
@@ -1342,12 +1336,12 @@ export default class SelectComponent extends Field {
     }
 
     isInitApiCallNeeded(hasValue) {
-        return this.component.lazyLoad &&
-      !this.lazyLoadInit &&
-      !this.active &&
-      !this.selectOptions.length &&
-      hasValue &&
-      this.visible && (this.component.searchField || this.component.valueProperty);
+        return this.component.lazyLoad
+      && !this.lazyLoadInit
+      && !this.active
+      && !this.selectOptions.length
+      && hasValue
+      && this.visible && (this.component.searchField || this.component.valueProperty);
     }
 
     setChoicesValue(value, hasPreviousValue, flags = {}) {
@@ -1368,27 +1362,25 @@ export default class SelectComponent extends Field {
                 this.choices.removeActiveItems();
             }
         }
-        else {
-            if (hasValue) {
-                const values = Array.isArray(value) ? value : [ value ];
-                _.each(this.selectOptions, selectOption => {
-                    _.each(values, val => {
-                        if (_.isEqual(val, selectOption.value) && selectOption.element) {
-                            selectOption.element.selected = true;
-                            selectOption.element.setAttribute('selected', 'selected');
-                            return false;
-                        }
-                    });
-                });
-            }
-            else {
-                _.each(this.selectOptions, selectOption => {
-                    if (selectOption.element) {
-                        selectOption.element.selected = false;
-                        selectOption.element.removeAttribute('selected');
+        else if (hasValue) {
+            const values = Array.isArray(value) ? value : [ value ];
+            _.each(this.selectOptions, selectOption => {
+                _.each(values, val => {
+                    if (_.isEqual(val, selectOption.value) && selectOption.element) {
+                        selectOption.element.selected = true;
+                        selectOption.element.setAttribute('selected', 'selected');
+                        return false;
                     }
                 });
-            }
+            });
+        }
+        else {
+            _.each(this.selectOptions, selectOption => {
+                if (selectOption.element) {
+                    selectOption.element.selected = false;
+                    selectOption.element.removeAttribute('selected');
+                }
+            });
         }
     }
 
@@ -1514,7 +1506,7 @@ export default class SelectComponent extends Field {
 
     asString(value) {
         value = value || this.getValue();
-        //need to convert values to strings to be able to compare values with available options that are strings
+        // need to convert values to strings to be able to compare values with available options that are strings
         const convertToString = (data, valueProperty) => {
             if (valueProperty) {
                 if (Array.isArray(data)) {

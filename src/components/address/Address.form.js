@@ -4,7 +4,7 @@ import AddressEditData from './editForm/Address.edit.data';
 import AddressEditDisplay from './editForm/Address.edit.display';
 import AddressEditProvider from './editForm/Address.edit.provider';
 
-export default function(...extend) {
+export default function (...extend) {
     return baseEditForm([
         {
             key: 'data',

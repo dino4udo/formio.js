@@ -4,11 +4,11 @@ export default [
         label: 'Custom component description',
         input: false,
         tag: 'p',
-        content: 'Custom components can be used to render special fields or widgets inside your app. ' +
-      'For information on how to display in an app, see ' +
-      '<a href="http://help.form.io/userguide/#custom" target="_blank">' +
-      'custom component documentation' +
-      '</a>.',
+        content: 'Custom components can be used to render special fields or widgets inside your app. '
+            + 'For information on how to display in an app, see '
+            + '<a href="http://help.form.io/userguide/#custom" target="_blank">'
+            + 'custom component documentation'
+            + '</a>.',
         type: 'htmlelement',
         weight: 5,
     },

@@ -23,9 +23,9 @@ import set from 'lodash/set';
  */
 export function isLayoutComponent(component) {
     return Boolean(
-            (component.columns && Array.isArray(component.columns)) ||
-    (component.rows && Array.isArray(component.rows)) ||
-    (component.components && Array.isArray(component.components)),
+            (component.columns && Array.isArray(component.columns))
+            || (component.rows && Array.isArray(component.rows))
+            || (component.components && Array.isArray(component.components)),
     );
 }
 
@@ -75,18 +75,18 @@ export function eachComponent(components, fn, includeAll, path, parent) {
 
         const subPath = () => {
             if (
-                component.key &&
-        ![ 'panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form' ].includes(component.type) &&
-        (
-            [ 'datagrid', 'container', 'editgrid', 'address' ].includes(component.type) ||
-          component.tree
-        )
+                component.key
+                && ![ 'panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form' ].includes(component.type)
+                && (
+                    [ 'datagrid', 'container', 'editgrid', 'address' ].includes(component.type)
+                || component.tree
+                )
             ) {
                 return newPath;
             }
-            else if (
-                component.key &&
-        component.type === 'form'
+            if (
+                component.key
+        && component.type === 'form'
             ) {
                 return `${newPath}.data`;
             }
@@ -95,15 +95,13 @@ export function eachComponent(components, fn, includeAll, path, parent) {
 
         if (!noRecurse) {
             if (hasColumns) {
-                component.columns.forEach(column =>
-                    eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
+                component.columns.forEach(column => eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
             }
 
             else if (hasRows) {
                 component.rows.forEach(row => {
                     if (Array.isArray(row)) {
-                        row.forEach(column =>
-                            eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
+                        row.forEach(column => eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
                     }
                 });
             }
@@ -126,16 +124,15 @@ export function matchComponent(component, query) {
     if (isString(query)) {
         return (component.key === query) || (component.path === query);
     }
-    else {
-        let matches = false;
-        forOwn(query, (value, key) => {
-            matches = (get(component, key) === value);
-            if (!matches) {
-                return false;
-            }
-        });
-        return matches;
-    }
+
+    let matches = false;
+    forOwn(query, (value, key) => {
+        matches = (get(component, key) === value);
+        if (!matches) {
+            return false;
+        }
+    });
+    return matches;
 }
 
 /**
@@ -245,7 +242,7 @@ export function findComponent(components, key, path, fn) {
         }
 
         if (component.key === key) {
-            //Final callback if the component is found
+            // Final callback if the component is found
             fn(component, newPath, components);
         }
     });
@@ -398,9 +395,9 @@ export function flattenComponents(components, includeAll) {
  */
 export function hasCondition(component) {
     return Boolean(
-            (component.customConditional) ||
-    (component.conditional && component.conditional.when) ||
-    (component.conditional && component.conditional.json),
+            (component.customConditional)
+    || (component.conditional && component.conditional.when)
+    || (component.conditional && component.conditional.json),
     );
 }
 
@@ -487,9 +484,8 @@ export function getValue(submission, key) {
 
             return value;
         }
-        else {
-            return null;
-        }
+
+        return null;
     };
 
     return search(submission.data);

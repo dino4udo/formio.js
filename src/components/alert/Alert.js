@@ -8,7 +8,7 @@ export default class Alert {
         this.alert = null;
         this.parentComponent = component;
         this.refs = {};
-        this.loadRefs  = this.parentComponent.loadRefs.bind(this);
+        this.loadRefs = this.parentComponent.loadRefs.bind(this);
     }
 
     get refsNames() {

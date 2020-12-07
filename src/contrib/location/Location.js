@@ -119,7 +119,7 @@ export default class LocationComponent extends TextFieldComponent {
                 }
                 else {
                     element.map.setCenter(place.geometry.location);
-                    element.map.setZoom(17);  // Why 17? Because it looks good.
+                    element.map.setZoom(17); // Why 17? Because it looks good.
                 }
                 element.marker.setIcon(/** @type {google.maps.Icon} */({
                     url: place.icon,
@@ -139,10 +139,10 @@ export default class LocationComponent extends TextFieldComponent {
             position: latlng,
             map: element.map,
             title,
-            draggable:true,
+            draggable: true,
         });
         element.marker.addListener('dragend', event => {
-            const geocoder = new google.maps.Geocoder;
+            const geocoder = new google.maps.Geocoder();
             const latlng = { lat: parseFloat(event.latLng.lat()), lng: parseFloat(event.latLng.lng()) };
             geocoder.geocode({ location: latlng }, (results, status) => {
                 if (status === google.maps.GeocoderStatus.OK) {

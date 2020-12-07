@@ -1,5 +1,6 @@
 import UnknownEditDisplay from './editForm/Unknown.edit.display';
-export default function() {
+
+export default function () {
     return {
         components: [
             {

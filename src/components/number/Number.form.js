@@ -4,7 +4,7 @@ import NumberEditData from './editForm/Number.edit.data';
 import NumberEditDisplay from './editForm/Number.edit.display';
 import NumberEditValidation from './editForm/Number.edit.validation';
 
-export default function(...extend) {
+export default function (...extend) {
     return textEditForm([
         {
             key: 'display',

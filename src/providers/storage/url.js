@@ -2,89 +2,87 @@ import _has from 'lodash/has';
 import NativePromise from 'native-promise-only';
 
 const url = formio => {
-    const xhrRequest = (url, name, query, data, options, onprogress) => {
-        return new NativePromise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            const json = (typeof data === 'string');
-            const fd = new FormData();
-            if (typeof onprogress === 'function') {
-                xhr.upload.onprogress = onprogress;
-            }
+    const xhrRequest = (url, name, query, data, options, onprogress) => new NativePromise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const json = (typeof data === 'string');
+        const fd = new FormData();
+        if (typeof onprogress === 'function') {
+            xhr.upload.onprogress = onprogress;
+        }
 
-            if (!json) {
-                for (const key in data) {
-                    fd.append(key, data[key]);
+        if (!json) {
+            for (const key in data) {
+                fd.append(key, data[key]);
+            }
+        }
+
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Need to test if xhr.response is decoded or not.
+                let respData = {};
+                try {
+                    respData = (typeof xhr.response === 'string') ? JSON.parse(xhr.response) : {};
+                    respData = (respData && respData.data) ? respData.data : respData;
                 }
-            }
-
-            xhr.onload = () => {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    // Need to test if xhr.response is decoded or not.
-                    let respData = {};
-                    try {
-                        respData = (typeof xhr.response === 'string') ? JSON.parse(xhr.response) : {};
-                        respData = (respData && respData.data) ? respData.data : respData;
-                    }
-                    catch (err) {
-                        respData = {};
-                    }
-
-                    // Get the url of the file.
-                    let respUrl = _has(respData, 'url') ? respData.url : `${xhr.responseURL}/${name}`;
-
-                    // If they provide relative url, then prepend the url.
-                    if (respUrl && respUrl[0] === '/') {
-                        respUrl = `${url}${respUrl}`;
-                    }
-                    resolve({ url: respUrl, data: respData });
+                catch (err) {
+                    respData = {};
                 }
-                else {
-                    reject(xhr.response || 'Unable to upload file');
+
+                // Get the url of the file.
+                let respUrl = _has(respData, 'url') ? respData.url : `${xhr.responseURL}/${name}`;
+
+                // If they provide relative url, then prepend the url.
+                if (respUrl && respUrl[0] === '/') {
+                    respUrl = `${url}${respUrl}`;
                 }
-            };
+                resolve({ url: respUrl, data: respData });
+            }
+            else {
+                reject(xhr.response || 'Unable to upload file');
+            }
+        };
 
-            xhr.onerror = () => reject(xhr);
-            xhr.onabort = () => reject(xhr);
+        xhr.onerror = () => reject(xhr);
+        xhr.onabort = () => reject(xhr);
 
-            let requestUrl = url + (url.indexOf('?') > -1 ? '&' : '?');
-            for (const key in query) {
-                requestUrl += `${key}=${query[key]}&`;
-            }
-            if (requestUrl[requestUrl.length - 1] === '&') {
-                requestUrl = requestUrl.substr(0, requestUrl.length - 1);
-            }
+        let requestUrl = url + (url.indexOf('?') > -1 ? '&' : '?');
+        for (const key in query) {
+            requestUrl += `${key}=${query[key]}&`;
+        }
+        if (requestUrl[requestUrl.length - 1] === '&') {
+            requestUrl = requestUrl.substr(0, requestUrl.length - 1);
+        }
 
-            xhr.open('POST', requestUrl);
-            if (json) {
-                xhr.setRequestHeader('Content-Type', 'application/json');
-            }
-            const token = formio.getToken();
-            if (token) {
-                xhr.setRequestHeader('x-jwt-token', token);
-            }
+        xhr.open('POST', requestUrl);
+        if (json) {
+            xhr.setRequestHeader('Content-Type', 'application/json');
+        }
+        const token = formio.getToken();
+        if (token) {
+            xhr.setRequestHeader('x-jwt-token', token);
+        }
 
-            //Overrides previous request props
-            if (options) {
-                const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
-                for (const prop in parsedOptions) {
-                    xhr[prop] = parsedOptions[prop];
-                }
+        // Overrides previous request props
+        if (options) {
+            const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
+            for (const prop in parsedOptions) {
+                xhr[prop] = parsedOptions[prop];
             }
-            xhr.send(json ? data : fd);
-        });
-    };
+        }
+        xhr.send(json ? data : fd);
+    });
 
     return {
         title: 'Url',
         name: 'url',
         uploadFile(file, name, dir, progressCallback, url, options, fileKey) {
-            const uploadRequest = function(form) {
+            const uploadRequest = function (form) {
                 return xhrRequest(url, name, {
                     baseUrl: encodeURIComponent(formio.projectUrl),
                     project: form ? form.project : '',
                     form: form ? form._id : '',
                 }, {
-                    [fileKey]:file,
+                    [fileKey]: file,
                     name,
                     dir,
                 }, options, progressCallback).then(response => {
@@ -106,9 +104,8 @@ const url = formio => {
             if (file.private && formio.formId) {
                 return formio.loadForm().then(form => uploadRequest(form));
             }
-            else {
-                return uploadRequest();
-            }
+
+            return uploadRequest();
         },
         deleteFile(fileInfo) {
             return new NativePromise((resolve, reject) => {

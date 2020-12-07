@@ -4,10 +4,10 @@ import Webform from './Webform';
 import WebformBuilder from './WebformBuilder';
 import BuilderUtils from './utils/builder';
 
-
 export default class WizardBuilder extends WebformBuilder {
     constructor() {
-        let element, options;
+        let element; let
+            options;
         if (arguments[0] instanceof HTMLElement || arguments[1]) {
             element = arguments[0];
             options = arguments[1];
@@ -56,9 +56,8 @@ export default class WizardBuilder extends WebformBuilder {
             if (self.type === 'form' && !self.root) {
                 return html;
             }
-            else {
-                return originalRenderComponentsHook(html, { components, self });
-            }
+
+            return originalRenderComponentsHook(html, { components, self });
         };
 
         const originalAttachComponentsHook = this.options.hooks.attachComponents;
@@ -93,7 +92,7 @@ export default class WizardBuilder extends WebformBuilder {
     }
 
     allowDrop(element) {
-        return (this.webform && this.webform.refs && this.webform.refs.webform === element) ? false : true;
+        return !((this.webform && this.webform.refs && this.webform.refs.webform === element));
     }
 
     get pages() {
@@ -101,7 +100,7 @@ export default class WizardBuilder extends WebformBuilder {
     }
 
     get currentPage() {
-        const {pages} = this;
+        const { pages } = this;
         return (pages && (pages.length >= this.page)) ? pages[this.page] : null;
     }
 
@@ -205,13 +204,11 @@ export default class WizardBuilder extends WebformBuilder {
                 this._form.components.push(this.getPageConfig(1));
                 return this.rebuild();
             }
-            else {
-                return this.setPage(pageIndex - 1);
-            }
+
+            return this.setPage(pageIndex - 1);
         }
-        else {
-            return this.rebuild();
-        }
+
+        return this.rebuild();
     }
 
     setPage(index) {

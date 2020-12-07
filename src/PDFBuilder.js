@@ -10,7 +10,8 @@ import { fastCloneDeep, getElementRect } from './utils/utils';
 
 export default class PDFBuilder extends WebformBuilder {
     constructor() {
-        let element, options;
+        let element; let
+            options;
         if (arguments[0] instanceof HTMLElement || arguments[1]) {
             element = arguments[0];
             options = arguments[1];
@@ -95,9 +96,9 @@ export default class PDFBuilder extends WebformBuilder {
                     })),
                 })),
             }),
-            form: this.hasPDF ?
-        this.webform.render() :
-        this.renderTemplate('pdfBuilderUpload', {}),
+            form: this.hasPDF
+        ? this.webform.render()
+        : this.renderTemplate('pdfBuilderUpload', {}),
         });
 
         return result;
@@ -150,15 +151,15 @@ export default class PDFBuilder extends WebformBuilder {
 
             if (this.refs.fileDrop) {
                 const element = this;
-                this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {
+                this.addEventListener(this.refs.fileDrop, 'dragover', function (event) {
                     this.className = 'fileSelector fileDragOver';
                     event.preventDefault();
                 });
-                this.addEventListener(this.refs.fileDrop, 'dragleave', function(event) {
+                this.addEventListener(this.refs.fileDrop, 'dragleave', function (event) {
                     this.className = 'fileSelector';
                     event.preventDefault();
                 });
-                this.addEventListener(this.refs.fileDrop, 'drop', function(event) {
+                this.addEventListener(this.refs.fileDrop, 'drop', function (event) {
                     this.className = 'fileSelector';
                     event.preventDefault();
                     element.upload(event.dataTransfer.files[0]);
@@ -444,9 +445,9 @@ export default class PDFBuilder extends WebformBuilder {
         const schema = fastCloneDeep(this.schemas[type]);
 
         schema.key = _.camelCase(
-                schema.label ||
-      schema.placeholder ||
-      schema.type,
+                schema.label
+      || schema.placeholder
+      || schema.type,
         );
 
         // Set a unique key for this component.

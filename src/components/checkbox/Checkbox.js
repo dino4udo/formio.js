@@ -122,9 +122,8 @@ export default class CheckBoxComponent extends Field {
         if (this.component.name) {
             return value ? this.setCheckedState(value) : this.setCheckedState(this.dataValue);
         }
-        else {
-            return (value === '') ? this.dataValue : !!value;
-        }
+
+        return (value === '') ? this.dataValue : !!value;
     }
 
     get checked() {
@@ -169,8 +168,8 @@ export default class CheckBoxComponent extends Field {
 
     setValue(value, flags = {}) {
         if (
-            this.setCheckedState(value) !== undefined ||
-      (!this.input && value !== undefined && (this.visible || !this.component.clearOnHide))
+            this.setCheckedState(value) !== undefined
+      || (!this.input && value !== undefined && (this.visible || !this.component.clearOnHide))
         ) {
             return this.updateValue(value, flags);
         }

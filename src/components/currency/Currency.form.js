@@ -2,7 +2,8 @@ import baseEditForm from '../textfield/TextField.form';
 
 import CurrencyEditData from './editForm/Currency.edit.data';
 import CurrencyEditDisplay from './editForm/Currency.edit.display';
-export default function(...extend) {
+
+export default function (...extend) {
     return baseEditForm([
         {
             key: 'display',

@@ -5,7 +5,7 @@ import DateTimeEditDate from './editForm/DateTime.edit.date';
 import DateTimeEditDisplay from './editForm/DateTime.edit.display';
 import DateTimeEditTime from './editForm/DateTime.edit.time';
 
-export default function(...extend) {
+export default function (...extend) {
     return baseEditForm([
         {
             key: 'display',

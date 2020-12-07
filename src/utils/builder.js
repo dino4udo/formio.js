@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import { eachComponent, uniqueKey } from './utils';
+
 export default {
     /**
    * Appends a number to a component.key to keep it unique
@@ -85,12 +86,14 @@ export default {
         if (!component) {
             return [];
         }
-        return [ '' ].concat(_.difference(
-                this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)),
-                this.getBindedShortcuts(form.components, component)),
-        ).map(shortcut => ({
-            label: shortcut,
-            value: shortcut,
-        }));
+        return [ '' ]
+            .concat(_.difference(
+                    this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)),
+                    this.getBindedShortcuts(form.components, component),
+            ))
+            .map(shortcut => ({
+                label: shortcut,
+                value: shortcut,
+            }));
     },
 };

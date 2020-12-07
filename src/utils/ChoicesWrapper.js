@@ -9,7 +9,7 @@ import Choices from 'choices.js';
  * @type {Choices._generatePlaceholderValue}
  * @private
  */
-Choices.prototype._generatePlaceholderValue = function() {
+Choices.prototype._generatePlaceholderValue = function () {
     if (this._isSelectElement && this.passedElement.placeholderOption) {
         const { placeholderOption } = this.passedElement;
         return placeholderOption ? placeholderOption.text : false;
@@ -60,10 +60,10 @@ class ChoicesWrapper extends Choices {
         }
 
         if (
-            !activeItems ||
-      !element ||
-      !this.config.removeItems ||
-      !this.config.removeItemButton
+            !activeItems
+            || !element
+            || !this.config.removeItems
+            || !this.config.removeItemButton
         ) {
             return;
         }
@@ -119,13 +119,13 @@ class ChoicesWrapper extends Choices {
         const { target, keyCode, ctrlKey, metaKey } = event;
 
         if (
-            target !== this.input.element &&
-      !this.containerOuter.element.contains(target)
+            target !== this.input.element
+            && !this.containerOuter.element.contains(target)
         ) {
             return;
         }
 
-        const {activeItems} = this._store;
+        const { activeItems } = this._store;
         const hasFocusedInput = this.input.isFocussed;
         const hasActiveDropdown = this.dropdown.isActive;
         const hasItems = this.itemList.hasChildren;

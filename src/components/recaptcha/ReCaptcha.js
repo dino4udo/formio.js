@@ -1,4 +1,4 @@
-/*globals grecaptcha*/
+/* globals grecaptcha */
 import _get from 'lodash/get';
 import NativePromise from 'native-promise-only';
 
@@ -30,9 +30,8 @@ export default class ReCaptchaComponent extends Component {
         if (this.builderMode) {
             return super.render('reCAPTCHA');
         }
-        else {
-            return super.render('', true);
-        }
+
+        return super.render('', true);
     }
 
     createInput() {
@@ -53,7 +52,7 @@ export default class ReCaptchaComponent extends Component {
     }
 
     createLabel() {
-        return;
+
     }
 
     verify(actionName) {
@@ -75,18 +74,14 @@ export default class ReCaptchaComponent extends Component {
                                 .execute(siteKey, {
                                     action: actionName,
                                 })
-                                .then(token => {
-                                    return this.sendVerificationRequest(token);
-                                })
+                                .then(token => this.sendVerificationRequest(token))
                                 .then(verificationResult => {
                                     this.setValue(verificationResult);
                                     return resolve(verificationResult);
                                 });
                         });
                     })
-                    .catch(() => {
-                        return reject();
-                    });
+                    .catch(() => reject());
             });
         }
     }

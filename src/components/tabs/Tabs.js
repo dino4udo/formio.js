@@ -117,10 +117,10 @@ export default class TabsComponent extends NestedComponent {
    */
     setTab(index) {
         if (
-            !this.tabs ||
-      !this.tabs[index] ||
-      !this.refs[this.tabKey] ||
-      !this.refs[this.tabKey][index]
+            !this.tabs
+            || !this.tabs[index]
+            || !this.refs[this.tabKey]
+            || !this.refs[this.tabKey][index]
         ) {
             return;
         }
@@ -155,9 +155,7 @@ export default class TabsComponent extends NestedComponent {
         if ('beforeFocus' in this.parent) {
             this.parent.beforeFocus(this);
         }
-        const tabIndex = this.tabs.findIndex(tab => {
-            return tab.some(comp => comp === component);
-        });
+        const tabIndex = this.tabs.findIndex(tab => tab.some(comp => comp === component));
         if (tabIndex !== -1) {
             this.setTab(tabIndex);
         }

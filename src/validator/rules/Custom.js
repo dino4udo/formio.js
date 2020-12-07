@@ -4,7 +4,7 @@ export default class Custom extends Rule {
   defaultMessage = '{{error}}';
 
   check(value, data, row, index) {
-      const {custom} = this.settings;
+      const { custom } = this.settings;
 
       if (!custom) {
           return true;

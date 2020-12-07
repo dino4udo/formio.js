@@ -85,10 +85,10 @@ export default [
                                 weight: 30,
                                 input: true,
                                 customConditional(context) {
-                                    return context.row.type === 'property' &&
-                                        _has(context.row, 'property') &&
-                                        context.row.property.type === 'string' &&
-                                        context.row.property.component === 'content';
+                                    return context.row.type === 'property'
+                                        && _has(context.row, 'property')
+                                        && context.row.property.type === 'string'
+                                        && context.row.property.component === 'content';
                                 },
                             },
                         ],

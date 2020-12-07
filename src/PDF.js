@@ -308,10 +308,7 @@ export default class PDF extends Webform {
     isSubmitButtonHidden() {
         let hidden = false;
         eachComponent(this.component.components, component => {
-            if (
-                (component.type === 'button') &&
-        ((component.action === 'submit') || !component.action)
-            ) {
+            if ((component.type === 'button') && ((component.action === 'submit') || !component.action)) {
                 hidden = component.hidden || false;
             }
         });
@@ -334,10 +331,10 @@ window.addEventListener('message', event => {
 
     // If this form exists, then emit the event within this form.
     if (
-        eventData &&
-        eventData.name &&
-        eventData.formId &&
-        _has(Formio.forms, eventData.formId)
+        eventData
+        && eventData.name
+        && eventData.formId
+        && _has(Formio.forms, eventData.formId)
     ) {
         Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
     }

@@ -96,7 +96,8 @@ export default class DayComponent extends Field {
     }
 
     inputDefinition(name) {
-        let min, max;
+        let min;
+        let max;
         if (name === 'day') {
             min = 1;
             max = 31;
@@ -211,8 +212,8 @@ export default class DayComponent extends Field {
         super.init();
         this.validators = this.validators.concat([ 'day', 'maxDate', 'minDate', 'minYear', 'maxYear' ]);
 
-        const {minYear} = this.component.fields.year;
-        const {maxYear} = this.component.fields.year;
+        const { minYear } = this.component.fields.year;
+        const { maxYear } = this.component.fields.year;
         this.component.maxYear = maxYear;
         this.component.minYear = minYear;
 
@@ -238,22 +239,19 @@ export default class DayComponent extends Field {
         if (this.component.fields[name].type === 'select') {
             return this.renderTemplate('select', {
                 input: this.selectDefinition(name),
-                selectOptions: this[`${name}s`].reduce((html, option) =>
-                    html + this.renderTemplate('selectOption', {
-                        option,
-                        selected: false,
-                        attrs: {},
-                    }), '',
-                ),
+                selectOptions: this[`${name}s`].reduce((html, option) => html + this.renderTemplate('selectOption', {
+                    option,
+                    selected: false,
+                    attrs: {},
+                }), ''),
             });
         }
-        else {
-            return this.renderTemplate('input', {
-                prefix: this.prefix,
-                suffix: this.suffix,
-                input: this.inputDefinition(name),
-            });
-        }
+
+        return this.renderTemplate('input', {
+            prefix: this.prefix,
+            suffix: this.suffix,
+            input: this.inputDefinition(name),
+        });
     }
 
     attach(element) {
@@ -344,8 +342,7 @@ export default class DayComponent extends Field {
         const dateParts = [];
         const valueParts = value.split('/');
 
-        const getNextPart = (shouldTake, defaultValue) =>
-            dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
+        const getNextPart = (shouldTake, defaultValue) => dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
 
         if (this.dayFirst) {
             getNextPart(this.showDay, '00');
@@ -443,10 +440,9 @@ export default class DayComponent extends Field {
             format += 'YYYY';
             return format;
         }
-        else {
-            // Trim off the "/" from the end of the format string.
-            return format.length ? format.substring(0, format.length - 1) : format;
-        }
+
+        // Trim off the "/" from the end of the format string.
+        return format.length ? format.substring(0, format.length - 1) : format;
     }
 
     /**
@@ -456,7 +452,10 @@ export default class DayComponent extends Field {
    * @return {*}
    */
     getDate(value) {
-        let defaults = [], day, month, year;
+        let defaults = [];
+        let day;
+        let month;
+        let year;
         // Map positions to identifiers to get default values for each part of day
         const [ DAY, MONTH, YEAR ] = this.component.dayFirst ? [ 0, 1, 2 ] : [ 1, 0, 2 ];
         const defaultValue = value || this.component.defaultValue;
@@ -480,7 +479,7 @@ export default class DayComponent extends Field {
         }
 
         if (this.showYear && this.refs.year) {
-            year = Number.parseInt(this.refs.year.value);
+            year = Number.parseInt(this.refs.year.value, 10);
         }
         if (year === undefined || Number.isNaN(year)) {
             year = defaults[YEAR] && !Number.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;
@@ -516,7 +515,7 @@ export default class DayComponent extends Field {
 
     normalizeMinMaxDates() {
         return [ this.component.minDate, this.component.maxDate ]
-            .map(date => date ? date.split('-').reverse().join('/') : date);
+            .map(date => (date ? date.split('-').reverse().join('/') : date));
     }
 
     /**
@@ -542,15 +541,14 @@ export default class DayComponent extends Field {
    * @returns {*}
    */
     getValueAt(index) {
-        const {date} = this;
+        const { date } = this;
         if (date) {
             this.refs.input[index].value = date;
             return this.refs.input[index].value;
         }
-        else {
-            this.refs.input[index].value = '';
-            return null;
-        }
+
+        this.refs.input[index].value = '';
+        return null;
     }
 
     /**

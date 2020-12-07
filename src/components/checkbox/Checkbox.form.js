@@ -4,7 +4,7 @@ import CheckboxEditData from './editForm/Checkbox.edit.data';
 import CheckboxEditDisplay from './editForm/Checkbox.edit.display';
 import CheckboxEditValidation from './editForm/Checkbox.edit.validation';
 
-export default function(...extend) {
+export default function (...extend) {
     return baseEditForm([
         {
             key: 'data',

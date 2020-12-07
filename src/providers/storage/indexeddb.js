@@ -1,5 +1,6 @@
 import NativePromise from 'native-promise-only';
 import { v4 as uuidv4 } from 'uuid';
+
 const indexeddb = () => ({
     title: 'indexedDB',
     name: 'indexeddb',
@@ -11,11 +12,11 @@ const indexeddb = () => ({
 
         return new NativePromise(resolve => {
             const request = indexedDB.open(options.indexeddb, 3);
-            request.onsuccess = function(event) {
+            request.onsuccess = function (event) {
                 const db = event.target.result;
                 resolve(db);
             };
-            request.onupgradeneeded = function(e) {
+            request.onupgradeneeded = function (e) {
                 const db = e.target.result;
                 db.createObjectStore(options.indexeddbTable);
             };
@@ -40,12 +41,12 @@ const indexeddb = () => ({
                     const trans = db.transaction([ options.indexeddbTable ], 'readwrite');
                     const addReq = trans.objectStore(options.indexeddbTable).put(data, id);
 
-                    addReq.onerror = function(e) {
+                    addReq.onerror = function (e) {
                         console.log('error storing data');
                         console.error(e);
                     };
 
-                    trans.oncomplete = function() {
+                    trans.oncomplete = function () {
                         resolve({
                             storage: 'indexeddb',
                             name: file.name,
@@ -57,9 +58,7 @@ const indexeddb = () => ({
                     };
                 };
 
-                reader.onerror = () => {
-                    return reject(this);
-                };
+                reader.onerror = () => reject(this);
 
                 reader.readAsDataURL(file);
             });
@@ -69,40 +68,34 @@ const indexeddb = () => ({
         return new NativePromise(resolve => {
             const request = indexedDB.open(options.indexeddb, 3);
 
-            request.onsuccess = function(event) {
+            request.onsuccess = function (event) {
                 const db = event.target.result;
                 resolve(db);
             };
-        }).then(db => {
-            return new NativePromise((resolve, reject) => {
-                const trans = db.transaction([ options.indexeddbTable ], 'readonly');
-                const store = trans.objectStore(options.indexeddbTable).get(file.id);
-                store.onsuccess = () => {
-                    trans.oncomplete = () => {
-                        const {result} = store;
-                        const dbFile = new File([ store.result.data ], file.name, {
-                            type: store.result.type,
-                        });
+        }).then(db => new NativePromise((resolve, reject) => {
+            const trans = db.transaction([ options.indexeddbTable ], 'readonly');
+            const store = trans.objectStore(options.indexeddbTable).get(file.id);
+            store.onsuccess = () => {
+                trans.oncomplete = () => {
+                    const { result } = store;
+                    const dbFile = new File([ store.result.data ], file.name, {
+                        type: store.result.type,
+                    });
 
-                        const reader = new FileReader();
+                    const reader = new FileReader();
 
-                        reader.onload = event => {
-                            result.url = event.target.result;
-                            resolve(result);
-                        };
-
-                        reader.onerror = () => {
-                            return reject(this);
-                        };
-
-                        reader.readAsDataURL(dbFile);
+                    reader.onload = event => {
+                        result.url = event.target.result;
+                        resolve(result);
                     };
+
+                    reader.onerror = () => reject(this);
+
+                    reader.readAsDataURL(dbFile);
                 };
-                store.onerror = () => {
-                    return reject(this);
-                };
-            });
-        });
+            };
+            store.onerror = () => reject(this);
+        }));
     },
 });
 

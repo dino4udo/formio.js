@@ -205,4 +205,3 @@ export const multiSelectOptions = [{
     modified: '2019-02-09T18:14:05.354Z',
     project: '58b78b87f5609a0070f3f456',
 }];
-

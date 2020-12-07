@@ -15,9 +15,9 @@ if (!HTMLCanvasElement.prototype.toBlob) {
         value(callback, type, quality) {
             const canvas = this;
             setTimeout(() => {
-                const binStr = atob(canvas.toDataURL(type, quality).split(',')[1]),
-                    len = binStr.length,
-                    arr = new Uint8Array(len);
+                const binStr = atob(canvas.toDataURL(type, quality).split(',')[1]);
+                const len = binStr.length;
+                const arr = new Uint8Array(len);
 
                 for (let i = 0; i < len; i++) {
                     arr[i] = binStr.charCodeAt(i);
@@ -61,7 +61,7 @@ export default class FileComponent extends Field {
         webViewCamera = navigator.camera || Camera;
         const fileReaderSupported = (typeof FileReader !== 'undefined');
         const formDataSupported = Boolean(window.FormData);
-        const progressSupported = window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false;
+        const progressSupported = window.XMLHttpRequest ? ('upload' in new XMLHttpRequest()) : false;
 
         this.support = {
             filereader: fileReaderSupported,
@@ -116,10 +116,10 @@ export default class FileComponent extends Field {
     }
 
     get hasTypes() {
-        return this.component.fileTypes &&
-      Array.isArray(this.component.fileTypes) &&
-      this.component.fileTypes.length !== 0 &&
-      (this.component.fileTypes[0].label !== '' || this.component.fileTypes[0].value !== '');
+        return this.component.fileTypes
+      && Array.isArray(this.component.fileTypes)
+      && this.component.fileTypes.length !== 0
+      && (this.component.fileTypes[0].label !== '' || this.component.fileTypes[0].value !== '');
     }
 
     get fileDropHidden() {
@@ -286,7 +286,7 @@ export default class FileComponent extends Field {
 
     deleteFile(fileInfo) {
         if (fileInfo && (this.component.storage === 'url')) {
-            const {fileService} = this;
+            const { fileService } = this;
             if (fileService && typeof fileService.deleteFile === 'function') {
                 fileService.deleteFile(fileInfo);
             }
@@ -321,15 +321,15 @@ export default class FileComponent extends Field {
 
         if (this.refs.fileDrop) {
             const element = this;
-            this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {
+            this.addEventListener(this.refs.fileDrop, 'dragover', function (event) {
                 this.className = 'fileSelector fileDragOver';
                 event.preventDefault();
             });
-            this.addEventListener(this.refs.fileDrop, 'dragleave', function(event) {
+            this.addEventListener(this.refs.fileDrop, 'dragleave', function (event) {
                 this.className = 'fileSelector';
                 event.preventDefault();
             });
-            this.addEventListener(this.refs.fileDrop, 'drop', function(event) {
+            this.addEventListener(this.refs.fileDrop, 'drop', function (event) {
                 this.className = 'fileSelector';
                 event.preventDefault();
                 element.upload(event.dataTransfer.files);
@@ -390,8 +390,7 @@ export default class FileComponent extends Field {
                             };
                             reader.readAsArrayBuffer(file);
                         });
-                    },
-                    );
+                    });
                 }, err => {
                     console.error(err);
                 }, {
@@ -414,8 +413,7 @@ export default class FileComponent extends Field {
                             };
                             reader.readAsArrayBuffer(file);
                         });
-                    },
-                    );
+                    });
                 }, err => {
                     console.error(err);
                 }, {
@@ -455,7 +453,7 @@ export default class FileComponent extends Field {
             });
         });
 
-        const {fileService} = this;
+        const { fileService } = this;
         if (fileService) {
             const loadingImages = [];
             this.refs.fileImage.forEach((image, index) => {
@@ -482,7 +480,8 @@ export default class FileComponent extends Field {
 
     /* eslint-disable max-depth */
     globStringToRegex(str) {
-        let regexp = '', excludes = [];
+        let regexp = ''; let
+            excludes = [];
         if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
             regexp = str.substring(1, str.length - 1);
         }
@@ -502,17 +501,15 @@ export default class FileComponent extends Field {
                     }
                 }
             }
+            else if (str.startsWith('!')) {
+                excludes.push(`^((?!${this.globStringToRegex(str.substring(1)).regexp}).)*$`);
+            }
             else {
-                if (str.startsWith('!')) {
-                    excludes.push(`^((?!${this.globStringToRegex(str.substring(1)).regexp}).)*$`);
+                if (str.startsWith('.')) {
+                    str = `*${str}`;
                 }
-                else {
-                    if (str.startsWith('.')) {
-                        str = `*${str}`;
-                    }
-                    regexp = `^${str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&')}$`;
-                    regexp = regexp.replace(/\\\*/g, '.*').replace(/\\\?/g, '.');
-                }
+                regexp = `^${str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&')}$`;
+                regexp = regexp.replace(/\\\*/g, '.*').replace(/\\\?/g, '.');
             }
         }
         return { regexp, excludes };
@@ -555,13 +552,13 @@ export default class FileComponent extends Field {
         let valid = true;
         if (pattern.regexp && pattern.regexp.length) {
             const regexp = new RegExp(pattern.regexp, 'i');
-            valid = (!_.isNil(file.type) && regexp.test(file.type)) ||
-        (!_.isNil(file.name) && regexp.test(file.name));
+            valid = (!_.isNil(file.type) && regexp.test(file.type))
+        || (!_.isNil(file.name) && regexp.test(file.name));
         }
         valid = pattern.excludes.reduce((result, excludePattern) => {
             const exclude = new RegExp(excludePattern, 'i');
-            return result && (_.isNil(file.type) || !exclude.test(file.type)) &&
-        (_.isNil(file.name) || !exclude.test(file.name));
+            return result && (_.isNil(file.type) || !exclude.test(file.type))
+        && (_.isNil(file.name) || !exclude.test(file.name));
         }, valid);
         return valid;
     }
@@ -635,7 +632,7 @@ export default class FileComponent extends Field {
                     let groupKey = null;
                     let groupPermissions = null;
 
-                    //Iterate through form components to find group resource if one exists
+                    // Iterate through form components to find group resource if one exists
                     this.root.everyComponent(element => {
                         if (element.component?.submissionAccess || element.component?.defaultPermission) {
                             groupPermissions = !element.component.submissionAccess ? [
@@ -662,8 +659,7 @@ export default class FileComponent extends Field {
                     () => {
                         this.fileDropHidden = true;
                         this.emit('fileUploadingStart', filePromise);
-                    },
-                    )
+                    })
                         .then(fileInfo => {
                             const index = this.statuses.indexOf(fileUpload);
                             if (index !== -1) {

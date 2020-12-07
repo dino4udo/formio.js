@@ -7,7 +7,6 @@ import NestedComponent from '../_classes/nested/NestedComponent';
 
 import Node from './Node';
 
-
 export default class TreeComponent extends NestedComponent {
     static schema(...extend) {
         return NestedComponent.schema({

@@ -182,19 +182,19 @@ export default [
                         '===': [
                             { var: 'data.editor' },
                             'quill',
-                        ], 
+                        ],
                     },
                     {
                         '===': [
                             { var: 'data.isUploadEnabled' },
                             true,
-                        ], 
+                        ],
                     },
                     {
                         '===': [
                             { var: 'data.uploadStorage' },
                             'url',
-                        ], 
+                        ],
                     },
                 ],
             },
@@ -222,13 +222,13 @@ export default [
                         '===': [
                             { var: 'data.editor' },
                             'quill',
-                        ], 
+                        ],
                     },
                     {
                         '===': [
                             { var: 'data.editor' },
                             'ace',
-                        ], 
+                        ],
                     },
                 ],
             },
@@ -254,19 +254,19 @@ export default [
                         '===': [
                             { var: 'data.editor' },
                             'ace',
-                        ], 
+                        ],
                     },
                     {
                         '===': [
                             { var: 'data.editor' },
                             'ckeditor',
-                        ], 
+                        ],
                     },
                     {
                         '===': [
                             { var: 'data.editor' },
                             'quill',
-                        ], 
+                        ],
                     },
                 ],
             },

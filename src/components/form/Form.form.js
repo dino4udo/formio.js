@@ -4,7 +4,7 @@ import FormEditData from './editForm/Form.edit.data';
 import FormEditDisplay from './editForm/Form.edit.display';
 import FormEditForm from './editForm/Form.edit.form';
 
-export default function(...extend) {
+export default function (...extend) {
     return nestedComponentForm([
         {
             key: 'display',

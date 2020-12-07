@@ -1,4 +1,3 @@
-'use strict';
 import _ from 'lodash';
 
 import Component from '../component/Component';
@@ -7,11 +6,7 @@ import NestedComponent from '../nested/NestedComponent';
 export default class NestedDataComponent extends NestedComponent {
     hasChanged(newValue, oldValue) {
     // If we do not have a value and are getting set to anything other than undefined or null, then we changed.
-        if (
-            newValue !== undefined &&
-      newValue !== null &&
-      !this.hasValue()
-        ) {
+        if (!_.isNil(newValue) && !this.hasValue()) {
             return true;
         }
         return !_.isEqual(newValue, oldValue);
@@ -31,11 +26,11 @@ export default class NestedDataComponent extends NestedComponent {
             this.everyComponent(component => {
                 if (component.isInputComponent && component.visible && !component.skipInEmail) {
                     result += (`
-            <tr>
-              <th style="padding: 5px 10px;">${component.label}</th>
-              <td style="width:100%;padding:5px 10px;">${component.getView(component.dataValue, options)}</td>
-            </tr>
-          `);
+                        <tr>
+                        <th style="padding: 5px 10px;">${component.label}</th>
+                        <td style="width:100%;padding:5px 10px;">${component.getView(component.dataValue, options)}</td>
+                        </tr>
+                    `);
                 }
             }, {
                 ...options,
@@ -43,9 +38,9 @@ export default class NestedDataComponent extends NestedComponent {
             });
 
             result += (`
-          </tbody>
-        </table>
-      `);
+                </tbody>
+                </table>
+            `);
 
             return result;
         }

@@ -89,7 +89,7 @@ export default class NumberComponent extends Input {
     get defaultValue() {
         let defaultValue = super.defaultValue;
         if (!defaultValue && this.component.defaultValue === 0) {
-            ({defaultValue} = this.component);
+            ({ defaultValue } = this.component);
         }
         return defaultValue;
     }
@@ -105,9 +105,8 @@ export default class NumberComponent extends Input {
         if (this.component.validate && this.component.validate.integer) {
             return Number.parseInt(value, 10);
         }
-        else {
-            return parseFloat(value);
-        }
+
+        return parseFloat(value);
     }
 
     setInputMask(input) {
@@ -168,7 +167,7 @@ export default class NumberComponent extends Input {
         if (this.component.requireDecimal && value && !value.includes(this.decimalSeparator)) {
             return `${value}${this.decimalSeparator}${_.repeat('0', this.decimalLimit)}`;
         }
-        else if (this.component.requireDecimal && value && value.includes(this.decimalSeparator)) {
+        if (this.component.requireDecimal && value && value.includes(this.decimalSeparator)) {
             return `${value}${_.repeat('0', this.decimalLimit - value.split(this.decimalSeparator)[1].length)}`;
         }
 
@@ -186,7 +185,7 @@ export default class NumberComponent extends Input {
     getMaskedValue(value) {
         value = value === null ? '0' : value.toString();
 
-        if (value.includes('.') && '.'!== this.decimalSeparator) {
+        if (value.includes('.') && this.decimalSeparator !== '.') {
             value = value.replace('.', this.decimalSeparator);
         }
 

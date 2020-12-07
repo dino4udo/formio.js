@@ -42,9 +42,7 @@ export default class PanelComponent extends NestedComponent {
         }
 
         return this.getComponents().reduce(
-                (check, comp) => {
-                    return comp.checkValidity(data, dirty, row, silentCheck) && check;
-                },
+                (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
                 super.checkValidity(data, dirty, row, silentCheck),
         );
     }
@@ -57,7 +55,7 @@ export default class PanelComponent extends NestedComponent {
         super(...args);
         this.noField = true;
         this.on('componentError', () => {
-            //change collapsed value only when the panel is collapsed to avoid additional redrawing that prevents validation messages
+            // change collapsed value only when the panel is collapsed to avoid additional redrawing that prevents validation messages
             if (hasInvalidComponent(this) && this.collapsed) {
                 this.collapsed = false;
             }

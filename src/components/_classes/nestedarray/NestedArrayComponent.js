@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 
 import Component from '../component/Component';
@@ -56,9 +54,8 @@ export default class NestedArrayComponent extends NestedDataComponent {
                     if (!opts?.rowIndex || opts?.rowIndex === rowIndex) {
                         return this.checkRow(method, data, opts, row.data, row.components, silentCheck) && valid;
                     }
-                    else {
-                        return valid;
-                    }
+
+                    return valid;
                 },
                 defaultValue,
         );
@@ -84,13 +81,13 @@ export default class NestedArrayComponent extends NestedDataComponent {
         const maxLength = _.get(this.component, 'validate.maxLength');
         const conditionalAddButton = _.get(this.component, 'conditionalAddButton');
 
-        return !this.component.disableAddingRemovingRows &&
-      !this.options.readOnly &&
-      !this.disabled &&
-      this.fullMode &&
-      !this.options.preview &&
-      (!maxLength || (this.iteratableRows.length < maxLength)) &&
-      (!conditionalAddButton || this.evaluate(conditionalAddButton, {
+        return !this.component.disableAddingRemovingRows
+      && !this.options.readOnly
+      && !this.disabled
+      && this.fullMode
+      && !this.options.preview
+      && (!maxLength || (this.iteratableRows.length < maxLength))
+      && (!conditionalAddButton || this.evaluate(conditionalAddButton, {
           value: this.dataValue,
       }, 'show'));
     }

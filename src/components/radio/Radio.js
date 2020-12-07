@@ -77,7 +77,7 @@ export default class RadioComponent extends Field {
             this.addShortcut(input, this.component.values[index].shortcut);
 
             if (this.isRadio) {
-                let {dataValue} = this;
+                let { dataValue } = this;
 
                 if (!_.isString(this.dataValue)) {
                     dataValue = _.toString(this.dataValue);
@@ -114,7 +114,7 @@ export default class RadioComponent extends Field {
         let value = this.dataValue;
         this.refs.input.forEach(input => {
             if (input.checked) {
-                ({value} = input);
+                ({ value } = input);
             }
         });
         return value;
@@ -124,7 +124,7 @@ export default class RadioComponent extends Field {
         if (!boolValue(setting) || !value) {
             return true;
         }
-        const {values} = this.component;
+        const { values } = this.component;
         if (values) {
             return values.findIndex(({ value: optionValue }) => this.normalizeValue(optionValue) === value) !== -1;
         }
@@ -154,14 +154,14 @@ export default class RadioComponent extends Field {
     updateValue(value, flags) {
         const changed = super.updateValue(value, flags);
         if (changed && this.refs.wrapper) {
-            //add/remove selected option class
+            // add/remove selected option class
             const value = this.dataValue;
             const optionSelectedClass = 'radio-selected';
 
             this.refs.wrapper.forEach((wrapper, index) => {
                 const input = this.refs.input[index];
                 if (input && input.value.toString() === value.toString()) {
-                    //add class to container when selected
+                    // add class to container when selected
                     this.addClass(wrapper, optionSelectedClass);
                 }
                 else {

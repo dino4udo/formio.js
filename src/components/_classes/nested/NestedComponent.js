@@ -1,4 +1,3 @@
-'use strict';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
@@ -399,7 +398,7 @@ export default class NestedComponent extends Field {
             component.shouldIncludeSubFormPath = true;
         }
         component = this.hook('addComponent', component, data, before, noAdd);
-        const comp = this.createComponent(component, this.options, data, before ? before : null);
+        const comp = this.createComponent(component, this.options, data, before || null);
         if (noAdd) {
             return comp;
         }
@@ -534,9 +533,7 @@ export default class NestedComponent extends Field {
     }
 
     updateValue(value, flags = {}) {
-        return this.components.reduce((changed, comp) => {
-            return comp.updateValue(null, flags) || changed;
-        }, super.updateValue(value, flags));
+        return this.components.reduce((changed, comp) => comp.updateValue(null, flags) || changed, super.updateValue(value, flags));
     }
 
     shouldSkipValidation(data, dirty, row) {
@@ -544,9 +541,8 @@ export default class NestedComponent extends Field {
         if (!this.component.input) {
             return true;
         }
-        else {
-            return super.shouldSkipValidation(data, dirty, row);
-        }
+
+        return super.shouldSkipValidation(data, dirty, row);
     }
 
     checkData(data, flags, row, components) {
@@ -557,9 +553,7 @@ export default class NestedComponent extends Field {
         flags = flags || {};
         row = row || this.data;
         components = components && Array.isArray(components) ? components : this.getComponents();
-        const isValid = components.reduce((valid, comp) => {
-            return comp.checkData(data, flags, row) && valid;
-        }, super.checkData(data, flags, row));
+        const isValid = components.reduce((valid, comp) => comp.checkData(data, flags, row) && valid, super.checkData(data, flags, row));
 
         this.checkModal(isValid, this.isDirty);
         return isValid;
@@ -734,10 +728,10 @@ export default class NestedComponent extends Field {
         if (component.type === 'components') {
             return component.setValue(value, flags);
         }
-        else if (value && component.hasValue(value)) {
+        if (value && component.hasValue(value)) {
             return component.setValue(_.get(value, component.key), flags);
         }
-        else if (!this.rootPristine || component.visible) {
+        if (!this.rootPristine || component.visible) {
             flags.noValidate = !flags.dirty;
             flags.resetValue = true;
             return component.setValue(component.defaultValue, flags);
@@ -748,8 +742,6 @@ export default class NestedComponent extends Field {
         if (!value) {
             return false;
         }
-        return this.getComponents().reduce((changed, component) => {
-            return this.setNestedValue(component, value, flags, changed) || changed;
-        }, false);
+        return this.getComponents().reduce((changed, component) => this.setNestedValue(component, value, flags, changed) || changed, false);
     }
 }

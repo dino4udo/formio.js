@@ -49,8 +49,10 @@ export default class HTMLComponent extends Component {
 
     checkRefreshOn(changed) {
         super.checkRefreshOn(changed);
-        if (!this.builderMode && this.component.refreshOnChange && this.element &&
-      this.conditionallyVisible(this.data, this.row)) {
+        if (
+            !this.builderMode && this.component.refreshOnChange && this.element
+            && this.conditionallyVisible(this.data, this.row)
+        ) {
             this.setContent(this.element, this.renderContent());
         }
     }
@@ -60,17 +62,15 @@ export default class HTMLComponent extends Component {
         return this.renderTemplate('html', {
             component: this.component,
             tag: this.component.tag,
-            attrs: (this.component.attrs || []).map(attr => {
-                return {
-                    attr: attr.attr,
-                    value: this.interpolate(attr.value, {
-                        metadata: submission.metadata || {},
-                        submission,
-                        data: this.rootValue,
-                        row: this.data,
-                    }),
-                };
-            }),
+            attrs: (this.component.attrs || []).map(attr => ({
+                attr: attr.attr,
+                value: this.interpolate(attr.value, {
+                    metadata: submission.metadata || {},
+                    submission,
+                    data: this.rootValue,
+                    row: this.data,
+                }),
+            })),
             content: this.content,
             singleTags: this.singleTags,
         });

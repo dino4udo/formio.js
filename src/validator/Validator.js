@@ -13,15 +13,16 @@ import {
     convertFormatToMoment, getArrayFromComponentPath, unescapeHTML,
 } from '@/utils/utils';
 
-const { fetch, Headers, Request } = fetchPonyfill({
-    Promise: NativePromise,
-});
 import {
     checkInvalidDate,
     CALENDAR_ERROR_MESSAGES,
 } from '../utils/calendarUtils';
 
 import Rules from './Rules';
+
+const { fetch, Headers, Request } = fetchPonyfill({
+    Promise: NativePromise,
+});
 
 class ValidationChecker {
     constructor(config = {}) {
@@ -90,8 +91,8 @@ class ValidationChecker {
                     }
 
                     return new NativePromise(resolve => {
-                        const {form} = this.config;
-                        const {submission} = this.config;
+                        const { form } = this.config;
+                        const { submission } = this.config;
                         const path = `data.${component.path}`;
 
                         // Build the query
@@ -105,13 +106,13 @@ class ValidationChecker {
                         }
                         // FOR-213 - Pluck the unique location id
                         else if (
-                            _.isPlainObject(value) &&
-              value.address &&
-              value.address['address_components'] &&
-              value.address['place_id']
+                            _.isPlainObject(value)
+                            && value.address
+                            && value.address.address_components
+                            && value.address.place_id
                         ) {
                             query[`${path}.address.place_id`] = {
-                                $regex: new RegExp(`^${escapeRegExCharacters(value.address['place_id'])}$`),
+                                $regex: new RegExp(`^${escapeRegExCharacters(value.address.place_id)}$`),
                                 $options: 'i',
                             };
                         }
@@ -130,13 +131,12 @@ class ValidationChecker {
                             if (err) {
                                 return resolve(false);
                             }
-                            else if (result) {
+                            if (result) {
                                 // Only OK if it matches the current submission
                                 return resolve(submission._id && (result._id.toString() === submission._id));
                             }
-                            else {
-                                return resolve(true);
-                            }
+
+                            return resolve(true);
                         });
                     }).catch(() => false);
                 },
@@ -169,14 +169,12 @@ class ValidationChecker {
                         if (isArray) {
                             return isRequired ? !!value.length : true;
                         }
-                        else {
-                            // Null/undefined is ok if this value isn't required; anything else should fail
-                            return _.isNil(value) ? !isRequired : false;
-                        }
+
+                        // Null/undefined is ok if this value isn't required; anything else should fail
+                        return _.isNil(value) ? !isRequired : false;
                     }
-                    else {
-                        return canBeArray || !isArray;
-                    }
+
+                    return canBeArray || !isArray;
                 },
             },
             select: {
@@ -220,10 +218,10 @@ class ValidationChecker {
                         requestOptions.url = !!requestOptions.url;
 
                         if (
-                            !requestOptions.url ||
-              schema.dataSrc !== 'url' ||
-              !schema.data.url ||
-              !schema.searchField
+                            !requestOptions.url
+                            || schema.dataSrc !== 'url'
+                            || !schema.data.url
+                            || !schema.searchField
                         ) {
                             return true;
                         }
@@ -282,9 +280,7 @@ class ValidationChecker {
 
                             return response.json();
                         })
-                        .then(results => {
-                            return results && results.length;
-                        })
+                        .then(results => results && results.length)
                         .catch(() => false);
                 },
             },
@@ -346,7 +342,7 @@ class ValidationChecker {
                     if (!min) {
                         return true;
                     }
-                    const count = Object.keys(value).reduce((total, key) =>{
+                    const count = Object.keys(value).reduce((total, key) => {
                         if (value[key]) {
                             total++;
                         }
@@ -372,7 +368,7 @@ class ValidationChecker {
                     if (!max) {
                         return true;
                     }
-                    const count = Object.keys(value).reduce((total, key) =>{
+                    const count = Object.keys(value).reduce((total, key) => {
                         if (value[key]) {
                             total++;
                         }
@@ -515,11 +511,11 @@ class ValidationChecker {
                         return true;
                     }
                     const [ DAY, MONTH, YEAR ] = component.dayFirst ? [ 0, 1, 2 ] : [ 1, 0, 2 ];
-                    const values = value.split('/').map(x => Number.parseInt(x, 10)),
-                        day = values[DAY],
-                        month = values[MONTH],
-                        year = values[YEAR],
-                        maxDay = getDaysInMonthCount(month, year);
+                    const values = value.split('/').map(x => Number.parseInt(x, 10));
+                    const day = values[DAY];
+                    const month = values[MONTH];
+                    const year = values[YEAR];
+                    const maxDay = getDaysInMonthCount(month, year);
 
                     if (day < 0 || day > maxDay) {
                         return false;
@@ -539,20 +535,20 @@ class ValidationChecker {
 
                     function getDaysInMonthCount(month, year) {
                         switch (month) {
-                            case 1:     // January
-                            case 3:     // March
-                            case 5:     // May
-                            case 7:     // July
-                            case 8:     // August
-                            case 10:    // October
-                            case 12:    // December
+                            case 1: // January
+                            case 3: // March
+                            case 5: // May
+                            case 7: // July
+                            case 8: // August
+                            case 10: // October
+                            case 12: // December
                                 return 31;
-                            case 4:     // April
-                            case 6:     // June
-                            case 9:     // September
-                            case 11:    // November
+                            case 4: // April
+                            case 6: // June
+                            case 9: // September
+                            case 11: // November
                                 return 30;
-                            case 2:     // February
+                            case 2: // February
                                 return isLeapYear(year) ? 29 : 28;
                             default:
                                 return 31;
@@ -667,7 +663,7 @@ class ValidationChecker {
                     });
                 },
                 check(component, setting, value) {
-                    //if any parts of day are missing, skip maxDate validation
+                    // if any parts of day are missing, skip maxDate validation
                     if (component.isPartialDay && component.isPartialDay(value)) {
                         return true;
                     }
@@ -677,9 +673,8 @@ class ValidationChecker {
                     if (_.isNull(maxDate)) {
                         return true;
                     }
-                    else {
-                        maxDate.setHours(0, 0, 0, 0);
-                    }
+
+                    maxDate.setHours(0, 0, 0, 0);
 
                     return date.isBefore(maxDate) || date.isSame(maxDate);
                 },
@@ -695,7 +690,7 @@ class ValidationChecker {
                     });
                 },
                 check(component, setting, value) {
-                    //if any parts of day are missing, skip minDate validation
+                    // if any parts of day are missing, skip minDate validation
                     if (component.isPartialDay && component.isPartialDay(value)) {
                         return true;
                     }
@@ -704,9 +699,8 @@ class ValidationChecker {
                     if (_.isNull(minDate)) {
                         return true;
                     }
-                    else {
-                        minDate.setHours(0, 0, 0, 0);
-                    }
+
+                    minDate.setHours(0, 0, 0, 0);
 
                     return date.isAfter(minDate) || date.isSame(minDate);
                 },
@@ -791,10 +785,9 @@ class ValidationChecker {
                             this.validators.calendar.messageText = CALENDAR_ERROR_MESSAGES.INCOMPLETE;
                             return false;
                         }
-                        else {
-                            widget.enteredDate = '';
-                            return true;
-                        }
+
+                        widget.enteredDate = '';
+                        return true;
                     }
                 },
             },
@@ -841,9 +834,8 @@ class ValidationChecker {
         if (async) {
             return NativePromise.resolve(resultOrPromise).then(processResult);
         }
-        else {
-            return processResult(resultOrPromise);
-        }
+
+        return processResult(resultOrPromise);
     }
 
     validate(component, validatorName, value, data, index, row, async, conditionallyVisible) {
@@ -852,32 +844,29 @@ class ValidationChecker {
             return false;
         }
 
-        const validator       = this.validators[validatorName];
-        const setting         = _.get(component.component, validator.key, null);
+        const validator = this.validators[validatorName];
+        const setting = _.get(component.component, validator.key, null);
         const resultOrPromise = this.checkValidator(component, validator, setting, value, data, index, row, async);
 
-        const processResult = result => {
-            return result ? {
-                message: unescapeHTML(_.get(result, 'message', result)),
-                level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
-                path: getArrayFromComponentPath(component.path || ''),
-                context: {
-                    validator: validatorName,
-                    hasLabel: validator.hasLabel,
-                    setting,
-                    key: component.key,
-                    label: component.label,
-                    value,
-                },
-            } : false;
-        };
+        const processResult = result => (result ? {
+            message: unescapeHTML(_.get(result, 'message', result)),
+            level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
+            path: getArrayFromComponentPath(component.path || ''),
+            context: {
+                validator: validatorName,
+                hasLabel: validator.hasLabel,
+                setting,
+                key: component.key,
+                label: component.label,
+                value,
+            },
+        } : false);
 
         if (async) {
             return NativePromise.resolve(resultOrPromise).then(processResult);
         }
-        else {
-            return processResult(resultOrPromise);
-        }
+
+        return processResult(resultOrPromise);
     }
 
     checkComponent(component, data, row, includeWarnings = false, async = false) {
@@ -903,19 +892,16 @@ class ValidationChecker {
             const resultsOrPromises = this.checkValidations(component, validations, data, row, values, async);
 
             // Define how results should be formatted
-            const formatResults = results => {
-                return includeWarnings ? results : results.filter(result => result.level === 'error');
-            };
+            const formatResults = results => (includeWarnings ? results : results.filter(result => result.level === 'error'));
 
             if (async) {
                 return NativePromise.all(resultsOrPromises).then(formatResults);
             }
-            else {
-                return formatResults(resultsOrPromises);
-            }
+
+            return formatResults(resultsOrPromises);
         }
 
-        const validateCustom     = _.get(component, 'component.validate.custom');
+        const validateCustom = _.get(component, 'component.validate.custom');
         const customErrorMessage = _.get(component, 'component.validate.customMessage');
         const conditionallyVisible = component.conditionallyVisible();
         // Run primary validators
@@ -978,9 +964,8 @@ class ValidationChecker {
         if (async) {
             return NativePromise.all(resultsOrPromises).then(formatResults);
         }
-        else {
-            return formatResults(resultsOrPromises);
-        }
+
+        return formatResults(resultsOrPromises);
     }
 
     /**
@@ -995,9 +980,7 @@ class ValidationChecker {
    */
     checkValidations(component, validations, data, row, values, async) {
     // Get results.
-        const results = validations.map(validation => {
-            return this.checkRule(component, validation, data, row, values, async);
-        });
+        const results = validations.map(validation => this.checkRule(component, validation, data, row, values, async));
 
         // Flatten array and filter out empty results.
         const messages = results.reduce((prev, result) => {

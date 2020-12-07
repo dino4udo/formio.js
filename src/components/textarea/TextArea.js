@@ -94,7 +94,7 @@ export default class TextAreaComponent extends TextFieldComponent {
    */
     updateEditorValue(index, newValue) {
         newValue = this.getConvertedValue(this.trimBlanks(newValue));
-        const {dataValue} = this;
+        const { dataValue } = this;
         if (this.component.multiple && Array.isArray(dataValue)) {
             const newArray = _.clone(dataValue);
             newArray[index] = newValue;
@@ -124,9 +124,9 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.component.editor = 'ckeditor';
         }
 
-        let settings = _.isEmpty(this.component.wysiwyg) ?
-      this.wysiwygDefault[this.component.editor] || this.wysiwygDefault.default
-      : this.component.wysiwyg;
+        let settings = _.isEmpty(this.component.wysiwyg)
+            ? this.wysiwygDefault[this.component.editor] || this.wysiwygDefault.default
+            : this.component.wysiwyg;
 
         // Keep track of when this editor is ready.
         this.editorsReady[index] = new NativePromise(editorReady => {
@@ -139,7 +139,7 @@ export default class TextAreaComponent extends TextFieldComponent {
                     settings.mode = `ace/mode/${this.component.as}`;
                     this.addAce(element, settings, newValue => this.updateEditorValue(index, newValue)).then(ace => {
                         this.editors[index] = ace;
-                        let {dataValue} = this;
+                        let { dataValue } = this;
                         dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
                         ace.setValue(this.setConvertedValue(dataValue, index));
                         editorReady(ace);
@@ -161,9 +161,9 @@ export default class TextAreaComponent extends TextFieldComponent {
                         this.editors[index] = quill;
                         if (this.component.isUploadEnabled) {
                             const _this = this;
-                            quill.getModule('uploader').options.handler = function(...args) {
-                                //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
-                                //we also need current component instance as we use some fields and methods from it as well
+                            quill.getModule('uploader').options.handler = function (...args) {
+                                // we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
+                                // we also need current component instance as we use some fields and methods from it as well
                                 _this.imageHandler.call(_this, this, ...args);
                             };
                         }
@@ -172,7 +172,7 @@ export default class TextAreaComponent extends TextFieldComponent {
                             quill.disable();
                         }
 
-                        let {dataValue} = this;
+                        let { dataValue } = this;
                         dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
                         quill.setContents(quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }));
                         editorReady(quill);
@@ -185,7 +185,7 @@ export default class TextAreaComponent extends TextFieldComponent {
                     this.addCKE(element, settings, newValue => this.updateEditorValue(index, newValue))
                         .then(editor => {
                             this.editors[index] = editor;
-                            let {dataValue} = this;
+                            let { dataValue } = this;
                             dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
                             const value = this.setConvertedValue(dataValue, index);
                             const isReadOnly = this.options.readOnly || this.disabled;
@@ -244,7 +244,7 @@ export default class TextAreaComponent extends TextFieldComponent {
                     uploadStorage,
                     files[0],
                     uniqueName(files[0].name),
-                    uploadDir || '', //should pass empty string if undefined
+                    uploadDir || '', // should pass empty string if undefined
                     null,
                     uploadUrl,
                     uploadOptions,
@@ -266,8 +266,9 @@ export default class TextAreaComponent extends TextFieldComponent {
                             },
                             {
                                 alt: JSON.stringify(requestData),
-                            })
-                , Quill.sources.USER);
+                            },
+                    ),
+                Quill.sources.USER);
             })
             .catch(error => {
                 console.warn('Quill image upload failed');
@@ -322,9 +323,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     setValue(value, flags = {}) {
         if (this.isPlain || this.options.readOnly || this.disabled) {
-            value = (this.component.multiple && Array.isArray(value)) ?
-        value.map((val, index) => this.setConvertedValue(val, index)) :
-        this.setConvertedValue(value);
+            value = (this.component.multiple && Array.isArray(value))
+                ? value.map((val, index) => this.setConvertedValue(val, index))
+                : this.setConvertedValue(value);
             return super.setValue(value, flags);
         }
         flags.skipWysiwyg = _.isEqual(value, this.getValue());
@@ -376,18 +377,17 @@ export default class TextAreaComponent extends TextFieldComponent {
             value = '';
         }
 
-        const htmlDoc = new DOMParser().parseFromString(value,'text/html');
+        const htmlDoc = new DOMParser().parseFromString(value, 'text/html');
         const images = htmlDoc.getElementsByTagName('img');
         if (images.length) {
             return this.setImagesUrl(images)
-                .then( () => {
+                .then(() => {
                     value = htmlDoc.getElementsByTagName('body')[0].innerHTML;
                     return value;
                 });
         }
-        else {
-            return NativePromise.resolve(value);
-        }
+
+        return NativePromise.resolve(value);
     }
 
     setImagesUrl(images) {
@@ -412,7 +412,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         let previousHeight = null;
 
         const changeOverflow = value => {
-            const {width} = textarea.style;
+            const { width } = textarea.style;
 
             textarea.style.width = '0px';
             textarea.style.width = width;

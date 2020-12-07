@@ -97,9 +97,9 @@ export default class ComponentModal {
 
     isValueChanged() {
         let componentValue = this.component.getValue();
-        let {currentValue} = this;
+        let { currentValue } = this;
 
-        //excluding metadata comparison for components that have it in dataValue (for ex. nested forms)
+        // excluding metadata comparison for components that have it in dataValue (for ex. nested forms)
         if (componentValue && componentValue.data && componentValue.metadata) {
             componentValue = this.component.getValue().data;
             currentValue = this.currentValue.data;
@@ -165,12 +165,12 @@ export default class ComponentModal {
     showDialog() {
         this.dialogElement = this.component.ce('div');
         const dialogContent = `
-      <h3 ref="dialogHeader">${this.component.t('Do you want to clear changes?')}</h3>
-      <div style="display:flex; justify-content: flex-end;">
-        <button ref="dialogCancelButton" class="btn btn-secondary">${this.component.t('Cancel')}</button>
-        <button ref="dialogYesButton" class="btn btn-danger">${this.component.t('Yes, delete it')}</button>
-      </div>
-    `;
+            <h3 ref="dialogHeader">${this.component.t('Do you want to clear changes?')}</h3>
+            <div style="display:flex; justify-content: flex-end;">
+                <button ref="dialogCancelButton" class="btn btn-secondary">${this.component.t('Cancel')}</button>
+                <button ref="dialogYesButton" class="btn btn-danger">${this.component.t('Yes, delete it')}</button>
+            </div>
+            `;
 
         this.dialogElement.innerHTML = dialogContent;
         this.dialogElement.refs = {};

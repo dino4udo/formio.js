@@ -118,7 +118,7 @@ export default class TextFieldComponent extends Input {
         value = this.maskValue(value, flags);
         const textValue = value.value || '';
         const textInput = this.refs.mask ? this.refs.mask[index] : null;
-        const maskInput = this.refs.select ? this.refs.select[index]: null;
+        const maskInput = this.refs.select ? this.refs.select[index] : null;
         const mask = this.getMaskPattern(value.maskName);
         if (textInput && maskInput && mask) {
             textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask)).conformedValue;
@@ -140,7 +140,7 @@ export default class TextFieldComponent extends Input {
             return super.getValueAt(index);
         }
         const textInput = this.refs.mask ? this.refs.mask[index] : null;
-        const maskInput = this.refs.select ? this.refs.select[index]: null;
+        const maskInput = this.refs.select ? this.refs.select[index] : null;
         return {
             value: textInput ? textInput.value : undefined,
             maskName: maskInput ? maskInput.value : undefined,

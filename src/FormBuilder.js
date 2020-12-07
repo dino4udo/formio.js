@@ -18,10 +18,9 @@ export default class FormBuilder extends Form {
       if (Builders.builders[display]) {
           return new Builders.builders[display](this.element, this.options);
       }
-      else {
+
       // eslint-disable-next-line new-cap
-          return new Builders.builders['webform'](this.element, this.options);
-      }
+      return new Builders.builders.webform(this.element, this.options);
   }
 }
 
@@ -34,8 +33,6 @@ export default class FormBuilder extends Form {
  *
  * @return {Promise} - When the form is instance is ready.
  */
-Formio.builder = (...args) => {
-    return (new FormBuilder(...args)).ready;
-};
+Formio.builder = (...args) => (new FormBuilder(...args)).ready;
 
 Formio.FormBuilder = FormBuilder;

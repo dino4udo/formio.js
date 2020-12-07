@@ -4,7 +4,7 @@ import SurveyEditData from './editForm/Survey.edit.data';
 import SurveyEditDisplay from './editForm/Survey.edit.display';
 import SurveyEditValidation from './editForm/Survey.edit.validation';
 
-export default function(...extend) {
+export default function (...extend) {
     return baseEditForm([
         {
             key: 'display',

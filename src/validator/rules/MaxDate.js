@@ -24,9 +24,8 @@ export default class MaxDate extends Rule {
       if (_.isNull(maxDate)) {
           return true;
       }
-      else {
-          maxDate.setHours(0, 0, 0, 0);
-      }
+
+      maxDate.setHours(0, 0, 0, 0);
 
       return date.isBefore(maxDate) || date.isSame(maxDate);
   }

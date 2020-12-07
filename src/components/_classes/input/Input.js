@@ -6,7 +6,6 @@ import { delay, convertStringToHTMLElement } from '@/utils/utils';
 import Widgets from '../../../widgets';
 import Multivalue from '../multivalue/Multivalue';
 
-
 export default class Input extends Multivalue {
     constructor(component, options, data) {
         super(component, options, data);
@@ -57,12 +56,10 @@ export default class Input extends Multivalue {
     }
 
     get maskOptions() {
-        return _.map(this.component.inputMasks, mask => {
-            return {
-                label: mask.label,
-                value: mask.label,
-            };
-        });
+        return _.map(this.component.inputMasks, mask => ({
+            label: mask.label,
+            value: mask.label,
+        }));
     }
 
     get isMultipleMasksField() {
@@ -70,9 +67,7 @@ export default class Input extends Multivalue {
     }
 
     getMaskByName(maskName) {
-        const inputMask = _.find(this.component.inputMasks, inputMask => {
-            return inputMask.label === maskName;
-        });
+        const inputMask = _.find(this.component.inputMasks, inputMask => inputMask.label === maskName);
         return inputMask ? inputMask.mask : undefined;
     }
 

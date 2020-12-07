@@ -278,7 +278,7 @@ class Formio {
             query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
         }
         else {
-            ({query} = this);
+            ({ query } = this);
         }
         if (!this[_id]) {
             return NativePromise.reject(`Missing ${_id}`);
@@ -345,7 +345,7 @@ class Formio {
                     query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
                 }
                 else {
-                    ({query} = this);
+                    ({ query } = this);
                 }
                 return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
                     .then(revisionForm => {
@@ -353,10 +353,10 @@ class Formio {
                         currentForm.components = revisionForm.components;
                         currentForm.settings = revisionForm.settings;
                         // Using object.assign so we don't cross polinate multiple form loads.
-                        return Object.assign({}, currentForm);
+                        return { ...currentForm };
                     })
                 // If we couldn't load the revision, just return the original form.
-                    .catch(() => Object.assign({}, currentForm));
+                    .catch(() => ({ ...currentForm }));
             });
     }
 
@@ -432,11 +432,8 @@ class Formio {
         if (this.isObjectId(this.projectId)) {
             return NativePromise.resolve(this.projectId);
         }
-        else {
-            return this.loadProject().then(project => {
-                return project._id;
-            });
-        }
+
+        return this.loadProject().then(project => project._id);
     }
 
     getFormId() {
@@ -446,11 +443,8 @@ class Formio {
         if (this.isObjectId(this.formId)) {
             return NativePromise.resolve(this.formId);
         }
-        else {
-            return this.loadForm().then(form => {
-                return form._id;
-            });
-        }
+
+        return this.loadForm().then(form => form._id);
     }
 
     currentUser(options) {
@@ -467,7 +461,7 @@ class Formio {
    * @return {*}
    */
     getToken(options) {
-        return Formio.getToken(Object.assign({ formio: this }, this.options, options));
+        return Formio.getToken({ formio: this, ...this.options, ...options });
     }
 
     /**
@@ -476,7 +470,7 @@ class Formio {
    * @return {*}
    */
     setToken(token, options) {
-        return Formio.setToken(token, Object.assign({ formio: this }, this.options, options));
+        return Formio.setToken(token, { formio: this, ...this.options, ...options });
     }
 
     /**
@@ -543,25 +537,22 @@ class Formio {
         };
         fileKey = fileKey || 'file';
         const request = Formio.pluginWait('preRequest', requestArgs)
-            .then(() => {
-                return Formio.pluginGet('fileRequest', requestArgs)
-                    .then(result => {
-                        if (storage && isNil(result)) {
-                            const Provider = Providers.getProvider('storage', storage);
-                            if (Provider) {
-                                const provider = new Provider(this);
-                                if (uploadStartCallback) {
-                                    uploadStartCallback();
-                                }
-                                return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId);
+            .then(() => Formio.pluginGet('fileRequest', requestArgs)
+                .then(result => {
+                    if (storage && isNil(result)) {
+                        const Provider = Providers.getProvider('storage', storage);
+                        if (Provider) {
+                            const provider = new Provider(this);
+                            if (uploadStartCallback) {
+                                uploadStartCallback();
                             }
-                            else {
-                                throw ('Storage provider not found');
-                            }
+                            return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId);
                         }
-                        return result || { url: '' };
-                    });
-            });
+
+                        throw ('Storage provider not found');
+                    }
+                    return result || { url: '' };
+                }));
 
         return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
     }
@@ -573,22 +564,19 @@ class Formio {
         };
 
         const request = Formio.pluginWait('preRequest', requestArgs)
-            .then(() => {
-                return Formio.pluginGet('fileRequest', requestArgs)
-                    .then(result => {
-                        if (file.storage && isNil(result)) {
-                            const Provider = Providers.getProvider('storage', file.storage);
-                            if (Provider) {
-                                const provider = new Provider(this);
-                                return provider.downloadFile(file, options);
-                            }
-                            else {
-                                throw ('Storage provider not found');
-                            }
+            .then(() => Formio.pluginGet('fileRequest', requestArgs)
+                .then(result => {
+                    if (file.storage && isNil(result)) {
+                        const Provider = Providers.getProvider('storage', file.storage);
+                        if (Provider) {
+                            const provider = new Provider(this);
+                            return provider.downloadFile(file, options);
                         }
-                        return result || { url: '' };
-                    });
-            });
+
+                        throw ('Storage provider not found');
+                    }
+                    return result || { url: '' };
+                }));
 
         return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
     }
@@ -665,8 +653,8 @@ class Formio {
                         const groups = Array.isArray(value) ? value : [ value ];
                         groups.forEach(group => {
                             if (
-                                group && group._id && // group id is present
-                user.roles.indexOf(group._id) > -1 // user has group id in his roles
+                                group && group._id // group id is present
+                && user.roles.indexOf(group._id) > -1 // user has group id in his roles
                             ) {
                                 if (component.defaultPermission === 'read') {
                                     perms[permMap.read] = true;
@@ -736,9 +724,7 @@ class Formio {
 
     static serialize(obj, _interpolate) {
         const str = [];
-        const interpolate = item => {
-            return _interpolate ? _interpolate(item) : item;
-        };
+        const interpolate = item => (_interpolate ? _interpolate(item) : item);
         for (const p in obj) {
             if (_has(obj, p)) {
                 str.push(`${encodeURIComponent(p)}=${encodeURIComponent(interpolate(obj[p]))}`);
@@ -793,7 +779,7 @@ class Formio {
         requestArgs.opts = requestArgs.opts || {};
         requestArgs.opts.formio = formio;
 
-        //for Formio requests default Accept and Content-type headers
+        // for Formio requests default Accept and Content-type headers
         if (!requestArgs.opts.headers) {
             requestArgs.opts.headers = {};
         }
@@ -864,7 +850,7 @@ class Formio {
         // Allow plugins to alter the options.
         options = getFormio().pluginAlter('requestOptions', options, url);
         if (options.namespace || getFormio().namespace) {
-            opts.namespace = options.namespace ||  getFormio().namespace;
+            opts.namespace = options.namespace || getFormio().namespace;
         }
 
         const requestToken = options.headers['x-jwt-token'];
@@ -888,9 +874,7 @@ class Formio {
                 return (response.headers.get('content-type').includes('application/json')
           ? response.json()
           : response.text())
-                    .then(error => {
-                        return NativePromise.reject(error);
-                    });
+                    .then(error => NativePromise.reject(error));
             }
 
             // Handle fetch results
@@ -902,23 +886,23 @@ class Formio {
             // case where we do not send an x-jwt-token and get one in return for any GET request.
             let tokenIntroduced = false;
             if (
-                (method === 'GET') &&
-        !requestToken &&
-        token &&
-        !opts.external &&
-        !url.includes('token=') &&
-        !url.includes('x-jwt-token=')
+                (method === 'GET')
+        && !requestToken
+        && token
+        && !opts.external
+        && !url.includes('token=')
+        && !url.includes('x-jwt-token=')
             ) {
                 console.warn('Token was introduced in request.');
                 tokenIntroduced = true;
             }
 
             if (
-                response.status >= 200 &&
-        response.status < 300 &&
-        token &&
-        token !== '' &&
-        !tokenIntroduced
+                response.status >= 200
+        && response.status < 300
+        && token
+        && token !== ''
+        && !tokenIntroduced
             ) {
                 getFormio().setToken(token, opts);
             }
@@ -1198,8 +1182,7 @@ class Formio {
     }
 
     static pluginWait(pluginFn, ...args) {
-        return NativePromise.all(getFormio().plugins.map(plugin =>
-            (plugin[pluginFn] || getFormio().noop).call(plugin, ...args)));
+        return NativePromise.all(getFormio().plugins.map(plugin => (plugin[pluginFn] || getFormio().noop).call(plugin, ...args)));
     }
 
     static pluginGet(pluginFn, ...args) {
@@ -1223,8 +1206,7 @@ class Formio {
     }
 
     static pluginAlter(pluginFn, value, ...args) {
-        return getFormio().plugins.reduce((value, plugin) =>
-            (plugin[pluginFn] || getFormio().identity)(value, ...args), value);
+        return getFormio().plugins.reduce((value, plugin) => (plugin[pluginFn] || getFormio().identity)(value, ...args), value);
     }
 
     static accessInfo(formio) {
@@ -1238,7 +1220,7 @@ class Formio {
     }
 
     static currentUser(formio, options) {
-        let {authUrl} = getFormio();
+        let { authUrl } = getFormio();
         if (!authUrl) {
             authUrl = formio ? formio.projectUrl : (getFormio().projectUrl || getFormio().baseUrl);
         }
@@ -1483,8 +1465,8 @@ class Formio {
 
     static libraryReady(name) {
         if (
-            _has(getFormio().libraries, name) &&
-      getFormio().libraries[name].ready
+            _has(getFormio().libraries, name)
+      && getFormio().libraries[name].ready
         ) {
             return getFormio().libraries[name].ready;
         }
