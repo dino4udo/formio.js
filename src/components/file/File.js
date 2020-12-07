@@ -457,7 +457,9 @@ export default class FileComponent extends Field {
         if (fileService) {
             const loadingImages = [];
             this.refs.fileImage.forEach((image, index) => {
-                loadingImages.push(this.loadImage(this.dataValue[index]).then(url => (image.src = url)));
+                loadingImages.push(this.loadImage(this.dataValue[index]).then(url => {
+                    image.src = url;
+                }));
             });
             if (loadingImages.length) {
                 NativePromise.all(loadingImages).then(() => {

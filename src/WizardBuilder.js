@@ -6,8 +6,8 @@ import BuilderUtils from './utils/builder';
 
 export default class WizardBuilder extends WebformBuilder {
     constructor() {
-        let element; let
-            options;
+        let element;
+        let options;
         if (arguments[0] instanceof HTMLElement || arguments[1]) {
             element = arguments[0];
             options = arguments[1];

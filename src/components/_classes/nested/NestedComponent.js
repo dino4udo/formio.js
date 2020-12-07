@@ -80,7 +80,9 @@ export default class NestedComponent extends Field {
 
     set parentVisible(value) {
         super.parentVisible = value;
-        this.components.forEach(component => component.parentVisible = this.visible);
+        this.components.forEach(component => {
+            component.parentVisible = this.visible;
+        });
     }
 
     get parentVisible() {
@@ -93,7 +95,9 @@ export default class NestedComponent extends Field {
 
     set disabled(disabled) {
         super.disabled = disabled;
-        this.components.forEach(component => component.parentDisabled = disabled);
+        this.components.forEach(component => {
+            component.parentDisabled = disabled;
+        });
     }
 
     set parentDisabled(value) {
@@ -596,7 +600,9 @@ export default class NestedComponent extends Field {
     }
 
     restoreComponentsContext() {
-        this.getComponents().forEach(component => component.data = this.dataValue);
+        this.getComponents().forEach(component => {
+            component.data = this.dataValue;
+        });
     }
 
     /**

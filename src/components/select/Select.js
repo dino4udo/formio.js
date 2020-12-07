@@ -1510,7 +1510,9 @@ export default class SelectComponent extends Field {
         const convertToString = (data, valueProperty) => {
             if (valueProperty) {
                 if (Array.isArray(data)) {
-                    data.forEach(item => item[valueProperty] = item[valueProperty].toString());
+                    data.forEach(item => {
+                        item[valueProperty] = item[valueProperty].toString();
+                    });
                 }
                 else {
                     data[valueProperty] = data[valueProperty].toString();

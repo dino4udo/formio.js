@@ -1045,7 +1045,9 @@ export function observeOverload(callback, options = {}) {
     let callCount = 0;
     let timeoutID = 0;
 
-    const reset = () => callCount = 0;
+    const reset = () => {
+        callCount = 0;
+    };
 
     return () => {
         if (timeoutID !== 0) {
