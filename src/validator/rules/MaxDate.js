@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 
-import { getDateSetting } from '../../utils/utils';
+import { getDateSetting } from '@/utils/utils';
 
 import Rule from './Rule';
 

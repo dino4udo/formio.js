@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-import { escapeRegExCharacters } from '../../utils/utils';
+import { escapeRegExCharacters } from '@/utils/utils';
 
 import Rule from './Rule';
 

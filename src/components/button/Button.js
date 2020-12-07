@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-import { flattenComponents } from '../../utils/utils';
+import { flattenComponents } from '@/utils/utils';
+
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
 

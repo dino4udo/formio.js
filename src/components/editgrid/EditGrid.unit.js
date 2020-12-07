@@ -5,7 +5,7 @@ import EditGridComponent from './EditGrid';
 import { comp1, comp4, comp3, comp5, comp6, comp7, comp8 } from './fixtures';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
-import Webform from '../../Webform';
+import Webform from '@/Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
 
 describe('EditGrid Component', () => {

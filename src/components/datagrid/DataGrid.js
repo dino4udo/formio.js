@@ -2,7 +2,8 @@ import dragula from 'dragula/dist/dragula';
 import _ from 'lodash';
 
 // Import from "dist" because it would require and "global" would not be defined in Angular apps.
-import { fastCloneDeep } from '../../utils/utils';
+import { fastCloneDeep } from '@/utils/utils';
+
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 
 export default class DataGridComponent extends NestedArrayComponent {

@@ -1,13 +1,15 @@
-import { interpolate } from '../../utils/utils';
 
-import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
+import _ from 'lodash';
+import NativePromise from 'native-promise-only';
+
+import { interpolate } from '@/utils/utils';
+
+import Rule from './Rule';
+
 const { fetch, Headers, Request } = fetchPonyfill({
     Promise: NativePromise,
 });
-import _ from 'lodash';
-
-import Rule from './Rule';
 
 export default class Select extends Rule {
   defaultMessage = '{{field}} contains an invalid selection';

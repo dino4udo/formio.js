@@ -8,7 +8,7 @@ import {
   timeForm2,
   timeForm,
 } from './fixtures';
-import Webform from '../../Webform';
+import Webform from '@/Webform';
 
 describe('Time Component', () => {
   it('Should build a time component', () => {

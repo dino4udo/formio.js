@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-import { delay, convertStringToHTMLElement } from '../../../utils/utils';
+import { delay, convertStringToHTMLElement } from '@/utils/utils';
+
 import Widgets from '../../../widgets';
 import Multivalue from '../multivalue/Multivalue';
 

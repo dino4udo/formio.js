@@ -1,5 +1,7 @@
 import fetchPonyfill from 'fetch-ponyfill';
 import _ from 'lodash';
+import moment from 'moment';
+import NativePromise from 'native-promise-only';
 
 import {
     boolValue,
@@ -9,10 +11,7 @@ import {
     escapeRegExCharacters,
     interpolate,
     convertFormatToMoment, getArrayFromComponentPath, unescapeHTML,
-} from '../utils/utils';
-
-import moment from 'moment';
-import NativePromise from 'native-promise-only';
+} from '@/utils/utils';
 
 const { fetch, Headers, Request } = fetchPonyfill({
     Promise: NativePromise,

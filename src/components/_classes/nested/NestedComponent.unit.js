@@ -7,7 +7,7 @@ import { expect } from 'chai';
 import { comp1, comp2, comp3 } from './fixtures';
 import { nestedForm } from '../../../../test/fixtures';
 import _map from 'lodash/map';
-import Webform from '../../../Webform';
+import Webform from '@/Webform';
 
 let component = null;
 describe('NestedComponent class', () => {

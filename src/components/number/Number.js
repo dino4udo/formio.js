@@ -2,7 +2,8 @@ import _ from 'lodash';
 import { createNumberMask } from 'text-mask-addons';
 import { maskInput, conformToMask } from 'vanilla-text-mask';
 
-import { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';
+import { getNumberSeparators, getNumberDecimalLimit } from '@/utils/utils';
+
 import Input from '../_classes/input/Input';
 
 export default class NumberComponent extends Input {

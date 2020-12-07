@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-import { fastCloneDeep, Evaluator, getArrayFromComponentPath } from '../../utils/utils';
+import { fastCloneDeep, Evaluator, getArrayFromComponentPath } from '@/utils/utils';
+
 import Component from '../_classes/component/Component';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Alert from '../alert/Alert';

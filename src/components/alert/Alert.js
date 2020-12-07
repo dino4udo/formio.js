@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { getStringFromComponentPath } from '../../utils/utils';
+import { getStringFromComponentPath } from '@/utils/utils';
 
 export default class Alert {
     constructor(container, component) {

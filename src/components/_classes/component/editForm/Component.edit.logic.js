@@ -1,6 +1,6 @@
 import _has from 'lodash/has';
 
-import { getContextComponents } from '../../../../utils/utils';
+import { getContextComponents } from '@/utils/utils';
 /* eslint-disable quotes, max-len */
 export default [
     {

@@ -2,7 +2,8 @@
 import _get from 'lodash/get';
 import NativePromise from 'native-promise-only';
 
-import Formio from '../../Formio';
+import Formio from '@/Formio';
+
 import Component from '../_classes/component/Component';
 
 export default class ReCaptchaComponent extends Component {

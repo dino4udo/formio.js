@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
+import webform from '@/Webform';
+
 import pdf from '../PDF';
-import webform from '../Webform';
 import wizard from '../Wizard';
 
 export default class Displays {

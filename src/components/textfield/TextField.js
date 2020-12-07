@@ -1,7 +1,8 @@
 import _has from 'lodash/has';
 import { conformToMask } from 'vanilla-text-mask';
 
-import * as FormioUtils from '../../utils/utils';
+import * as FormioUtils from '@/utils/utils';
+
 import Input from '../_classes/input/Input';
 
 export default class TextFieldComponent extends Input {

@@ -7,7 +7,7 @@ import {
   comp1,
   comp3
 } from './fixtures';
-import Webform from '../../Webform';
+import Webform from '@/Webform';
 import formModalEdit from './fixtures/formModalEdit';
 import { formComponentWithConditionalRenderingForm } from '../../../test/formtest';
 

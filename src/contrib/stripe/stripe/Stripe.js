@@ -2,7 +2,8 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-import Formio from '../../../Formio';
+import Formio from '@/Formio';
+
 import Component from '../../../components/_classes/component/Component';
 import Validator from '../../../validator/Validator';
 

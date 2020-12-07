@@ -1,4 +1,5 @@
-import { hasInvalidComponent } from '../../utils/utils';
+import { hasInvalidComponent } from '@/utils/utils';
+
 import NestedComponent from '../_classes/nested/NestedComponent';
 import FormComponent from '../form/Form';
 

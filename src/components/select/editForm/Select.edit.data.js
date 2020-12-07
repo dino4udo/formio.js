@@ -1,4 +1,4 @@
-import { eachComponent } from '../../../utils/utils';
+import { eachComponent } from '@/utils/utils';
 
 export default [
     {

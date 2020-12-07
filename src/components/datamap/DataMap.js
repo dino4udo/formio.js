@@ -1,7 +1,8 @@
 import EventEmitter from 'eventemitter2';
 import _ from 'lodash';
 
-import { uniqueKey } from '../../utils/utils';
+import { uniqueKey } from '@/utils/utils';
+
 import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
 

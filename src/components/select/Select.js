@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
+import Formio from '@/Formio';
+import { getRandomComponentId, boolValue } from '@/utils/utils';
+
 import Form from '../../Form';
-import Formio from '../../Formio';
 import Choices from '../../utils/ChoicesWrapper';
-import { getRandomComponentId, boolValue } from '../../utils/utils';
 import Field from '../_classes/field/Field';
 
 export default class SelectComponent extends Field {

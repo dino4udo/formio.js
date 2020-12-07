@@ -2,7 +2,8 @@ import _ from 'lodash';
 import { createNumberMask } from 'text-mask-addons';
 import { maskInput } from 'vanilla-text-mask';
 
-import { getCurrencyAffixes } from '../../utils/utils';
+import { getCurrencyAffixes } from '@/utils/utils';
+
 import NumberComponent from '../number/Number';
 
 export default class CurrencyComponent extends NumberComponent {

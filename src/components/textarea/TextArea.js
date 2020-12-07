@@ -2,7 +2,8 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-import { uniqueName, getIEBrowserVersion } from '../../utils/utils';
+import { uniqueName, getIEBrowserVersion } from '@/utils/utils';
+
 import TextFieldComponent from '../textfield/TextField';
 
 export default class TextAreaComponent extends TextFieldComponent {

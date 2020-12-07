@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { fastCloneDeep } from '../../../utils/utils';
+import { fastCloneDeep } from '@/utils/utils';
 
 export default class ComponentModal {
     static render(component, data, topLevel) {

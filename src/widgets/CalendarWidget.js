@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 
-import Formio from '../Formio';
+import Formio from '@/Formio';
 import {
     convertFormatToFlatpickr,
     convertFormatToMask,
@@ -15,7 +15,7 @@ import {
     zonesLoaded,
     shouldLoadZones,
     loadZones,
-} from '../utils/utils';
+} from '@/utils/utils';
 
 import InputWidget from './InputWidget';
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';

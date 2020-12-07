@@ -1,4 +1,4 @@
-import { getInputMask, matchInputMask } from '../../utils/utils';
+import { getInputMask, matchInputMask } from '@/utils/utils';
 
 import Rule from './Rule';
 

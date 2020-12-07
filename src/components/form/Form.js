@@ -2,14 +2,15 @@ import EventEmitter from 'eventemitter2';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-import Form from '../../Form';
-import Formio from '../../Formio';
+import Formio from '@/Formio';
 import {
     isMongoId,
     eachComponent,
     getStringFromComponentPath,
     getArrayFromComponentPath,
-} from '../../utils/utils';
+} from '@/utils/utils';
+
+import Form from '../../Form';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
 

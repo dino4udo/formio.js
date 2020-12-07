@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import Harness from '../../../test/harness';
 import EditTable from './EditTable';
-import Webform from '../../Webform';
+import Webform from '@/Webform';
 import { basic } from './fixtures/index';
 
 const { testCreate: create } = Harness;

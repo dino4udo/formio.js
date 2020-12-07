@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
-import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
+import { boolValue, getLocaleDateFormatInfo } from '@/utils/utils';
+
 import Field from '../_classes/field/Field';
 
 export default class DayComponent extends Field {

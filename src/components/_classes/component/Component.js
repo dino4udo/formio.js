@@ -6,12 +6,14 @@ import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import { conformToMask } from 'vanilla-text-mask';
 
-import Element from '../../../Element';
-import Formio from '../../../Formio';
+import Element from '@/Element';
+import Formio from '@/Formio';
+import * as FormioUtils from '@/utils/utils';
+import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParentComponent } from '@/utils/utils';
+
+
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import Templates from '../../../templates/Templates';
-import * as FormioUtils from '../../../utils/utils';
-import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParentComponent } from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import Widgets from '../../../widgets';
 import ComponentModal from '../componentModal/ComponentModal';

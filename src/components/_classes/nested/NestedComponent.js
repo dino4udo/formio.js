@@ -2,7 +2,8 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-import { getArrayFromComponentPath, getStringFromComponentPath } from '../../../utils/utils';
+import { getArrayFromComponentPath, getStringFromComponentPath } from '@/utils/utils';
+
 import Components from '../../Components';
 import Field from '../field/Field';
 

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
-import { boolValue } from '../../utils/utils';
+import { boolValue } from '@/utils/utils';
+
 import Field from '../_classes/field/Field';
 
 export default class RadioComponent extends Field {
