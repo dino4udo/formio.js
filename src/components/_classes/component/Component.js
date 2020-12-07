@@ -684,13 +684,13 @@ export default class Component extends Element {
             return schema;
         }
         _.each(schema, (val, key) => {
-            if (!_.isArray(val) && _.isObject(val) && _has(defaultSchema, key)) {
+            if (!Array.isArray(val) && _.isObject(val) && _has(defaultSchema, key)) {
                 const subModified = this.getModifiedSchema(val, defaultSchema[key], true);
                 if (!_.isEmpty(subModified)) {
                     modified[key] = subModified;
                 }
             }
-            else if (_.isArray(val)) {
+            else if (Array.isArray(val)) {
                 if (val.length !== 0) {
                     modified[key] = val;
                 }
@@ -2186,7 +2186,7 @@ export default class Component extends Element {
     splice(index) {
         if (this.hasValue()) {
             const dataValue = this.dataValue || [];
-            if (_.isArray(dataValue) && _has(dataValue, index)) {
+            if (Array.isArray(dataValue) && _has(dataValue, index)) {
                 dataValue.splice(index, 1);
                 this.dataValue = dataValue;
                 this.triggerChange();
@@ -2746,7 +2746,7 @@ export default class Component extends Element {
     }
 
     isEmpty(value = this.dataValue) {
-        const isEmptyArray = (_.isArray(value) && value.length === 1) ? _.isEqual(value[0], this.emptyValue) : false;
+        const isEmptyArray = (Array.isArray(value) && value.length === 1) ? _.isEqual(value[0], this.emptyValue) : false;
         return value == null || value.length === 0 || _.isEqual(value, this.emptyValue) || isEmptyArray;
     }
 

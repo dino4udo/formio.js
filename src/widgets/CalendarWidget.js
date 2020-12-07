@@ -99,120 +99,131 @@ export default class CalendarWidget extends InputWidget {
         this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
         this.settings.minDate = getDateSetting(this.settings.minDate);
         this.settings.disable = this.disabledDates;
-    this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';
-    this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';
-    this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';
-    this.settings.maxDate = getDateSetting(this.settings.maxDate);
-    this.settings.wasDefaultValueChanged = false;
-    this.settings.defaultValue = '';
-    this.settings.manualInputValue = '';
-    this.settings.isManuallyOverriddenValue = false;
-    this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
-    this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
-    this.settings.onChange = () => {
-        if (this.settings.allowInput) {
-            if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {
-                this.calendar._input.value = this.settings.manualInputValue;
+
+        // this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';
+        // this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';
+        // this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';
+        if (this.settings.disableWeekends) {
+            this.settings.disable.push(this.disableWeekends);
+        }        
+        if (this.settings.disableWeekdays) {
+            this.settings.disable.push(this.disableWeekdays);
+        }
+        if (this.settings.disableFunction) {
+            this.settings.disable.push(this.disableFunction);
+        }
+
+        this.settings.maxDate = getDateSetting(this.settings.maxDate);
+        this.settings.wasDefaultValueChanged = false;
+        this.settings.defaultValue = '';
+        this.settings.manualInputValue = '';
+        this.settings.isManuallyOverriddenValue = false;
+        this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
+        this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
+        this.settings.onChange = () => {
+            if (this.settings.allowInput) {
+                if (this.settings.isManuallyOverriddenValue && this.settings.enableTime) {
+                    this.calendar._input.value = this.settings.manualInputValue;
+                }
+                else {
+                    this.settings.manualInputValue = '';
+                }
+
+                this.settings.isManuallyOverriddenValue = false;
             }
-            else {
-                this.settings.manualInputValue = '';
+
+            this.emit('update');
+        };
+        this.settings.onOpen = () => this.hook('onCalendarOpen');
+        this.settings.onClose = () => {
+            this.hook('onCalendarClose');
+            this.closedOn = Date.now();
+
+            if (this.settings.allowInput && this.settings.enableTime) {
+                this.calendar._input.value = this.settings.manualInputValue || this.calendar._input.value;
+                this.settings.isManuallyOverriddenValue = false;
             }
 
-            this.settings.isManuallyOverriddenValue = false;
-        }
+            if (this.settings.wasDefaultValueChanged) {
+                this.calendar._input.value = this.settings.defaultValue;
+                this.settings.wasDefaultValueChanged = false;
+            }
+            if (this.calendar) {
+                this.emit('blur');
+            }
+        };
 
-        this.emit('update');
-    };
-    this.settings.onOpen = () => this.hook('onCalendarOpen');
-    this.settings.onClose = () => {
-        this.hook('onCalendarClose');
-        this.closedOn = Date.now();
+        Formio.requireLibrary('flatpickr-css', 'flatpickr-css', [
+            { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` },
+        ], true);
 
-        if (this.settings.allowInput && this.settings.enableTime) {
-            this.calendar._input.value = this.settings.manualInputValue || this.calendar._input.value;
-            this.settings.isManuallyOverriddenValue = false;
-        }
-
-        if (this.settings.wasDefaultValueChanged) {
-            this.calendar._input.value = this.settings.defaultValue;
-            this.settings.wasDefaultValueChanged = false;
-        }
-        if (this.calendar) {
-            this.emit('blur');
-        }
-    };
-
-    Formio.requireLibrary('flatpickr-css', 'flatpickr-css', [
-        { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` },
-    ], true);
-
-    return superAttach
-        .then(() => {
-            return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)
-                .then(Flatpickr => {
-                    this.settings.formatDate = (date, format) => {
+        return superAttach
+            .then(() => {
+                return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)
+                    .then(Flatpickr => {
+                        this.settings.formatDate = (date, format) => {
                         // Only format this if this is the altFormat and the form is readOnly.
-                        if (this.settings.readOnly && (format === this.settings.altFormat)) {
-                            if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
-                                return Flatpickr.formatDate(date, format);
+                            if (this.settings.readOnly && (format === this.settings.altFormat)) {
+                                if (this.settings.saveAs === 'text' || !this.settings.enableTime || this.loadZones()) {
+                                    return Flatpickr.formatDate(date, format);
+                                }
+
+                                return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
                             }
 
-                            return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
-                        }
+                            return Flatpickr.formatDate(date, format);
+                        };
 
-                        return Flatpickr.formatDate(date, format);
-                    };
+                        if (this._input) {
+                            const dateValue = this._input.value;
+                            // Create a new flatpickr.
+                            this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
 
-                    if (this._input) {
-                        const dateValue = this._input.value;
-                        // Create a new flatpickr.
-                        this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
-
-                        if (dateValue) {
-                            this.calendar.setDate(dateValue, false, this.settings.altFormat);
-                        }
-                        this.calendar.altInput.addEventListener('input', event => {
-                            if (this.settings.allowInput) {
-                                this.settings.manualInputValue = event.target.value;
-                                this.settings.isManuallyOverriddenValue = true;
+                            if (dateValue) {
+                                this.calendar.setDate(dateValue, false, this.settings.altFormat);
                             }
+                            this.calendar.altInput.addEventListener('input', event => {
+                                if (this.settings.allowInput) {
+                                    this.settings.manualInputValue = event.target.value;
+                                    this.settings.isManuallyOverriddenValue = true;
+                                }
 
-                            if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
-                                this.settings.wasDefaultValueChanged = true;
-                                this.settings.defaultValue = event.target.value;
-                                this.calendar.clear();
-                            }
-                            else {
-                                this.settings.wasDefaultValueChanged = false;
-                            }
-                        });
+                                if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
+                                    this.settings.wasDefaultValueChanged = true;
+                                    this.settings.defaultValue = event.target.value;
+                                    this.calendar.clear();
+                                }
+                                else {
+                                    this.settings.wasDefaultValueChanged = false;
+                                }
+                            });
 
-                        if (!this.settings.readOnly) {
+                            if (!this.settings.readOnly) {
                             // Enforce the input mask of the format.
-                            this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
+                                this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
+                            }
+
+                            // Make sure we commit the value after a blur event occurs.
+                            this.addEventListener(this.calendar._input, 'blur', event => {
+                                if (!event.relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
+                                    const inputValue = this.calendar.input.value;
+                                    const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+
+                                    this.calendar.setDate(dateValue, true, this.settings.altFormat);
+                                }
+                            });
+
+                            // FJS-1103: When hit the enter button, the field not saving the year correctly
+                            this.addEventListener(this.calendar.altInput, 'keydown', event => {
+                                if (event.keyCode === 13) {
+                                    this.calendar.altInput.blur();
+                                    this.calendar.close();
+                                    event.stopPropagation();
+                                }
+                            });
                         }
-
-                        // Make sure we commit the value after a blur event occurs.
-                        this.addEventListener(this.calendar._input, 'blur', event => {
-                            if (!event.relatedTarget?.className.split(/\s+/).includes('flatpickr-day')) {
-                                const inputValue = this.calendar.input.value;
-                                const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
-
-                                this.calendar.setDate(dateValue, true, this.settings.altFormat);
-                            }
-                        });
-
-                        // FJS-1103: When hit the enter button, the field not saving the year correctly
-                        this.addEventListener(this.calendar.altInput, 'keydown', event => {
-                            if (event.keyCode === 13) {
-                                this.calendar.altInput.blur();
-                                this.calendar.close();
-                                event.stopPropagation();
-                            }
-                        });
-                    }
-                });
-        });
+                    });
+            });
     }
 
     get disableWeekends() {

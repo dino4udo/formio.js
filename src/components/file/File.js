@@ -99,7 +99,7 @@ export default class FileComponent extends Field {
     }
 
     getValueAsString(value) {
-        if (_.isArray(value)) {
+        if (Array.isArray(value)) {
             return _.map(value, 'originalName').join(', ');
         }
 

@@ -45,7 +45,7 @@ export default class Unique extends Rule {
               };
           }
           // Compare the contents of arrays vs the order.
-          else if (_.isArray(value)) {
+          else if (Array.isArray(value)) {
               query[path] = { $all: value };
           }
           else if (_.isObject(value) || _.isNumber(value)) {

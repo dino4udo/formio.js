@@ -201,7 +201,7 @@ export default class AddressComponent extends ContainerComponent {
 
     get address() {
         if (this.isMultiple) {
-            return _.isArray(this.dataValue) ? this.dataValue : [ this.dataValue ];
+            return Array.isArray(this.dataValue) ? this.dataValue : [ this.dataValue ];
         }
         // Manual mode is not implementing for multiple value
         return (this.manualModeEnabled && this.dataValue) ? this.dataValue.address : this.dataValue;

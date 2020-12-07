@@ -1167,7 +1167,7 @@ export function isInputComponent(componentJson) {
 
 export function getArrayFromComponentPath(pathStr) {
     if (!pathStr || !_.isString(pathStr)) {
-        if (!_.isArray(pathStr)) {
+        if (!Array.isArray(pathStr)) {
             return [ pathStr ];
         }
         return pathStr;
@@ -1181,7 +1181,7 @@ export function getArrayFromComponentPath(pathStr) {
 
 export function  hasInvalidComponent(component) {
     return component.getComponents().some(comp => {
-        if (_.isArray(comp.components)) {
+        if (Array.isArray(comp.components)) {
             return hasInvalidComponent(comp);
         }
         return comp.error;
@@ -1189,7 +1189,7 @@ export function  hasInvalidComponent(component) {
 }
 
 export function getStringFromComponentPath(path) {
-    if (!_.isArray(path)) {
+    if (!Array.isArray(path)) {
         return path;
     }
     let strPath = '';

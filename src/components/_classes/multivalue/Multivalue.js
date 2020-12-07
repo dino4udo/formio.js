@@ -21,7 +21,7 @@ export default class Multivalue extends Field {
         let value = super.defaultValue;
 
         if (this.component.multiple) {
-            if (_.isArray(value)) {
+            if (Array.isArray(value)) {
                 value = !value.length ? [ super.emptyValue ] : value;
             }
             else {

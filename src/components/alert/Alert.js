@@ -27,7 +27,7 @@ export default class Alert {
     }
 
     showErrors(errors = [], triggerEvent = false, options = {}) {
-        errors = _.isArray(errors) ? errors : [ errors ];
+        errors = Array.isArray(errors) ? errors : [ errors ];
 
         const messagesList = this.createMessagesList('error', errors);
         this.showAlert('error', messagesList, options);
