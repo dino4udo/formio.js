@@ -1,9 +1,9 @@
-import Components from '.';
+import ComponentForm from './_classes/component/Component.form';
+import NestedForm from './_classes/nested/NestedComponent.form';
 import AddressForm from './address/Address.form';
 import ButtonForm from './button/Button.form';
 import CheckboxForm from './checkbox/Checkbox.form';
 import ColumnsForm from './columns/Columns.form';
-import ComponentForm from './_classes/component/Component.form';
 import ContainerForm from './container/Container.form';
 import ContentForm from './content/Content.form';
 import CurrencyForm from './currency/Currency.form';
@@ -18,7 +18,6 @@ import FileForm from './file/File.form';
 import FormForm from './form/Form.form';
 import HiddenForm from './hidden/Hidden.form';
 import HtmlElementForm from './html/HTML.form';
-import NestedForm from './_classes/nested/NestedComponent.form';
 import NumberForm from './number/Number.form';
 import PanelForm from './panel/Panel.form';
 import PasswordForm from './password/Password.form';
@@ -26,8 +25,8 @@ import PhoneNumberForm from './phonenumber/PhoneNumber.form';
 import RadioForm from './radio/Radio.form';
 import ReCaptchaForm from './recaptcha/ReCaptcha.form';
 import ResourceForm from './resource/Resource.form';
-import SelectboxesForm from './selectboxes/SelectBoxes.form';
 import SelectForm from './select/Select.form';
+import SelectboxesForm from './selectboxes/SelectBoxes.form';
 import SignatureForm from './signature/Signature.form';
 import SurveyForm from './survey/Survey.form';
 import TableForm from './table/Table.form';
@@ -40,6 +39,8 @@ import TreeForm from './tree/Tree.form';
 import UnknownForm from './unknown/Unknown.form';
 import UrlForm from './url/Url.form';
 import WellForm from './well/Well.form';
+
+import Components from './index';
 
 Components.address.editForm = AddressForm;
 Components.button.editForm = ButtonForm;

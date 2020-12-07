@@ -14,6 +14,17 @@ module.exports = {
   plugins: [
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-export-default-from',
-    '@babel/plugin-proposal-optional-chaining'
+    '@babel/plugin-proposal-optional-chaining',
+    [
+      // TODO: gulp needs that. delete after full VueJS shift
+      require.resolve('babel-plugin-module-resolver'),
+      {
+        root: ["./src/"],
+        alias: {
+          "@": "./src"
+        }
+      }
+
+    ]
   ],
 };

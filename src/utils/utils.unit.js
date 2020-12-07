@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { expect, assert } from 'chai';
 import _ from 'lodash';
 import writtenNumber from 'written-number';
-import utils from '.';
+import utils from './index';
 const components = JSON.parse(fs.readFileSync('src/utils/fixtures/components.json'));
 const components2 = JSON.parse(fs.readFileSync('src/utils/fixtures/components2.json'));
 const components3 = JSON.parse(fs.readFileSync('src/utils/fixtures/components3.json'));
