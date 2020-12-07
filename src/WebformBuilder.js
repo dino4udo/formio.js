@@ -44,10 +44,12 @@ export default class WebformBuilder extends Component {
 
         const componentInfo = {};
         for (const type in Components.components) {
-            const component = Components.components[type];
-            if (component.builderInfo) {
-                component.type = type;
-                componentInfo[type] = component.builderInfo;
+            if (_has(Components.components, type)) {
+                const component = Components.components[type];
+                if (component.builderInfo) {
+                    component.type = type;
+                    componentInfo[type] = component.builderInfo;
+                }
             }
         }
 
@@ -86,27 +88,33 @@ export default class WebformBuilder extends Component {
             .map(group => group.key);
 
         for (const type in Components.components) {
-            const component = Components.components[type];
-            if (component.builderInfo) {
-                this.schemas[type] = component.builderInfo.schema;
-                component.type = type;
-                const { builderInfo } = component;
-                builderInfo.key = component.type;
-                this.addBuilderComponentInfo(builderInfo);
+            if (_has(Components.components, type)) {
+                const component = Components.components[type];
+                if (component.builderInfo) {
+                    this.schemas[type] = component.builderInfo.schema;
+                    component.type = type;
+                    const { builderInfo } = component;
+                    builderInfo.key = component.type;
+                    this.addBuilderComponentInfo(builderInfo);
+                }
             }
         }
         // Filter out any extra components.
         // Add the components in each group.
         for (const group in this.groups) {
-            const info = this.groups[group];
-            for (const key in info.components) {
-                const comp = info.components[key];
-                if (comp) {
-                    if (comp.schema) {
-                        this.schemas[key] = comp.schema;
+            if (_has(this.groups, group)) {
+                const info = this.groups[group];
+                for (const key in info.components) {
+                    if (_has(info.components, key)) {
+                        const comp = info.components[key];
+                        if (comp) {
+                            if (comp.schema) {
+                                this.schemas[key] = comp.schema;
+                            }
+                            info.components[key] = comp === true ? componentInfo[key] : comp;
+                            info.components[key].key = key;
+                        }
                     }
-                    info.components[key] = comp === true ? componentInfo[key] : comp;
-                    info.components[key].key = key;
                 }
             }
         }
@@ -620,11 +628,13 @@ export default class WebformBuilder extends Component {
             const filteredOrder = [];
 
             for (const key in components) {
-                const isMatchedToTitle = components[key].title.toLowerCase().match(searchValue);
-                const isMatchedToKey = components[key].key.toLowerCase().match(searchValue);
+                if (_has(components, key)) {
+                    const isMatchedToTitle = components[key].title.toLowerCase().match(searchValue);
+                    const isMatchedToKey = components[key].key.toLowerCase().match(searchValue);
 
-                if (isMatchedToTitle || isMatchedToKey) {
-                    filteredOrder.push(components[key].key);
+                    if (isMatchedToTitle || isMatchedToKey) {
+                        filteredOrder.push(components[key].key);
+                    }
                 }
             }
 

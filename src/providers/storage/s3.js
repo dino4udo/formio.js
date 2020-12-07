@@ -1,3 +1,4 @@
+import _has from 'lodash/has';
 import NativePromise from 'native-promise-only';
 
 import XHR from './xhr';
@@ -15,7 +16,9 @@ const s3 = formio => ({
 
             const fd = new FormData();
             for (const key in response.data) {
-                fd.append(key, response.data[key]);
+                if (_has(response.data, key)) {
+                    fd.append(key, response.data[key]);
+                }
             }
             fd.append('file', file);
             xhr.openAndSetHeaders('POST', response.url);

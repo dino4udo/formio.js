@@ -12,7 +12,9 @@ const url = formio => {
 
         if (!json) {
             for (const key in data) {
-                fd.append(key, data[key]);
+                if (_has(data, key)) {
+                    fd.append(key, data[key]);
+                }
             }
         }
 
@@ -47,7 +49,9 @@ const url = formio => {
 
         let requestUrl = url + (url.indexOf('?') > -1 ? '&' : '?');
         for (const key in query) {
-            requestUrl += `${key}=${query[key]}&`;
+            if (_has(query, key)) {
+                requestUrl += `${key}=${query[key]}&`;
+            }
         }
         if (requestUrl[requestUrl.length - 1] === '&') {
             requestUrl = requestUrl.substr(0, requestUrl.length - 1);
@@ -66,7 +70,9 @@ const url = formio => {
         if (options) {
             const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
             for (const prop in parsedOptions) {
-                xhr[prop] = parsedOptions[prop];
+                if (_has(parsedOptions, prop)) {
+                    xhr[prop] = parsedOptions[prop];
+                }
             }
         }
         xhr.send(json ? data : fd);

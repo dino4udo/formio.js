@@ -3165,7 +3165,9 @@ Component.requireLibrary = function (name, property, src, polling) {
                 // Add the script to the top page.
                 const script = document.createElement(elementType);
                 for (const attr in attrs) {
-                    script.setAttribute(attr, attrs[attr]);
+                    if (_has(attrs, attr)) {
+                        script.setAttribute(attr, attrs[attr]);
+                    }
                 }
                 document.getElementsByTagName('head')[0].appendChild(script);
             });

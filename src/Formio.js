@@ -1438,7 +1438,9 @@ class Formio {
                     const element = document.createElement(elementType);
                     if (element.setAttribute) {
                         for (const attr in attrs) {
-                            element.setAttribute(attr, attrs[attr]);
+                            if (_has(attrs, attr)) {
+                                element.setAttribute(attr, attrs[attr]);
+                            }
                         }
                     }
 
