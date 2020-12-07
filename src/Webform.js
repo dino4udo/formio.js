@@ -1378,7 +1378,7 @@ export default class Webform extends NestedDataComponent {
       submission.metadata = submission.metadata || {};
       _.defaults(submission.metadata, {
           timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
-          offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
+          offset: Number.parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
           origin: document.location.origin,
           referrer: document.referrer,
           browserName: navigator.appName,

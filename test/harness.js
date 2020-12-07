@@ -162,7 +162,7 @@ const Harness = {
 
     getDate() {
         let timestamp = (new Date()).getTime();
-        timestamp = parseInt(timestamp / 1000, 10);
+        timestamp = Number.parseInt(timestamp / 1000, 10);
         return (new Date(timestamp * 1000)).toISOString();
     },
     testCreate(Component, componentSettings, options = {}) {

@@ -997,7 +997,7 @@ export function bootstrapVersion(options) {
         return options.bootstrap;
     }
     if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {
-        return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+        return Number.parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
     }
     return 0;
 }

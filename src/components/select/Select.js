@@ -434,7 +434,7 @@ export default class SelectComponent extends Field {
         options = options || {};
 
         // See if they have not met the minimum search requirements.
-        const minSearch = parseInt(this.component.minSearch, 10);
+        const minSearch = Number.parseInt(this.component.minSearch, 10);
         if (
             this.component.searchField &&
       (minSearch > 0) &&

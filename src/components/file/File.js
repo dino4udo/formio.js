@@ -185,7 +185,7 @@ export default class FileComponent extends Field {
                 }
 
                 videoPlayer.srcObject = stream;
-                const width = parseInt(this.component.webcamSize) || 320;
+                const width = Number.parseInt(this.component.webcamSize, 10) || 320;
                 videoPlayer.setAttribute('width', width);
                 videoPlayer.play();
             })
@@ -655,7 +655,7 @@ export default class FileComponent extends Field {
                     const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
                     const filePromise = fileService.uploadFile(storage, file, fileName, dir, evt => {
                         fileUpload.status = 'progress';
-                        fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
+                        fileUpload.progress = Number.parseInt(100.0 * (evt.loaded / evt.total), 10);
                         delete fileUpload.message;
                         this.redraw();
                     }, url, options, fileKey, groupPermissions, groupResourceId,

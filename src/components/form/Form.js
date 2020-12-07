@@ -129,7 +129,7 @@ export default class FormComponent extends Component {
     setFormRevision(rev) {
     // Remove current revisions from src if it is
         this.formSrc = this.formSrc.replace(/\/v\/\d*/, '');
-        const revNumber = Number.parseInt(rev);
+        const revNumber = Number.parseInt(rev, 10);
 
         if (!Number.isNaN(revNumber)) {
             this.subFormRevision = rev;

@@ -11,7 +11,7 @@ export default class Day extends Rule {
           return false;
       }
       const [ DAY, MONTH, YEAR ] = this.component.dayFirst ? [ 0, 1, 2 ] : [ 1, 0, 2 ];
-      const values = value.split('/').map(x => parseInt(x, 10)),
+      const values = value.split('/').map(x => Number.parseInt(x, 10)),
           day = values[DAY],
           month = values[MONTH],
           year = values[YEAR],

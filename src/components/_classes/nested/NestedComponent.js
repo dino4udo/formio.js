@@ -293,7 +293,7 @@ export default class NestedComponent extends Field {
             while (thisPath && !thisPath.allowData && thisPath.parent) {
                 thisPath = thisPath.parent;
             }
-            const rowIndex = component.row ? `[${Number.parseInt(component.row)}]` : '';
+            const rowIndex = component.row ? `[${Number.parseInt(component.row, 10)}]` : '';
             path = thisPath.path ? `${thisPath.path}${rowIndex}.` : '';
             path += component._parentPath && component.component.shouldIncludeSubFormPath ? component._parentPath : '';
             path += component.component.key;

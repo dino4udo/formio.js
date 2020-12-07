@@ -274,7 +274,7 @@ export default class DayComponent extends Field {
             // TODO: Need to rework this to work with day select as well.
             // Change day max input when month changes.
             this.addEventListener(this.refs.month, 'input', () => {
-                const maxDay = this.refs.year ? parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10)
+                const maxDay = this.refs.year ? Number.parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10)
           : '';
                 const day = this.getFieldValue('day');
                 if (!this.component.fields.day.hide && maxDay) {
@@ -386,13 +386,13 @@ export default class DayComponent extends Field {
         const year = parts.shift();
 
         if (this.refs.day && this.showDay) {
-            this.refs.day.value = day === '00' ? '' : parseInt(day, 10);
+            this.refs.day.value = day === '00' ? '' : Number.parseInt(day, 10);
         }
         if (this.refs.month && this.showMonth) {
-            this.refs.month.value = month === '00' ? '' : parseInt(month, 10);
+            this.refs.month.value = month === '00' ? '' : Number.parseInt(month, 10);
         }
         if (this.refs.year && this.showYear) {
-            this.refs.year.value = year === '0000' ? '' : parseInt(year, 10);
+            this.refs.year.value = year === '0000' ? '' : Number.parseInt(year, 10);
         }
     }
 
@@ -412,7 +412,7 @@ export default class DayComponent extends Field {
                 break;
         }
 
-        val = parseInt(val, 10);
+        val = Number.parseInt(val, 10);
         return (!Number.isNaN(val) && _.isNumber(val)) ? val : 0;
     }
 
@@ -461,11 +461,11 @@ export default class DayComponent extends Field {
         const [ DAY, MONTH, YEAR ] = this.component.dayFirst ? [ 0, 1, 2 ] : [ 1, 0, 2 ];
         const defaultValue = value || this.component.defaultValue;
         if (defaultValue) {
-            defaults = defaultValue.split('/').map(x => parseInt(x, 10));
+            defaults = defaultValue.split('/').map(x => Number.parseInt(x, 10));
         }
 
         if (this.showDay && this.refs.day) {
-            day = parseInt(this.refs.day.value, 10);
+            day = Number.parseInt(this.refs.day.value, 10);
         }
         if (day === undefined || Number.isNaN(day)) {
             day = defaults[DAY] && !Number.isNaN(defaults[DAY]) ? defaults[DAY] : 0;
@@ -473,14 +473,14 @@ export default class DayComponent extends Field {
 
         if (this.showMonth && this.refs.month) {
             // Months are 0 indexed.
-            month = parseInt(this.refs.month.value, 10);
+            month = Number.parseInt(this.refs.month.value, 10);
         }
         if (month === undefined || Number.isNaN(month)) {
             month = defaults[MONTH] && !Number.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;
         }
 
         if (this.showYear && this.refs.year) {
-            year = parseInt(this.refs.year.value);
+            year = Number.parseInt(this.refs.year.value);
         }
         if (year === undefined || Number.isNaN(year)) {
             year = defaults[YEAR] && !Number.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;

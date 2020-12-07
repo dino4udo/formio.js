@@ -393,7 +393,7 @@ class ValidationChecker {
                     });
                 },
                 check(component, setting, value) {
-                    const minLength = parseInt(setting, 10);
+                    const minLength = Number.parseInt(setting, 10);
                     if (!minLength || (typeof value !== 'string') || component.isEmpty(value)) {
                         return true;
                     }
@@ -411,7 +411,7 @@ class ValidationChecker {
                     });
                 },
                 check(component, setting, value) {
-                    const maxLength = parseInt(setting, 10);
+                    const maxLength = Number.parseInt(setting, 10);
                     if (!maxLength || (typeof value !== 'string')) {
                         return true;
                     }
@@ -429,7 +429,7 @@ class ValidationChecker {
                     });
                 },
                 check(component, setting, value) {
-                    const maxWords = parseInt(setting, 10);
+                    const maxWords = Number.parseInt(setting, 10);
                     if (!maxWords || (typeof value !== 'string')) {
                         return true;
                     }
@@ -447,7 +447,7 @@ class ValidationChecker {
                     });
                 },
                 check(component, setting, value) {
-                    const minWords = parseInt(setting, 10);
+                    const minWords = Number.parseInt(setting, 10);
                     if (!minWords || (typeof value !== 'string')) {
                         return true;
                     }
@@ -515,7 +515,7 @@ class ValidationChecker {
                         return true;
                     }
                     const [ DAY, MONTH, YEAR ] = component.dayFirst ? [ 0, 1, 2 ] : [ 1, 0, 2 ];
-                    const values = value.split('/').map(x => parseInt(x, 10)),
+                    const values = value.split('/').map(x => Number.parseInt(x, 10)),
                         day = values[DAY],
                         month = values[MONTH],
                         year = values[YEAR],

@@ -103,7 +103,7 @@ export default class NumberComponent extends Input {
         value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
 
         if (this.component.validate && this.component.validate.integer) {
-            return parseInt(value, 10);
+            return Number.parseInt(value, 10);
         }
         else {
             return parseFloat(value);
