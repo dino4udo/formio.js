@@ -201,7 +201,7 @@ export default class RadioComponent extends Field {
 
         switch (dataType) {
             case 'auto':
-                if (!isNaN(parseFloat(value)) && isFinite(value)) {
+                if (!Number.isNaN(parseFloat(value)) && isFinite(value)) {
                     value = +value;
                 }
                 if (value === 'true') {

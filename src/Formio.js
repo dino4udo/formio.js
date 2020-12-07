@@ -330,7 +330,7 @@ class Formio {
         return this.load('form', query, opts)
             .then(currentForm => {
                 // Check to see if there isn't a number in vId.
-                if (!currentForm.revisions || isNaN(parseInt(this.vId))) {
+                if (!currentForm.revisions || Number.isNaN(parseInt(this.vId))) {
                     return currentForm;
                 }
                 // If a submission already exists but form is marked to load current version of form.
@@ -382,7 +382,7 @@ class Formio {
     }
 
     saveSubmission(data, opts) {
-        if (!isNaN(parseInt(this.vId))) {
+        if (!Number.isNaN(parseInt(this.vId))) {
             data._fvid = this.vId;
         }
         return this.save('submission', data, opts);

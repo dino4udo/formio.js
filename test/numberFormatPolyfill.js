@@ -364,7 +364,7 @@
                 o = $e.NumberFormat['[[localeData]]'][a],
                 s = o.symbols[i] || o.symbols.latn,
                 c = void 0;
-      !isNaN(r) && r < 0 ? (r = -r, c = n['[[negativePattern]]']) : c = n['[[positivePattern]]'];
+      !Number.isNaN(r) && r < 0 ? (r = -r, c = n['[[negativePattern]]']) : c = n['[[positivePattern]]'];
       for (var u = new t, g = c.indexOf('{', 0), f = 0, m = 0, v = c.length; g > -1 && g < v;) {
           if (f = c.indexOf('}', g), f === -1) throw new Error;
           if (g > m) {

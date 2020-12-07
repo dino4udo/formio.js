@@ -154,7 +154,7 @@ export default class NumberComponent extends Input {
         }
         let value = parseFloat(input);
 
-        if (!_.isNaN(value)) {
+        if (!Number.isNaN(value)) {
             value = String(value).replace('.', this.decimalSeparator);
         }
         else {

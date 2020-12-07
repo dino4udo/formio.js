@@ -589,7 +589,7 @@ export default class Wizard extends Webform {
                 }
 
                 const pageNum = parseInt(next, 10);
-                if (!isNaN(parseInt(pageNum, 10)) && isFinite(pageNum)) {
+                if (!Number.isNaN(parseInt(pageNum, 10)) && isFinite(pageNum)) {
                     this.currentNextPage = pageNum;
                     return pageNum;
                 }

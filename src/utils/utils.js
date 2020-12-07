@@ -452,7 +452,7 @@ export function guid() {
  * @return {(null|Date)}
  */
 export function getDateSetting(date) {
-    if (_.isNil(date) || _.isNaN(date) || date === '') {
+    if (_.isNil(date) || Number.isNaN(date) || date === '') {
         return null;
     }
 
@@ -498,7 +498,7 @@ export function getDateSetting(date) {
 }
 
 export function isValidDate(date) {
-    return _.isDate(date) && !_.isNaN(date.getDate());
+    return _.isDate(date) && !Number.isNaN(date.getDate());
 }
 
 /**

@@ -10,7 +10,9 @@ import Utils from './utils';
 import Evaluator from './utils/Evaluator';
 import Rules from './validator/Rules';
 import Widgets from './widgets';
+
 Components.setComponents(AllComponents);
+
 const registerPlugin = plugin => {
     // Sanity check.
     if (typeof plugin !== 'object') {

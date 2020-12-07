@@ -5,7 +5,6 @@ import clone from 'lodash/clone';
 import forOwn from 'lodash/forOwn';
 import get from 'lodash/get';
 import has from 'lodash/has';
-import isNaN from 'lodash/isNaN';
 import isNil from 'lodash/isNil';
 import isPlainObject from 'lodash/isPlainObject';
 import isString from 'lodash/isString';
@@ -432,7 +431,7 @@ export function parseFloatExt(value) {
 export function formatAsCurrency(value) {
     const parsedValue = parseFloatExt(value);
 
-    if (isNaN(parsedValue)) {
+    if (Number.isNaN(parsedValue)) {
         return '';
     }
 

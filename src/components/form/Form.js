@@ -131,7 +131,7 @@ export default class FormComponent extends Component {
         this.formSrc = this.formSrc.replace(/\/v\/\d*/, '');
         const revNumber = Number.parseInt(rev);
 
-        if (!isNaN(revNumber)) {
+        if (!Number.isNaN(revNumber)) {
             this.subFormRevision = rev;
             this.formSrc += `/v/${rev}`;
         }

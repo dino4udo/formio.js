@@ -413,7 +413,7 @@ export default class DayComponent extends Field {
         }
 
         val = parseInt(val, 10);
-        return (!_.isNaN(val) && _.isNumber(val)) ? val : 0;
+        return (!Number.isNaN(val) && _.isNumber(val)) ? val : 0;
     }
 
     get parts() {
@@ -467,23 +467,23 @@ export default class DayComponent extends Field {
         if (this.showDay && this.refs.day) {
             day = parseInt(this.refs.day.value, 10);
         }
-        if (day === undefined || _.isNaN(day)) {
-            day = defaults[DAY] && !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0;
+        if (day === undefined || Number.isNaN(day)) {
+            day = defaults[DAY] && !Number.isNaN(defaults[DAY]) ? defaults[DAY] : 0;
         }
 
         if (this.showMonth && this.refs.month) {
             // Months are 0 indexed.
             month = parseInt(this.refs.month.value, 10);
         }
-        if (month === undefined || _.isNaN(month)) {
-            month = defaults[MONTH] && !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;
+        if (month === undefined || Number.isNaN(month)) {
+            month = defaults[MONTH] && !Number.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;
         }
 
         if (this.showYear && this.refs.year) {
             year = parseInt(this.refs.year.value);
         }
-        if (year === undefined || _.isNaN(year)) {
-            year = defaults[YEAR] && !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;
+        if (year === undefined || Number.isNaN(year)) {
+            year = defaults[YEAR] && !Number.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;
         }
 
         let result;
