@@ -1,8 +1,8 @@
 import moment from 'moment';
 
-const Rule = require('./Rule');
+import Rule from './Rule';
 
-module.exports = class Time extends Rule {
+export default class Time extends Rule {
    defaultMessage = '{{field}} must contain valid time';
 
    check(value) {

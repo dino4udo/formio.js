@@ -1,5 +1,6 @@
-import { getContextComponents } from '../../../../utils/utils';
+import _has from 'lodash/has';
 
+import { getContextComponents } from '../../../../utils/utils';
 /* eslint-disable quotes, max-len */
 export default [
     {
@@ -324,7 +325,7 @@ export default [
                                 type: 'select',
                                 customConditional({ row }) {
                                     return row.type === 'property' &&
-                    row.hasOwnProperty('property') &&
+                    _has(row, 'property') &&
                     row.property.type === 'boolean';
                                 },
                             },
@@ -339,7 +340,7 @@ export default [
                                 description: 'Can use templating with {{ data.myfield }}. "data", "row", "component" and "result" variables are available.',
                                 customConditional({ row }) {
                                     return row.type === 'property' &&
-                    row.hasOwnProperty('property') &&
+                    _has(row, 'property') &&
                     row.property.type === 'string' &&
                     !row.property.component;
                                 },

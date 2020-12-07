@@ -822,7 +822,7 @@ export default class SelectComponent extends Field {
     }
 
     choicesOptions() {
-        const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
+        const useSearch = _.has(this.component, 'searchEnabled') ? this.component.searchEnabled : true;
         const placeholderValue = this.t(this.component.placeholder);
         let customOptions = this.component.customOptions || {};
         if (typeof customOptions == 'string') {

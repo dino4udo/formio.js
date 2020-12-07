@@ -1,5 +1,6 @@
 import dragula from 'dragula/dist/dragula';
 import _ from 'lodash';
+import _has from 'lodash/has';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 
@@ -309,7 +310,7 @@ export default class WebformBuilder extends Component {
         if (this.options && this.options.resourceTag) {
             query.params.tags = [ this.options.resourceTag ];
         }
-        else if (!this.options || !this.options.hasOwnProperty('resourceTag')) {
+        else if (!this.options || !_has(this.options, 'resourceTag')) {
             query.params.tags = [ 'builder' ];
         }
         const formio = new Formio(Formio.projectUrl);
@@ -746,12 +747,12 @@ export default class WebformBuilder extends Component {
     getComponentInfo(key, group) {
         let info;
         // This is a new component
-        if (this.schemas.hasOwnProperty(key)) {
+        if (_has(this.schemas, key)) {
             info = fastCloneDeep(this.schemas[key]);
         }
-        else if (this.groups.hasOwnProperty(group)) {
+        else if (_has(this.groups, group)) {
             const groupComponents = this.groups[group].components;
-            if (groupComponents.hasOwnProperty(key)) {
+            if (_has(groupComponents, key)) {
                 info = fastCloneDeep(groupComponents[key].schema);
             }
         }
@@ -759,7 +760,7 @@ export default class WebformBuilder extends Component {
             // This is an existing resource field.
             const resourceGroups = this.groups.resource.subgroups;
             const resourceGroup = _.find(resourceGroups, { key: group });
-            if (resourceGroup && resourceGroup.components.hasOwnProperty(key)) {
+            if (resourceGroup && _has(resourceGroup.components, key)) {
                 info = fastCloneDeep(resourceGroup.components[key].schema);
             }
         }
@@ -767,7 +768,7 @@ export default class WebformBuilder extends Component {
             const resourceGroups = this.groups.resource.subgroups;
             for (let ix = 0; ix < resourceGroups.length; ix++) {
                 const resourceGroup = resourceGroups[ix];
-                if (resourceGroup.components.hasOwnProperty(key)) {
+                if (_has(resourceGroup.components, key)) {
                     info = fastCloneDeep(resourceGroup.components[key].schema);
                     break;
                 }
@@ -1277,7 +1278,7 @@ export default class WebformBuilder extends Component {
         if (this.preview) {
             this.preview.destroy();
         }
-        if (!ComponentClass.builderInfo.hasOwnProperty('preview') || ComponentClass.builderInfo.preview) {
+        if (!_has(ComponentClass.builderInfo, 'preview') || ComponentClass.builderInfo.preview) {
             this.preview = new Webform(_.omit({ ...this.options, preview: true }, [
                 'hooks',
                 'builder',
@@ -1451,7 +1452,7 @@ export default class WebformBuilder extends Component {
 
         component = _.clone(component);
         const groupInfo = this.groups[component.group];
-        if (!groupInfo.components.hasOwnProperty(component.key)) {
+        if (!_has(groupInfo.components, component.key)) {
             groupInfo.components[component.key] = component;
         }
         return component;

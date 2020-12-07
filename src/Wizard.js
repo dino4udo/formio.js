@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import _has from 'lodash/has';
 import NativePromise from 'native-promise-only';
 
 import Formio from './Formio';
@@ -107,7 +108,7 @@ export default class Wizard extends Webform {
         });
 
         if (!this.isSecondInit) {
-            this.isClickableDefined = this.options?.breadcrumbSettings?.hasOwnProperty('clickable');
+            this.isClickableDefined = _has(this.options?.breadcrumbSettings, 'clickable');
             this.isSecondInit = true;
         }
 

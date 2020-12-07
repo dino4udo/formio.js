@@ -1,3 +1,4 @@
+import _has from 'lodash/has';
 import { conformToMask } from 'vanilla-text-mask';
 
 import * as FormioUtils from '../../utils/utils';
@@ -42,7 +43,7 @@ export default class TextFieldComponent extends Input {
         const info = super.inputInfo;
         info.type = 'input';
 
-        if (this.component.hasOwnProperty('spellcheck')) {
+        if (_has(this.component, 'spellcheck')) {
             info.attr.spellcheck = this.component.spellcheck;
         }
 

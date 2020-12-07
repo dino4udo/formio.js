@@ -1,3 +1,5 @@
+import _has from 'lodash/has';
+
 export default [
     {
         key: 'logic',
@@ -84,9 +86,9 @@ export default [
                                 input: true,
                                 customConditional(context) {
                                     return context.row.type === 'property' &&
-                    context.row.hasOwnProperty('property') &&
-                    context.row.property.type === 'string' &&
-                    context.row.property.component === 'content';
+                                        _has(context.row, 'property') &&
+                                        context.row.property.type === 'string' &&
+                                        context.row.property.component === 'content';
                                 },
                             },
                         ],

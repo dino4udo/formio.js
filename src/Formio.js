@@ -8,6 +8,7 @@ import jwtDecode from 'jwt-decode';
 import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import _get from 'lodash/get';
+import _has from 'lodash/has';
 import _intersection from 'lodash/intersection';
 import NativePromise from 'native-promise-only';
 
@@ -76,7 +77,7 @@ class Formio {
         this.path = path;
         this.options = options;
 
-        if (options.hasOwnProperty('base')) {
+        if (_has(options, 'base')) {
             this.base = options.base;
         }
         else if (Formio.baseUrl) {
@@ -96,7 +97,7 @@ class Formio {
             return;
         }
 
-        if (options.hasOwnProperty('project')) {
+        if (_has(options, 'project')) {
             this.projectUrl = options.project;
         }
 
@@ -142,7 +143,7 @@ class Formio {
         // Register an array of items.
         const registerItems = (items, base, staticBase) => {
             for (const i in items) {
-                if (items.hasOwnProperty(i)) {
+                if (_has(items, i)) {
                     const item = items[i];
                     if (Array.isArray(item)) {
                         registerItems(item, base, true);
@@ -218,7 +219,7 @@ class Formio {
             this.formId = path.replace(/^\/+|\/+$/g, '');
             const items = [ 'submission', 'action', 'v' ];
             for (const i in items) {
-                if (items.hasOwnProperty(i)) {
+                if (_has(items, i)) {
                     const item = items[i];
                     this[`${item}sUrl`] = `${this.projectUrl + path}/${item}`;
                     if ((this.pathType === item) && (subs.length > 2) && subs[2]) {
@@ -628,7 +629,7 @@ class Formio {
                 delete: false,
             };
             for (const roleName in access.roles) {
-                if (access.roles.hasOwnProperty(roleName)) {
+                if (_has(access.roles, roleName)) {
                     const role = access.roles[roleName];
                     if (role.default && (user._id === false)) {
                         // User is anonymous. Add the anonymous role.
@@ -739,7 +740,7 @@ class Formio {
             return _interpolate ? _interpolate(item) : item;
         };
         for (const p in obj) {
-            if (obj.hasOwnProperty(p)) {
+            if (_has(obj, p)) {
                 str.push(`${encodeURIComponent(p)}=${encodeURIComponent(interpolate(obj[p]))}`);
             }
         }
@@ -831,7 +832,7 @@ class Formio {
         const cacheKey = btoa(encodeURI(url));
 
         // Get the cached promise to save multiple loads.
-        if (!opts.ignoreCache && method === 'GET' && getFormio().cache.hasOwnProperty(cacheKey)) {
+        if (!opts.ignoreCache && method === 'GET' && _has(getFormio().cache, cacheKey)) {
             return NativePromise.resolve(cloneResponse(getFormio().cache[cacheKey]));
         }
 
@@ -1402,7 +1403,7 @@ class Formio {
     }
 
     static requireLibrary(name, property, src, polling) {
-        if (!getFormio().libraries.hasOwnProperty(name)) {
+        if (!_has(getFormio().libraries, name)) {
             getFormio().libraries[name] = {};
             getFormio().libraries[name].ready = new NativePromise((resolve, reject) => {
                 getFormio().libraries[name].resolve = resolve;
@@ -1482,7 +1483,7 @@ class Formio {
 
     static libraryReady(name) {
         if (
-            getFormio().libraries.hasOwnProperty(name) &&
+            _has(getFormio().libraries, name) &&
       getFormio().libraries[name].ready
         ) {
             return getFormio().libraries[name].ready;

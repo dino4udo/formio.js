@@ -1,3 +1,4 @@
+import _has from 'lodash/has';
 import NativePromise from 'native-promise-only';
 
 import Formio from './Formio';
@@ -334,9 +335,9 @@ window.addEventListener('message', event => {
     // If this form exists, then emit the event within this form.
     if (
         eventData &&
-    eventData.name &&
-    eventData.formId &&
-    Formio.forms.hasOwnProperty(eventData.formId)
+        eventData.name &&
+        eventData.formId &&
+        _has(Formio.forms, eventData.formId)
     ) {
         Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
     }

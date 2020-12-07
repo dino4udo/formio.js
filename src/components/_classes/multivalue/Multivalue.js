@@ -37,7 +37,7 @@ export default class Multivalue extends Field {
     }
 
     useWrapper() {
-        return this.component.hasOwnProperty('multiple') && this.component.multiple;
+        return _.has(this.component, 'multiple') && this.component.multiple;
     }
 
     render() {

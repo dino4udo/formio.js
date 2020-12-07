@@ -274,7 +274,7 @@ export default class Input extends Multivalue {
         } : this.component.widget;
 
         // Make sure we have a widget.
-        if (!Widgets.hasOwnProperty(settings.type)) {
+        if (!_.has(Widgets, settings.type)) {
             return null;
         }
 

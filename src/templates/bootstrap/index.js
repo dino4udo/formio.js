@@ -1,3 +1,5 @@
+import _has from 'lodash/has';
+
 import address from './address';
 import builder from './builder';
 import builderComponent from './builderComponent';
@@ -64,7 +66,7 @@ export default {
         }
         switch (type) {
             case 'class':
-                return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;
+                return _has(this.cssClasses, text.toString()) ? this.cssClasses[text.toString()] : text;
         }
         return text;
     },

@@ -457,7 +457,7 @@ export default class FormComponent extends Component {
    * @return {*|boolean}
    */
     get shouldSubmit() {
-        return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.isHidden();
+        return this.subFormReady && (!_.has(this.component, 'reference') || this.component.reference) && !this.isHidden();
     }
 
     /**

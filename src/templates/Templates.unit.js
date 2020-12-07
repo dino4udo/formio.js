@@ -5,7 +5,7 @@ const fs = require('fs');
 import assert from 'power-assert';
 import i18next from 'i18next';
 import NativePromise from 'native-promise-only';
-
+import _has from 'lodash/has'
 const i18Defaults = require('../i18n');
 const AllComponents = require('../components').default;
 const Components = require('../components/Components').default;
@@ -19,7 +19,7 @@ const fixComponent = (instance, index = 0) => {
   index++;
   if (instance.everyComponent) {
     instance.everyComponent(component => fixComponent(component, index));
-    if (instance.hasOwnProperty('subForm') && instance.subForm) {
+    if (_has(instance, 'subForm') && instance.subForm) {
       instance.subForm.id = instance.key;
     }
   }

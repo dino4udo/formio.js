@@ -41,7 +41,7 @@ export default class NumberComponent extends Input {
       || separators.decimalSeparator;
 
         if (this.component.delimiter) {
-            if (this.options.hasOwnProperty('thousandsSeparator')) {
+            if (_.has(this.options, 'thousandsSeparator')) {
                 console.warn('Property \'thousandsSeparator\' is deprecated. Please use i18n to specify delimiter.');
             }
 

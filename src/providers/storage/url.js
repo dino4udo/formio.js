@@ -1,3 +1,4 @@
+import _has from 'lodash/has';
 import NativePromise from 'native-promise-only';
 
 const url = formio => {
@@ -29,7 +30,7 @@ const url = formio => {
                     }
 
                     // Get the url of the file.
-                    let respUrl = respData.hasOwnProperty('url') ? respData.url : `${xhr.responseURL}/${name}`;
+                    let respUrl = _has(respData, 'url') ? respData.url : `${xhr.responseURL}/${name}`;
 
                     // If they provide relative url, then prepend the url.
                     if (respUrl && respUrl[0] === '/') {

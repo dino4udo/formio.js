@@ -1,4 +1,4 @@
-export default    {
+export default {
     _id: '5ece2d11b8c2fe102c726057',
     type: 'form',
     owner: '5e05a6b7549cdc2ece30c6b0',

@@ -922,7 +922,7 @@ class ValidationChecker {
         // Run primary validators
         const resultsOrPromises = _(component.validators).chain()
             .map(validatorName => {
-                if (!this.validators.hasOwnProperty(validatorName)) {
+                if (!_.has(this.validators, validatorName)) {
                     return {
                         message: `Validator for "${validatorName}" is not defined`,
                         level: 'warning',

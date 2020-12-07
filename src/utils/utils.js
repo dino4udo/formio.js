@@ -894,12 +894,12 @@ export function fieldData(data, component) {
             key = parts[i];
 
             // Handle nested resources
-            if (value.hasOwnProperty('_id')) {
+            if (_.has(value, '_id')) {
                 value = value.data;
             }
 
             // Return if the key is not found on the value.
-            if (!value.hasOwnProperty(key)) {
+            if (!_.has(value, key)) {
                 return;
             }
 
@@ -981,7 +981,7 @@ export function iterateKey(key) {
  */
 export function uniqueKey(map, base) {
     let newKey = base;
-    while (map.hasOwnProperty(newKey)) {
+    while (_.has(map, newKey)) {
         newKey = iterateKey(newKey);
     }
     return newKey;

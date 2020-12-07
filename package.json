@@ -23,7 +23,7 @@
     "rebuild": "rm -rf node_modules;npm install;gulp build",
     "tag": "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \"Build $Version\";git push origin master;git tag v$VERSION;git push origin --tags;",
     "dopublish": "npm test;gulp build;npm run tag;npm publish lib;",
-    "lint": "eslint --ext .js,.vue . --fix",
+    "lint": "eslint \"src/**/*.{js,ts,vue}\" --fix",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "npm run transpile && npm run templates && npm run test:unit",
     "test:unit": "TZ=UTC mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b -t 20000 --exit",

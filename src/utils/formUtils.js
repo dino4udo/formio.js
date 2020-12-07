@@ -216,7 +216,7 @@ export function findComponent(components, key, path, fn) {
         newPath.push(index);
         if (!component) return;
 
-        if (component.hasOwnProperty('columns') && Array.isArray(component.columns)) {
+        if (_.has(component, 'columns') && Array.isArray(component.columns)) {
             newPath.push('columns');
             component.columns.forEach((column, index) => {
                 const colPath = newPath.slice();
@@ -226,7 +226,7 @@ export function findComponent(components, key, path, fn) {
             });
         }
 
-        if (component.hasOwnProperty('rows') && Array.isArray(component.rows)) {
+        if (_.has(component, 'rows') && Array.isArray(component.rows)) {
             newPath.push('rows');
             component.rows.forEach((row, index) => {
                 const rowPath = newPath.slice();
@@ -240,7 +240,7 @@ export function findComponent(components, key, path, fn) {
             });
         }
 
-        if (component.hasOwnProperty('components') && Array.isArray(component.components)) {
+        if (_.has(component, 'components') && Array.isArray(component.components)) {
             newPath.push('components');
             findComponent(component.components, key, newPath, fn);
         }
@@ -505,7 +505,7 @@ export function getStrings(form) {
     const strings = [];
     eachComponent(form.components, component => {
         properties.forEach(property => {
-            if (component.hasOwnProperty(property) && component[property]) {
+            if (_.has(component, property) && component[property]) {
                 strings.push({
                     key: component.key,
                     type: component.type,
@@ -514,7 +514,7 @@ export function getStrings(form) {
                 });
             }
         });
-        if ((!component.dataSrc || component.dataSrc === 'values') && component.hasOwnProperty('values') && Array.isArray(component.values) && component.values.length) {
+        if ((!component.dataSrc || component.dataSrc === 'values') && _.has(component, 'values') && Array.isArray(component.values) && component.values.length) {
             component.values.forEach((value, index) => {
                 strings.push({
                     key: component.key,

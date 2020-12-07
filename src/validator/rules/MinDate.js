@@ -3,9 +3,9 @@ import moment from 'moment';
 
 import { getDateSetting } from '../../utils/utils';
 
-const Rule = require('./Rule');
+import Rule from './Rule';
 
-module.exports = class MinDate extends Rule {
+export default class MinDate extends Rule {
   defaultMessage = '{{field}} should not contain date before {{settings.dateLimit}}';
 
   check(value) {

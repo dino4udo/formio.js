@@ -1,6 +1,7 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
 import isMobile from 'ismobilejs';
 import _ from 'lodash';
+import _has from 'lodash/has';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import { conformToMask } from 'vanilla-text-mask';
@@ -358,7 +359,7 @@ export default class Component extends Element {
         /**
      * Determines if this component is visible, or not.
      */
-        this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
+        this._parentVisible = _has(this.options, 'parentVisible') ? this.options.parentVisible : true;
         this._visible = this._parentVisible && this.conditionallyVisible(null, data);
         this._parentDisabled = false;
 
@@ -507,11 +508,11 @@ export default class Component extends Element {
     }
 
     get shouldDisabled() {
-        return this.options.readOnly || this.component.disabled || (this.options.hasOwnProperty('disabled') && this.options.disabled[this.key]);
+        return this.options.readOnly || this.component.disabled || (_has(this.options, 'disabled') && this.options.disabled[this.key]);
     }
 
     get isInputComponent() {
-        return !this.component.hasOwnProperty('input') || this.component.input;
+        return !_has(this.component, 'input') || this.component.input;
     }
 
     get allowData() {
@@ -681,7 +682,7 @@ export default class Component extends Element {
             return schema;
         }
         _.each(schema, (val, key) => {
-            if (!_.isArray(val) && _.isObject(val) && defaultSchema.hasOwnProperty(key)) {
+            if (!_.isArray(val) && _.isObject(val) && _has(defaultSchema, key)) {
                 const subModified = this.getModifiedSchema(val, defaultSchema[key], true);
                 if (!_.isEmpty(subModified)) {
                     modified[key] = subModified;
@@ -698,7 +699,7 @@ export default class Component extends Element {
         (!recursion && (key === 'label')) ||
         (!recursion && (key === 'input')) ||
         (!recursion && (key === 'tableView')) ||
-        (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
+        (val !== '' && !_has(defaultSchema, key)) ||
         (val !== '' && val !== defaultSchema[key])
             ) {
                 modified[key] = val;
@@ -738,7 +739,7 @@ export default class Component extends Element {
     }
 
     get transform() {
-        return Templates.current.hasOwnProperty('transform') ? Templates.current.transform.bind(Templates.current) : (type, value) => value;
+        return _has(Templates.current, 'transform') ? Templates.current.transform.bind(Templates.current) : (type, value) => value;
     }
 
     getTemplate(names, modes) {
@@ -1157,7 +1158,7 @@ export default class Component extends Element {
    * @param value
    */
     refresh(value) {
-        if (this.hasOwnProperty('refreshOnValue')) {
+        if (_has(this, 'refreshOnValue')) {
             this.refreshOnChanged = !_.isEqual(value, this.refreshOnValue);
         }
         else {
@@ -1456,13 +1457,13 @@ export default class Component extends Element {
 
     iconClass(name, spinning) {
         const iconset = this.options.iconset || Templates.current.defaultIconset || 'fa';
-        return Templates.current.hasOwnProperty('iconClass')
+        return _has(Templates.current, 'iconClass')
       ? Templates.current.iconClass(iconset, name, spinning)
       : this.options.iconset === 'fa' ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
     }
 
     size(size) {
-        return Templates.current.hasOwnProperty('size')
+        return _has(Templates.current, 'size')
       ? Templates.current.size(size)
       : size;
     }
@@ -2183,7 +2184,7 @@ export default class Component extends Element {
     splice(index) {
         if (this.hasValue()) {
             const dataValue = this.dataValue || [];
-            if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
+            if (_.isArray(dataValue) && _has(dataValue, index)) {
                 dataValue.splice(index, 1);
                 this.dataValue = dataValue;
                 this.triggerChange();
@@ -2256,7 +2257,7 @@ export default class Component extends Element {
         }
         const values = [];
         for (const i in this.refs.input) {
-            if (this.refs.input.hasOwnProperty(i)) {
+            if (_has(this.refs.input, i)) {
                 if (!this.component.multiple) {
                     return this.getValueAt(i);
                 }
@@ -2299,7 +2300,7 @@ export default class Component extends Element {
         if (
             isArray &&
       Array.isArray(this.defaultValue) &&
-      this.refs.hasOwnProperty('input') &&
+            _has(this.refs, 'input') &&
       this.refs.input &&
       (this.refs.input.length !== value.length) &&
       this.visible
@@ -2311,7 +2312,7 @@ export default class Component extends Element {
             return changed;
         }
         for (const i in this.refs.input) {
-            if (this.refs.input.hasOwnProperty(i)) {
+            if (_has(this.refs.input, i)) {
                 this.setValueAt(i, isArray ? value[i] : value, flags);
             }
         }
@@ -2852,7 +2853,7 @@ export default class Component extends Element {
    * @return {boolean|*}
    */
     isValueHidden() {
-        if (!this.root || !this.root.hasOwnProperty('editing')) {
+        if (!this.root || !_has(this.root, 'editing')) {
             return false;
         }
         if (!this.root || !this.root.editing) {
@@ -3116,7 +3117,7 @@ export default class Component extends Element {
 
 Component.externalLibraries = {};
 Component.requireLibrary = function(name, property, src, polling) {
-    if (!Component.externalLibraries.hasOwnProperty(name)) {
+    if (!_has(Component.externalLibraries, name)) {
         Component.externalLibraries[name] = {};
         Component.externalLibraries[name].ready = new NativePromise((resolve, reject) => {
             Component.externalLibraries[name].resolve = resolve;
@@ -3193,7 +3194,7 @@ Component.requireLibrary = function(name, property, src, polling) {
 
 Component.libraryReady = function(name) {
     if (
-        Component.externalLibraries.hasOwnProperty(name) &&
+        _has(Component.externalLibraries, name) &&
     Component.externalLibraries[name].ready
     ) {
         return Component.externalLibraries[name].ready;

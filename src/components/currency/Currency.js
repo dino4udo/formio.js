@@ -27,7 +27,7 @@ export default class CurrencyComponent extends NumberComponent {
 
     constructor(component, options, data) {
     // Currency should default to have a delimiter unless otherwise specified.
-        if (component && !component.hasOwnProperty('delimiter')) {
+        if (component && !_.has(component, 'delimiter')) {
             component.delimiter = true;
         }
         super(component, options, data);

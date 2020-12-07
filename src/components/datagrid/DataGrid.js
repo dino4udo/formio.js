@@ -268,7 +268,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     getColumns() {
         return this.component.components.filter(comp => {
-            return (!this.visibleColumns.hasOwnProperty(comp.key) || this.visibleColumns[comp.key]);
+            return (!_.has(this.visibleColumns, comp.key) || this.visibleColumns[comp.key]);
         });
     }
 

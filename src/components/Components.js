@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import _has from 'lodash/has';
 
 import Component from './_classes/component/Component';
 import EditFormUtils from './_classes/component/editForm/utils';
@@ -36,7 +37,7 @@ export default class Components {
 
     static create(component, options, data) {
         let comp = null;
-        if (component.type && Components.components.hasOwnProperty(component.type)) {
+        if (component.type && _has(Components.components, component.type)) {
             comp = new Components.components[component.type](component, options, data);
         }
         else if (component.arrayTree) {

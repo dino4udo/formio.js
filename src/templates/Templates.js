@@ -40,7 +40,7 @@ export default class Templates {
     }
 
     static set framework(framework) {
-        if (Templates.templates.hasOwnProperty(framework)) {
+        if (_.has(Templates.templates, framework)) {
             Templates._framework = framework;
             Templates._current = Templates.templates[framework];
         }
