@@ -415,7 +415,6 @@ export default class TextAreaComponent extends TextFieldComponent {
             const {width} = textarea.style;
 
             textarea.style.width = '0px';
-            textarea.offsetWidth;
             textarea.style.width = width;
 
             textarea.style.overflowY = value;

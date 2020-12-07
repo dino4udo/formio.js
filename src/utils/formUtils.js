@@ -308,7 +308,7 @@ export function applyFormChanges(form, changes) {
         let found = false;
         switch (change.op) {
             case 'add':
-                var newComponent = change.component;
+                const newComponent = change.component;
 
                 // Find the container to set the component in.
                 findComponent(form.components, change.container, null, parent => {
