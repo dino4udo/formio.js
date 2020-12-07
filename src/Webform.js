@@ -93,7 +93,7 @@ export default class Webform extends NestedDataComponent {
         if (options && options.i18n && !options.i18nReady) {
             // Support legacy way of doing translations.
             if (options.i18n.resources) {
-                i18n = options.i18n;
+                ({i18n} = options);
             }
             else {
                 _.each(options.i18n, (lang, code) => {

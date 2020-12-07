@@ -278,7 +278,7 @@ class Formio {
             query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
         }
         else {
-            query = this.query;
+            ({query} = this);
         }
         if (!this[_id]) {
             return NativePromise.reject(`Missing ${_id}`);
@@ -345,7 +345,7 @@ class Formio {
                     query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
                 }
                 else {
-                    query = this.query;
+                    ({query} = this);
                 }
                 return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
                     .then(revisionForm => {

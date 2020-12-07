@@ -614,7 +614,7 @@ export default class WebformBuilder extends Component {
 
     searchFields(searchString = '') {
         const searchValue = searchString.toLowerCase();
-        const sidebar = this.refs['sidebar'];
+        const {sidebar} = this.refs;
         const sidebarGroups = this.refs['sidebar-groups'];
 
         if (!sidebar || !sidebarGroups) {

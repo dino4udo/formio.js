@@ -89,7 +89,7 @@ export default class NumberComponent extends Input {
     get defaultValue() {
         let defaultValue = super.defaultValue;
         if (!defaultValue && this.component.defaultValue === 0) {
-            defaultValue = this.component.defaultValue;
+            ({defaultValue} = this.component);
         }
         return defaultValue;
     }

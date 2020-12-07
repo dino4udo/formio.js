@@ -677,9 +677,9 @@ export default class SelectComponent extends Field {
                     method = 'GET';
                 }
                 else {
-                    method = this.component.data.method;
+                    ({method} = this.component.data);
                     if (method.toUpperCase() === 'POST') {
-                        body = this.component.data.body;
+                        ({body} = this.component.data);
                     }
                     else {
                         body = null;
@@ -1186,7 +1186,7 @@ export default class SelectComponent extends Field {
             }
         }
         else if (this.refs.selectContainer) {
-            value = this.refs.selectContainer.value;
+            ({value} = this.refs.selectContainer);
 
             if (this.valueProperty === '') {
                 if (value === '') {
@@ -1195,7 +1195,7 @@ export default class SelectComponent extends Field {
 
                 const option = this.selectOptions[value];
                 if (option && _.isObject(option.value)) {
-                    value = option.value;
+                    ({value} = option);
                 }
             }
         }

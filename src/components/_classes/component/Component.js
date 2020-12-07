@@ -697,12 +697,12 @@ export default class Component extends Element {
             }
             else if (
                 (!recursion && (key === 'type')) ||
-        (!recursion && (key === 'key')) ||
-        (!recursion && (key === 'label')) ||
-        (!recursion && (key === 'input')) ||
-        (!recursion && (key === 'tableView')) ||
-        (val !== '' && !_has(defaultSchema, key)) ||
-        (val !== '' && val !== defaultSchema[key])
+                (!recursion && (key === 'key')) ||
+                (!recursion && (key === 'label')) ||
+                (!recursion && (key === 'input')) ||
+                (!recursion && (key === 'tableView')) ||
+                (val !== '' && !_has(defaultSchema, key)) ||
+                (val !== '' && val !== defaultSchema[key])
             ) {
                 modified[key] = val;
             }
@@ -1084,7 +1084,7 @@ export default class Component extends Element {
         }
 
         if (!shortcut) {
-            shortcut = this.component.shortcut;
+            ({shortcut} = this.component);
         }
 
         this.root.addShortcut(element, shortcut);
@@ -1097,7 +1097,7 @@ export default class Component extends Element {
         }
 
         if (!shortcut) {
-            shortcut = this.component.shortcut;
+            ({shortcut} = this.component);
         }
 
         this.root.removeShortcut(element, shortcut);
@@ -1193,7 +1193,7 @@ export default class Component extends Element {
             if (parent.data === component.data) {
                 return true;
             }
-            parent = parent.parent;
+            ({parent} = parent);
         }
 
         return false;
@@ -2212,7 +2212,7 @@ export default class Component extends Element {
     get defaultValue() {
         let defaultValue = this.emptyValue;
         if (this.component.defaultValue) {
-            defaultValue = this.component.defaultValue;
+            ({defaultValue} = this.component);
         }
         if (this.component.customDefaultValue && !this.options.preview) {
             defaultValue = this.evaluate(
