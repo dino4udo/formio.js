@@ -1144,7 +1144,7 @@ export default class SelectComponent extends Field {
                 this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
             }
             else {
-                notFoundValuesToAdd.map(notFoundValue => {
+                notFoundValuesToAdd.forEach(notFoundValue => {
                     this.addOption(notFoundValue.value, notFoundValue.label);
                 });
             }
@@ -1524,11 +1524,14 @@ export default class SelectComponent extends Field {
                 data = data.toString();
             }
 
-            if (Array.isArray(data) && data.some(item => this.isBooleanOrNumber(item))) {
+            if (Array.isArray(data) && data.some(this.isBooleanOrNumber)) {
+                // TODO: FIX has to return val
                 data = data.map(item => {
                     if (this.isBooleanOrNumber(item)) {
                         item = item.toString();
                     }
+
+                    return item;
                 });
             }
 

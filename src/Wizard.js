@@ -204,7 +204,8 @@ export default class Wizard extends Webform {
         const ctx = this.renderContext;
 
         if (this.component.key) {
-            ctx.panels.map(panel => {
+            // TODO: FIX has to return value
+            ctx.panels.forEach(panel => {
                 if (panel.key === this.component.key) {
                     this.currentPanel = panel;
                 }
@@ -286,7 +287,8 @@ export default class Wizard extends Webform {
 
     isBreadcrumbClickable() {
         let currentPage = null;
-        this.pages.map(page => {
+        // TODO: FIX has to return value
+        this.pages.forEach(page => {
             if (_.isEqual(this.currentPage.component, page.component)) {
                 currentPage = page;
             }
@@ -297,7 +299,8 @@ export default class Wizard extends Webform {
 
     isAllowPrevious() {
         let currentPage = null;
-        this.pages.map(page => {
+        // TODO: FIX has to return value
+        this.pages.forEach(page => {
             if (_.isEqual(this.currentPage.component, page.component)) {
                 currentPage = page;
             }
@@ -424,7 +427,8 @@ export default class Wizard extends Webform {
         const currentPages = [];
 
         if (components && components.length) {
-            components.map(page => {
+            // TODO: FIX has to return value
+            components.forEach(page => {
                 if (page.component.type === 'panel') {
                     currentPages[page.component.key || page.component.title] = page;
                 }
@@ -464,7 +468,8 @@ export default class Wizard extends Webform {
         const currentPages = {};
         const pageOptions = _.clone(this.options);
         if (this.components && this.components.length) {
-            this.components.map(page => {
+            // TODO: FIX has to return value
+            this.components.forEach(page => {
                 if (page.component.type === 'panel') {
                     currentPages[page.component.key || page.component.title] = page;
                 }
@@ -709,7 +714,8 @@ export default class Wizard extends Webform {
     setComponentSchema() {
         const pageKeys = {};
         this.originalComponents = [];
-        this.component.components.map(item => {
+        // TODO: FIX has to return value
+        this.component.components.forEach(item => {
             if (item.type === 'panel') {
                 item.key = uniqueKey(pageKeys, (item.key || 'panel'));
                 pageKeys[item.key] = true;

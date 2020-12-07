@@ -39,8 +39,9 @@ export default class ColumnsComponent extends NestedComponent {
 
     get schema() {
         const schema = _.omit(super.schema, [ 'components' ]);
-        schema.columns.map((column, colIndex) => {
-            column.components.map((comp, compIndex) => {
+        // TODO: FIX has to return value
+        schema.columns.forEach((column, colIndex) => {
+            column.components.forEach((comp, compIndex) => {
                 const clonedComp = _.clone(comp);
                 clonedComp.internal = true;
                 const component = this.createComponent(clonedComp);

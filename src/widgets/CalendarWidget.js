@@ -298,11 +298,14 @@ export default class CalendarWidget extends InputWidget {
     get disabledDates() {
         if (this.settings.disabledDates) {
             const disabledDates = this.settings.disabledDates.split(',');
+            // TODO: FIX has to return value
             return disabledDates.map(item => {
                 const dateMask = /\d{4}-\d{2}-\d{2}/g;
                 const dates = item.match(dateMask);
                 if (dates && dates.length) {
-                    return dates.length === 1 ? item.match(dateMask)[0] : {
+                    return dates.length === 1
+                    ? item.match(dateMask)[0]
+                    : {
                         from: item.match(dateMask)[0],
                         to: item.match(dateMask)[1],
                     };

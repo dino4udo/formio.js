@@ -1516,7 +1516,7 @@ export default class Webform extends NestedDataComponent {
       };
 
       if (headers && headers.length > 0) {
-          headers.map(e => {
+          headers.forEach(e => {
               if (e.header !== '' && e.value !== '') {
                   settings.headers[e.header] = this.interpolate(e.value, submission);
               }

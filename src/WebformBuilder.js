@@ -1082,16 +1082,17 @@ export default class WebformBuilder extends Component {
                 const parentComponent = defaultValueComponent.parent;
                 let tabIndex = -1;
                 let index = -1;
-                parentComponent.tabs.some((tab, tIndex) => {
-                    tab.some((comp, compIndex) => {
-                        if (comp.id === defaultValueComponent.id) {
-                            tabIndex = tIndex;
-                            index = compIndex;
-                            return true;
-                        }
-                        return false;
-                    });
-                });
+                // TODO: FIX has to return value
+                parentComponent.tabs.some((tab, tIndex) => tab.some((comp, compIndex) => {
+                    if (comp.id === defaultValueComponent.id) {
+                        tabIndex = tIndex;
+                        index = compIndex;
+
+                        return true;
+                    }
+
+                    return false;
+                }));
 
                 if (tabIndex !== -1 && index !== -1) {
                     const sibling = parentComponent.tabs[tabIndex][index + 1];
