@@ -1,63 +1,64 @@
 import _ from 'lodash';
-import Element from '../Element';
 import NativePromise from 'native-promise-only';
+
+import Element from '../Element';
 export default class InputWidget extends Element {
-  static get defaultSettings() {
-    return {
-      type: 'input'
-    };
-  }
-
-  constructor(settings, component) {
-    super(settings);
-    this.namespace = 'formio.widget';
-    this.component = component || {};
-    this.settings = _.merge({}, this.defaultSettings, settings || {});
-  }
-
-  attach(input) {
-    this._input = input;
-    return NativePromise.resolve();
-  }
-
-  get defaultSettings() {
-    return {};
-  }
-
-  set disabled(disabled) {
-    if (disabled) {
-      this._input.setAttribute('disabled', 'disabled');
+    static get defaultSettings() {
+        return {
+            type: 'input',
+        };
     }
-    else {
-      this._input.removeAttribute('disabled');
+
+    constructor(settings, component) {
+        super(settings);
+        this.namespace = 'formio.widget';
+        this.component = component || {};
+        this.settings = _.merge({}, this.defaultSettings, settings || {});
     }
-  }
 
-  get input() {
-    return this._input;
-  }
+    attach(input) {
+        this._input = input;
+        return NativePromise.resolve();
+    }
 
-  getValue() {
-    return this._input.value;
-  }
+    get defaultSettings() {
+        return {};
+    }
 
-  getValueAsString(value) {
-    return value;
-  }
+    set disabled(disabled) {
+        if (disabled) {
+            this._input.setAttribute('disabled', 'disabled');
+        }
+        else {
+            this._input.removeAttribute('disabled');
+        }
+    }
 
-  validationValue(value) {
-    return value;
-  }
+    get input() {
+        return this._input;
+    }
 
-  addPrefix() {
-    return null;
-  }
+    getValue() {
+        return this._input.value;
+    }
 
-  addSuffix() {
-    return null;
-  }
+    getValueAsString(value) {
+        return value;
+    }
 
-  setValue(value) {
-    this._input.value = value;
-  }
+    validationValue(value) {
+        return value;
+    }
+
+    addPrefix() {
+        return null;
+    }
+
+    addSuffix() {
+        return null;
+    }
+
+    setValue(value) {
+        this._input.value = value;
+    }
 }

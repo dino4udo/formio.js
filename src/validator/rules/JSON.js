@@ -4,23 +4,23 @@ module.exports = class JSON extends Rule {
   defaultMessage = '{{error}}';
 
   check(value, data, row, index) {
-    const { json } = this.settings;
+      const { json } = this.settings;
 
-    if (!json) {
-      return true;
-    }
+      if (!json) {
+          return true;
+      }
 
-    const valid = this.component.evaluate(json, {
-      data,
-      row,
-      rowIndex: index,
-      input: value
-    });
+      const valid = this.component.evaluate(json, {
+          data,
+          row,
+          rowIndex: index,
+          input: value,
+      });
 
-    if (valid === null) {
-      return true;
-    }
+      if (valid === null) {
+          return true;
+      }
 
-    return valid;
+      return valid;
   }
 };

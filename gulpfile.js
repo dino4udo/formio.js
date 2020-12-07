@@ -21,9 +21,9 @@ gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
 // ESLint
 gulp.task('eslint', function eslintTask() {
   return gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
-    // .pipe(eslint())
-    // .pipe(eslint.format())
-    // .pipe(eslint.failAfterError());
+    .pipe(eslint({ fix: true }))
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
 // Run babel on source code.

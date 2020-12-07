@@ -1,52 +1,53 @@
-import { AddressProvider } from './AddressProvider';
 import NativePromise from 'native-promise-only';
 
+import { AddressProvider } from './AddressProvider';
+
 export class GoogleAddressProvider extends AddressProvider {
-  static get name() {
-    return 'google';
-  }
+    static get name() {
+        return 'google';
+    }
 
-  static get displayName() {
-    return 'Google Maps';
-  }
+    static get displayName() {
+        return 'Google Maps';
+    }
 
-  get defaultOptions() {
-    return {
-      params: {
-        sensor: 'false',
-      },
-    };
-  }
+    get defaultOptions() {
+        return {
+            params: {
+                sensor: 'false',
+            },
+        };
+    }
 
-  get queryProperty() {
-    return 'address';
-  }
+    get queryProperty() {
+        return 'address';
+    }
 
-  get responseProperty() {
-    return 'results';
-  }
+    get responseProperty() {
+        return 'results';
+    }
 
-  get displayValueProperty() {
-    return 'formatted_address';
-  }
+    get displayValueProperty() {
+        return 'formatted_address';
+    }
 
-  makeRequest(options = {}) {
-    return new NativePromise((resolve, reject) => {
-      var xhr = new XMLHttpRequest();
+    makeRequest(options = {}) {
+        return new NativePromise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
 
-      xhr.open('GET', this.getRequestUrl(options), true);
+            xhr.open('GET', this.getRequestUrl(options), true);
 
-      xhr.onload = () => resolve(JSON.parse(xhr.response));
+            xhr.onload = () => resolve(JSON.parse(xhr.response));
 
-      xhr.onerror = reject;
+            xhr.onerror = reject;
 
-      xhr.send();
-    });
-  }
+            xhr.send();
+        });
+    }
 
-  getRequestUrl(options = {}) {
-    const { params } = options;
+    getRequestUrl(options = {}) {
+        const { params } = options;
 
-    return `https://maps.googleapis.com/maps/api/geocode/json?${this.serialize(params)}`;
-  }
+        return `https://maps.googleapis.com/maps/api/geocode/json?${this.serialize(params)}`;
+    }
 }

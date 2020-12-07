@@ -1,5 +1,5 @@
 export default [
-  'do',
-  're',
-  'me',
+    'do',
+    're',
+    'me',
 ];

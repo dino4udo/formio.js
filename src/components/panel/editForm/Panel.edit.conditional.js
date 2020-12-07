@@ -14,20 +14,20 @@ const jsonDocHTML = (`
 `);
 
 const settingComponent = EditFormUtils.javaScriptValue(
-  title,
-  jsProp,
-  jsonProp,
-  110,
-  jsDocHTML,
-  jsonDocHTML
+        title,
+        jsProp,
+        jsonProp,
+        110,
+        jsDocHTML,
+        jsonDocHTML,
 );
 
 export default [
-  {
-    ...settingComponent,
-    customConditional(context) {
-      return context.instance.options.editForm.display === 'wizard';
-    }
-  }
+    {
+        ...settingComponent,
+        customConditional(context) {
+            return context.instance.options.editForm.display === 'wizard';
+        },
+    },
 ];
 /* eslint-enable quotes, max-len */

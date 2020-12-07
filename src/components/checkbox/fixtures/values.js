@@ -1,5 +1,5 @@
 export default [
-  true,
-  false,
+    true,
+    false,
 ];
 

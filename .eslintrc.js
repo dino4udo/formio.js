@@ -26,8 +26,8 @@ module.exports = {
         'plugin:vue/essential',             // Priority A: Essential (Error Prevention)
         'plugin:vue/strongly-recommended',  // Priority B: Strongly Recommended (Improving Readability)
         'plugin:vue/recommended',           // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
-        '@vue/standard',
-        '@vue/airbnb',
+        // '@vue/standard',
+        // '@vue/airbnb',
 
         // Import
         // https://github.com/benmosher/eslint-plugin-import
@@ -48,15 +48,15 @@ module.exports = {
                 map: [
                     [
                         "@root",
-                        "/Users/daniilchumachenko/Downloads/formio-1.js-master/"
+                        "/Users/daniilchumachenko/WebServer/DEMOCRANCE/DMC_OPEN_SOURCE/formio.js/"
                     ],
                     [
                         "@",
-                        "/Users/daniilchumachenko/Downloads/formio-1.js-master/src"
+                        "/Users/daniilchumachenko/WebServer/DEMOCRANCE/DMC_OPEN_SOURCE/formio.js/src"
                     ],
                     [
                         "~",
-                        "/Users/daniilchumachenko/Downloads/formio-1.js-master/public"
+                        "/Users/daniilchumachenko/WebServer/DEMOCRANCE/DMC_OPEN_SOURCE/formio.js/public"
                     ]
                 ],
                 extensions: ['.vue', '.js', '.ts'],

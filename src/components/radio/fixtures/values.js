@@ -1,6 +1,6 @@
 export default [
-  'one',
-  'two',
-  false,
+    'one',
+    'two',
+    false,
 ];
 
