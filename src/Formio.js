@@ -39,6 +39,14 @@ function cloneResponse(response) {
     return copy;
 }
 
+function getFormio() {
+    if (typeof (window || global) === 'object' && typeof (window || global).Formio !== 'undefined') {
+        return (window || global).Formio;
+    }
+
+    return Formio;
+}
+
 /**
  * The Formio interface class.
  *
@@ -901,10 +909,10 @@ class Formio {
 
             if (
                 response.status >= 200
-        && response.status < 300
-        && token
-        && token !== ''
-        && !tokenIntroduced
+                    && response.status < 300
+                    && token
+                    && token !== ''
+                    && !tokenIntroduced
             ) {
                 getFormio().setToken(token, opts);
             }
@@ -914,8 +922,8 @@ class Formio {
             }
 
             const getResult = response.headers.get('content-type').includes('application/json')
-        ? response.json()
-        : response.text();
+                ? response.json()
+                : response.text();
             return getResult.then(result => {
                 // Add some content-range metadata to the result here
                 let range = response.headers.get('content-range');
@@ -1513,13 +1521,6 @@ Formio.events = new EventEmitter({
     wildcard: false,
     maxListeners: 0,
 });
-function getFormio() {
-    if (typeof (window || global) === 'object' && typeof (window || global).Formio !== 'undefined') {
-        return (window || global).Formio;
-    }
-
-    return Formio;
-}
 
 if (typeof global !== 'undefined') {
     Formio.addToGlobal(global);

@@ -1,5 +1,4 @@
 import { compare, applyPatch } from 'fast-json-patch';
-import _ from 'lodash';
 import chunk from 'lodash/chunk';
 import clone from 'lodash/clone';
 import forOwn from 'lodash/forOwn';
@@ -13,6 +12,8 @@ import round from 'lodash/round';
 import set from 'lodash/set';
 
 /**
+import Validator from '@/validator/Validator';
+import Widgets from '@/widget
  * Determine if a component is a layout component or not.
  *
  * @param {Object} component
@@ -21,12 +22,8 @@ import set from 'lodash/set';
  * @returns {Boolean}
  *   Whether or not the component is a layout component.
  */
-export function isLayoutComponent(component) {
-    return Boolean(
-            (component.columns && Array.isArray(component.columns))
-            || (component.rows && Array.isArray(component.rows))
-            || (component.components && Array.isArray(component.components)),
-    );
+export function isLayoutComponent({ columns, rows, components } = {}) {
+    return Boolean(Array.isArray(columns) || Array.isArray(rows) || Array.isArray(components));
 }
 
 /**
@@ -43,16 +40,16 @@ export function isLayoutComponent(component) {
  * @param {Object} parent
  *   The parent object.
  */
-export function eachComponent(components, fn, includeAll, path, parent) {
+export function eachComponent(components, fn, includeAll, path = '', parent) {
     if (!components) return;
-    path = path || '';
+
     components.forEach(component => {
         if (!component) {
             return;
         }
-        const hasColumns = component.columns && Array.isArray(component.columns);
-        const hasRows = component.rows && Array.isArray(component.rows);
-        const hasComps = component.components && Array.isArray(component.components);
+        const hasColumns = Array.isArray(component.columns);
+        const hasRows = Array.isArray(component.rows);
+        const hasComps = Array.isArray(component.components);
         let noRecurse = false;
         const newPath = component.key ? (path ? (`${path}.${component.key}`) : component.key) : '';
 
@@ -68,7 +65,10 @@ export function eachComponent(components, fn, includeAll, path, parent) {
 
         // there's no need to add other layout components here because we expect that those would either have columns, rows or components
         const layoutTypes = [ 'htmlelement', 'content' ];
+        const containingTypes = [ 'panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form' ];
+        const containerTypes = [ 'datagrid', 'container', 'editgrid', 'address' ];
         const isLayoutComponent = hasColumns || hasRows || hasComps || layoutTypes.indexOf(component.type) > -1;
+
         if (includeAll || component.tree || !isLayoutComponent) {
             noRecurse = fn(component, newPath, components);
         }
@@ -76,32 +76,27 @@ export function eachComponent(components, fn, includeAll, path, parent) {
         const subPath = () => {
             if (
                 component.key
-                && ![ 'panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form' ].includes(component.type)
-                && (
-                    [ 'datagrid', 'container', 'editgrid', 'address' ].includes(component.type)
-                || component.tree
-                )
+                && !containingTypes.includes(component.type)
+                && (containerTypes.includes(component.type) || component.tree)
             ) {
                 return newPath;
             }
-            if (
-                component.key
-        && component.type === 'form'
-            ) {
+            if (component.key && component.type === 'form') {
                 return `${newPath}.data`;
             }
             return path;
         };
 
+        const eachColumn = column => eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null);
         if (!noRecurse) {
             if (hasColumns) {
-                component.columns.forEach(column => eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
+                component.columns.forEach(eachColumn);
             }
 
             else if (hasRows) {
                 component.rows.forEach(row => {
                     if (Array.isArray(row)) {
-                        row.forEach(column => eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
+                        row.forEach(eachColumn);
                     }
                 });
             }
@@ -212,31 +207,31 @@ export function findComponent(components, key, path, fn) {
         newPath.push(index);
         if (!component) return;
 
-        if (_.has(component, 'columns') && Array.isArray(component.columns)) {
+        if (has(component, 'columns') && Array.isArray(component.columns)) {
             newPath.push('columns');
-            component.columns.forEach((column, index) => {
+            component.columns.forEach((column, i) => {
                 const colPath = newPath.slice();
-                colPath.push(index);
+                colPath.push(i);
                 colPath.push('components');
                 findComponent(column.components, key, colPath, fn);
             });
         }
 
-        if (_.has(component, 'rows') && Array.isArray(component.rows)) {
+        if (has(component, 'rows') && Array.isArray(component.rows)) {
             newPath.push('rows');
-            component.rows.forEach((row, index) => {
+            component.rows.forEach((row, ind) => {
                 const rowPath = newPath.slice();
-                rowPath.push(index);
-                row.forEach((column, index) => {
+                rowPath.push(ind);
+                row.forEach((column, i) => {
                     const colPath = rowPath.slice();
-                    colPath.push(index);
+                    colPath.push(i);
                     colPath.push('components');
                     findComponent(column.components, key, colPath, fn);
                 });
             });
         }
 
-        if (_.has(component, 'components') && Array.isArray(component.components)) {
+        if (has(component, 'components') && Array.isArray(component.components)) {
             newPath.push('components');
             findComponent(component.components, key, newPath, fn);
         }
@@ -255,7 +250,7 @@ export function findComponent(components, key, path, fn) {
  * @param path
  */
 export function removeComponent(components, path) {
-    // Using _.unset() leave a null value. Use Array splice instead.
+    // Using unset() leave a null value. Use Array splice instead.
     const index = path.pop();
     if (path.length !== 0) {
         components = get(components, path);
@@ -469,7 +464,7 @@ export function getValue(submission, key) {
     const search = data => {
         if (isPlainObject(data)) {
             if (has(data, key)) {
-                return _.get(data, key);
+                return get(data, key);
             }
 
             let value = null;
@@ -500,7 +495,7 @@ export function getStrings(form) {
     const strings = [];
     eachComponent(form.components, component => {
         properties.forEach(property => {
-            if (_.has(component, property) && component[property]) {
+            if (has(component, property) && component[property]) {
                 strings.push({
                     key: component.key,
                     type: component.type,
@@ -509,7 +504,7 @@ export function getStrings(form) {
                 });
             }
         });
-        if ((!component.dataSrc || component.dataSrc === 'values') && _.has(component, 'values') && Array.isArray(component.values) && component.values.length) {
+        if ((!component.dataSrc || component.dataSrc === 'values') && has(component, 'values') && Array.isArray(component.values) && component.values.length) {
             component.values.forEach((value, index) => {
                 strings.push({
                     key: component.key,

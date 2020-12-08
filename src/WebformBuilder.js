@@ -614,7 +614,7 @@ export default class WebformBuilder extends Component {
     }
 
     searchFields(searchString = '') {
-        const searchValue = searchString.toLowerCase();
+        // const searchValue = searchString.toLowerCase();
         const { sidebar } = this.refs;
         const sidebarGroups = this.refs['sidebar-groups'];
 
@@ -627,10 +627,11 @@ export default class WebformBuilder extends Component {
             const { subgroups = [], components } = result;
             const filteredOrder = [];
 
+            const matcher = (str = '') => str.toLowerCase().match(searchValue);
             for (const key in components) {
                 if (_has(components, key)) {
-                    const isMatchedToTitle = components[key].title.toLowerCase().match(searchValue);
-                    const isMatchedToKey = components[key].key.toLowerCase().match(searchValue);
+                    const isMatchedToTitle = matcher(components[key].title);
+                    const isMatchedToKey = matcher(components[key].key);
 
                     if (isMatchedToTitle || isMatchedToKey) {
                         filteredOrder.push(components[key].key);
@@ -673,7 +674,7 @@ export default class WebformBuilder extends Component {
                 })),
         });
 
-        sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchValue)
+        sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchString.toLowerCase())
             .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
             .join('');
 
@@ -1013,19 +1014,12 @@ export default class WebformBuilder extends Component {
             return;
         }
         let remove = true;
-        if (
-            !component.skipRemoveConfirm
-            && (
-                (Array.isArray(component.components) && component.components.length)
-                || (Array.isArray(component.rows) && component.rows.length)
-                || (Array.isArray(component.columns) && component.columns.length)
-            )
-        ) {
+        if (!component.skipRemoveConfirm && (!_.isEmpty(component.components) || !_.isEmpty(component.rows) || !_.isEmpty(component.columns))) {
             const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
             remove = window.confirm(this.t(message));
         }
         if (!original) {
-            original = parent.formioContainer.find(comp => comp.id === component.id);
+            original = parent.formioContainer.find(c => c.id === component.id);
         }
         const index = parent.formioContainer ? parent.formioContainer.indexOf(original) : 0;
         if (remove && index !== -1) {
@@ -1180,9 +1174,9 @@ export default class WebformBuilder extends Component {
             let submissionData = this.editForm.submission.data;
             submissionData = submissionData.componentJson || submissionData;
             let comp = null;
-            parentComponent.getComponents().forEach(component => {
-                if (component.component.key === original.key) {
-                    comp = component;
+            parentComponent.getComponents().forEach(c => {
+                if (c.component.key === original.key) {
+                    comp = c;
                 }
             });
             const originalComp = comp.component;
@@ -1314,9 +1308,9 @@ export default class WebformBuilder extends Component {
                     // Ensure this component has a key.
                     if (isNew) {
                         if (!event.data.keyModified) {
-                            this.editForm.everyComponent(component => {
-                                if (component.key === 'key' && component.parent.component.key === 'tabs') {
-                                    component.setValue(_.camelCase(
+                            this.editForm.everyComponent(c => {
+                                if (c.key === 'key' && c.parent.component.key === 'tabs') {
+                                    c.setValue(_.camelCase(
                                             event.data.title
                                             || event.data.label
                                             || event.data.placeholder

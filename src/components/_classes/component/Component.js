@@ -8,13 +8,12 @@ import { conformToMask } from 'vanilla-text-mask';
 
 import Element from '@/Element';
 import Formio from '@/Formio';
+import { getFormioUploadAdapterPlugin } from '@/providers/storage/uploadAdapter';
+import Templates from '@/templates/Templates';
 import * as FormioUtils from '@/utils/utils';
-import { fastCloneDeep, boolValue, getComponentPathWithoutIndicies, getDataParentComponent } from '@/utils/utils';
+import Validator from '@/validator/Validator';
+import Widgets from '@/widgets';
 
-import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
-import Templates from '../../../templates/Templates';
-import Validator from '../../../validator/Validator';
-import Widgets from '../../../widgets';
 import ComponentModal from '../componentModal/ComponentModal';
 
 const isIEBrowser = FormioUtils.getIEBrowserVersion();
@@ -35,93 +34,93 @@ export default class Component extends Element {
     static schema(...sources) {
         return _.merge({
             /**
-       * Determines if this component provides an input.
-       */
+             * Determines if this component provides an input.
+            */
             input: true,
 
             /**
-       * The data key for this component (how the data is stored in the database).
-       */
+             * The data key for this component (how the data is stored in the database).
+            */
             key: '',
 
             /**
-       * The input placeholder for this component.
-       */
+             * The input placeholder for this component.
+            */
             placeholder: '',
 
             /**
-       * The input prefix
-       */
+             * The input prefix
+            */
             prefix: '',
 
             /**
-       * The custom CSS class to provide to this component.
-       */
+             * The custom CSS class to provide to this component.
+            */
             customClass: '',
 
             /**
-       * The input suffix.
-       */
+             * The input suffix.
+            */
             suffix: '',
 
             /**
-       * If this component should allow an array of values to be captured.
-       */
+             * If this component should allow an array of values to be captured.
+            */
             multiple: false,
 
             /**
-       * The default value of this compoennt.
-       */
+             * The default value of this compoennt.
+            */
             defaultValue: null,
 
             /**
-       * If the data of this component should be protected (no GET api requests can see the data)
-       */
+             * If the data of this component should be protected (no GET api requests can see the data)
+            */
             protected: false,
 
             /**
-       * Validate if the value of this component should be unique within the form.
-       */
+             * Validate if the value of this component should be unique within the form.
+            */
             unique: false,
 
             /**
-       * If the value of this component should be persisted within the backend api database.
-       */
+             * If the value of this component should be persisted within the backend api database.
+            */
             persistent: true,
 
             /**
-       * Determines if the component should be within the form, but not visible.
-       */
+             * Determines if the component should be within the form, but not visible.
+            */
             hidden: false,
 
             /**
-       * If the component should be cleared when hidden.
-       */
+             * If the component should be cleared when hidden.
+            */
             clearOnHide: true,
 
             /**
-       * This will refresh this component options when this field changes.
-       */
+             * This will refresh this component options when this field changes.
+            */
             refreshOn: '',
 
             /**
-       * This will redraw the component when this field changes.
-       */
+             * This will redraw the component when this field changes.
+            */
             redrawOn: '',
 
             /**
-       * If this component should be included as a column within a submission table.
-       */
+             * If this component should be included as a column within a submission table.
+            */
             tableView: false,
 
             /**
-       * If this component should be rendering in modal.
-       */
+             * If this component should be rendering in modal.
+            */
             modalEdit: false,
 
             /**
-       * The input label provided to this component.
-       */
+             * The input label provided to this component.
+            */
             label: '',
             labelPosition: 'top',
             description: '',
@@ -138,45 +137,45 @@ export default class Component extends Element {
             widget: null,
 
             /**
-       * Attributes that will be assigned to the input elements of this component.
-       */
+             * Attributes that will be assigned to the input elements of this component.
+            */
             attributes: {},
 
             /**
-       * This will perform the validation on either "change" or "blur" of the input element.
-       */
+             * This will perform the validation on either "change" or "blur" of the input element.
+            */
             validateOn: 'change',
 
             /**
-       * The validation criteria for this component.
-       */
+             * The validation criteria for this component.
+            */
             validate: {
-                /**
-         * If this component is required.
-         */
+            /**
+                 * If this component is required.
+                */
                 required: false,
 
                 /**
-         * Custom JavaScript validation.
-         */
+                 * Custom JavaScript validation.
+                */
                 custom: '',
 
                 /**
-         * If the custom validation should remain private (only the backend will see it and execute it).
-         */
+                 * If the custom validation should remain private (only the backend will see it and execute it).
+                */
                 customPrivate: false,
 
                 /**
-         * If this component should implement a strict date validation if the Calendar widget is implemented.
-         */
+                 * If this component should implement a strict date validation if the Calendar widget is implemented.
+                */
                 strictDateValidation: false,
                 multiple: false,
                 unique: false,
             },
 
             /**
-       * The simple conditional settings for a component.
-       */
+             * The simple conditional settings for a component.
+            */
             conditional: {
                 show: null,
                 when: null,
@@ -282,7 +281,7 @@ export default class Component extends Element {
         this.component.id = this.id;
 
         // Save off the original component to be used in logic.
-        this.originalComponent = fastCloneDeep(this.component);
+        this.originalComponent = FormioUtils.fastCloneDeep(this.component);
 
         /**
      * If the component has been attached
@@ -323,7 +322,7 @@ export default class Component extends Element {
      *
      * @type {boolean}
      */
-        this._disabled = boolValue(this.component.disabled) ? this.component.disabled : false;
+        this._disabled = FormioUtils.boolValue(this.component.disabled) ? this.component.disabled : false;
 
         /**
      * Points to the root component, usually the FormComponent.
@@ -349,9 +348,9 @@ export default class Component extends Element {
         this.options.name = this.options.name || 'data';
 
         /**
-     * The validators that are assigned to this component.
-     * @type {[string]}
-     */
+         * The validators that are assigned to this component.
+         * @type {[string]}
+         */
         this.validators = [ 'required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask' ];
 
         this._path = '';
@@ -359,16 +358,16 @@ export default class Component extends Element {
         this._parentPath = this.options.parentPath || '';
 
         /**
-     * Determines if this component is visible, or not.
-     */
+         * Determines if this component is visible, or not.
+         */
         this._parentVisible = _has(this.options, 'parentVisible') ? this.options.parentVisible : true;
         this._visible = this._parentVisible && this.conditionallyVisible(null, data);
         this._parentDisabled = false;
 
         /**
-     * Used to trigger a new change in this component.
-     * @type {function} - Call to trigger a change in this component.
-     */
+         * Used to trigger a new change in this component.
+         * @type {function} - Call to trigger a change in this component.
+         */
         let changes = [];
         let lastChanged = null;
         let triggerArgs = [];
@@ -408,16 +407,16 @@ export default class Component extends Element {
         };
 
         /**
-     * Used to trigger a redraw event within this component.
-     *
-     * @type {Function}
-     */
+         * Used to trigger a redraw event within this component.
+         *
+         * @type {Function}
+         */
         this.triggerRedraw = _.debounce(this.redraw.bind(this), 100);
 
         /**
-     * list of attached tooltips
-     * @type {Array}
-     */
+         * list of attached tooltips
+         * @type {Array}
+         */
         this.tooltips = [];
 
         // To force this component to be invalid.
@@ -442,9 +441,9 @@ export default class Component extends Element {
             }
 
             /**
-       * The element information for creating the input element.
-       * @type {*}
-       */
+             * The element information for creating the input element.
+             * @type {*}
+             */
             this.info = this.elementInfo();
         }
 
@@ -487,7 +486,7 @@ export default class Component extends Element {
       && (this.parent.form.display === 'pdf')
       && this.options.readOnly;
 
-        if (this.hasInput && this.component.validate && boolValue(this.component.validate.required) && !isPDFReadOnlyMode) {
+        if (this.hasInput && this.component.validate && FormioUtils.boolValue(this.component.validate.required) && !isPDFReadOnlyMode) {
             label.className += ' field-required';
         }
         if (label.hidden) {
@@ -714,7 +713,7 @@ export default class Component extends Element {
    * Returns the JSON schema for this component.
    */
     get schema() {
-        return fastCloneDeep(this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema));
+        return FormioUtils.fastCloneDeep(this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema));
     }
 
     /**
@@ -1124,7 +1123,7 @@ export default class Component extends Element {
             this.refresh(this.data, changed, flags);
         }
         else if (
-            (changePath && getComponentPathWithoutIndicies(changePath) === refreshData) && changed && changed.instance
+            (changePath && FormioUtils.getComponentPathWithoutIndicies(changePath) === refreshData) && changed && changed.instance
       // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       && this.inContext(changed.instance)
@@ -1165,7 +1164,7 @@ export default class Component extends Element {
         else {
             this.refreshOnChanged = true;
         }
-        this.refreshOnValue = fastCloneDeep(value);
+        this.refreshOnValue = FormioUtils.fastCloneDeep(value);
         if (this.refreshOnChanged) {
             if (this.component.clearOnRefresh) {
                 this.setValue(null);
@@ -1367,7 +1366,7 @@ export default class Component extends Element {
         if (this.component.customClass) {
             className += this.component.customClass;
         }
-        if (this.hasInput && this.component.validate && boolValue(this.component.validate.required)) {
+        if (this.hasInput && this.component.validate && FormioUtils.boolValue(this.component.validate.required)) {
             className += ' required';
         }
         if (this.labelIsHidden()) {
@@ -1676,7 +1675,7 @@ export default class Component extends Element {
             return;
         }
 
-        const newComponent = fastCloneDeep(this.originalComponent);
+        const newComponent = FormioUtils.fastCloneDeep(this.originalComponent);
 
         let changed = logics.reduce((changed, logic) => {
             const result = FormioUtils.checkTrigger(
@@ -1863,7 +1862,7 @@ export default class Component extends Element {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
         if (
         // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
-            (!this.rootPristine || getDataParentComponent(this)?.hasScopedChildren)
+            (!this.rootPristine || FormioUtils.getDataParentComponent(this)?.hasScopedChildren)
       && this.component.clearOnHide !== false
       && !this.options.readOnly
       && !this.options.showHiddenFields
@@ -3016,7 +3015,7 @@ export default class Component extends Element {
             if (logic.trigger.type === 'event') {
                 const event = this.interpolate(logic.trigger.event);
                 this.on(event, (...args) => {
-                    const newComponent = fastCloneDeep(this.originalComponent);
+                    const newComponent = FormioUtils.fastCloneDeep(this.originalComponent);
                     if (this.applyActions(newComponent, logic.actions, args)) {
                         // If component definition changed, replace it.
                         if (!_.isEqual(this.component, newComponent)) {
