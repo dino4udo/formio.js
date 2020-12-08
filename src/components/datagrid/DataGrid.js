@@ -210,10 +210,10 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     hasRemoveButtons() {
         return !this.component.disableAddingRemovingRows
-      && !this.options.readOnly
-      && !this.disabled
-      && this.fullMode
-      && (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
+            && !this.options.readOnly
+            && !this.disabled
+            && this.fullMode
+            && (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
     }
 
     hasTopSubmit() {
@@ -269,10 +269,8 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
 
     hasHeader() {
-        return this.component.components.reduce((hasHeader, col) =>
-            // If any of the components has a title and it isn't hidden, display the header.
-            hasHeader || ((col.label || col.title) && !col.hideLabel),
-        false);
+        // If any of the components has a title and it isn't hidden, display the header.
+        return this.component.components.reduce((hasHeader, col) => hasHeader || ((col.label || col.title) && !col.hideLabel), false);
     }
 
     attach(element) {

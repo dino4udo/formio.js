@@ -23,15 +23,15 @@ export default {
         }, true);
 
         // Recurse into all child components.
-        eachComponent([ component ], component => {
+        eachComponent([ component ], c => {
             // Skip key uniquification if this component doesn't have a key.
-            if (!component.key) {
+            if (!c.key) {
                 return;
             }
 
-            const newKey = uniqueKey(formKeys, component.key);
-            if (newKey !== component.key) {
-                component.key = newKey;
+            const newKey = uniqueKey(formKeys, c.key);
+            if (newKey !== c.key) {
+                c.key = newKey;
                 changed = true;
             }
 
