@@ -299,9 +299,9 @@ export function applyFormChanges(form, changes) {
     changes.forEach(change => {
         let found = false;
         let newComponent = change.component;
+
         switch (change.op) {
             case 'add':
-
                 // Find the container to set the component in.
                 findComponent(form.components, change.container, null, parent => {
                     if (!change.container) {
@@ -388,12 +388,8 @@ export function flattenComponents(components, includeAll) {
  *
  * @returns {boolean} - TRUE - This component has a conditional, FALSE - No conditional provided.
  */
-export function hasCondition(component) {
-    return Boolean(
-            (component.customConditional)
-    || (component.conditional && component.conditional.when)
-    || (component.conditional && component.conditional.json),
-    );
+export function hasCondition({ customConditional, conditional } = {}) {
+    return Boolean(customConditional || conditional?.when || conditional?.json);
 }
 
 /**
@@ -407,8 +403,8 @@ export function hasCondition(component) {
  */
 export function parseFloatExt(value) {
     return parseFloat(isString(value)
-    ? value.replace(/[^\de.+-]/gi, '')
-    : value);
+        ? value.replace(/[^\de.+-]/gi, '')
+        : value);
 }
 
 /**
@@ -437,6 +433,7 @@ export function formatAsCurrency(value) {
             .join(''))
         .join(',');
     parts[1] = pad(parts[1], 2, '0');
+
     return parts.join('.');
 }
 
@@ -448,7 +445,7 @@ export function formatAsCurrency(value) {
  * @returns {string}
  *   String with escaped RegEx characters.
  */
-export function escapeRegExCharacters(value) {
+export function escapeRegExCharacters(value = '') {
     return value.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
 }
 
@@ -504,7 +501,7 @@ export function getStrings(form) {
                 });
             }
         });
-        if ((!component.dataSrc || component.dataSrc === 'values') && has(component, 'values') && Array.isArray(component.values) && component.values.length) {
+        if ((!component.dataSrc || component.dataSrc === 'values') && !_.isEmpty(component.values)) {
             component.values.forEach((value, index) => {
                 strings.push({
                     key: component.key,
