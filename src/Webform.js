@@ -147,108 +147,108 @@ export default class Webform extends NestedDataComponent {
         this.customErrors = [];
 
         /**
-     * Determines if this form should submit the API on submit.
-     * @type {boolean}
-     */
+         * Determines if this form should submit the API on submit.
+         * @type {boolean}
+         */
         this.nosubmit = false;
 
         /**
-     * Determines if the form has tried to be submitted, error or not.
-     *
-     * @type {boolean}
-     */
+         * Determines if the form has tried to be submitted, error or not.
+         *
+         * @type {boolean}
+         */
         this.submitted = false;
 
         /**
-     * Determines if the form is being submitted at the moment.
-     *
-     * @type {boolean}
-     */
+         * Determines if the form is being submitted at the moment.
+         *
+         * @type {boolean}
+         */
         this.submitting = false;
 
         /**
-     * The Formio instance for this form.
-     * @type {Formio}
-     */
+         * The Formio instance for this form.
+         * @type {Formio}
+         */
         this.formio = null;
 
         /**
-     * The loader HTML element.
-     * @type {HTMLElement}
-     */
+         * The loader HTML element.
+         * @type {HTMLElement}
+         */
         this.loader = null;
 
         /**
-     * The alert HTML element
-     * @type {HTMLElement}
-     */
+         * The alert HTML element
+         * @type {HTMLElement}
+         */
         this.alert = null;
 
         /**
-     * Promise that is triggered when the submission is done loading.
-     * @type {Promise}
-     */
+         * Promise that is triggered when the submission is done loading.
+         * @type {Promise}
+         */
         this.onSubmission = null;
 
         /**
-     * Determines if this submission is explicitly set.
-     * @type {boolean}
-     */
+         * Determines if this submission is explicitly set.
+         * @type {boolean}
+         */
         this.submissionSet = false;
 
         /**
-     * Promise that executes when the form is ready and rendered.
-     * @type {Promise}
-     *
-     * @example
-     * import Webform from 'formiojs/Webform';
-     * let form = new Webform(document.getElementById('formio'));
-     * form.formReady.then(() => {
-     *   console.log('The form is ready!');
-     * });
-     * form.src = 'https://examples.form.io/example';
-     */
+         * Promise that executes when the form is ready and rendered.
+         * @type {Promise}
+         *
+         * @example
+         * import Webform from 'formiojs/Webform';
+         * let form = new Webform(document.getElementById('formio'));
+         * form.formReady.then(() => {
+         *   console.log('The form is ready!');
+         * });
+         * form.src = 'https://examples.form.io/example';
+         */
         this.formReady = new NativePromise((resolve, reject) => {
             /**
-       * Called when the formReady state of this form has been resolved.
-       *
-       * @type {function}
-       */
+         * Called when the formReady state of this form has been resolved.
+         *
+         * @type {function}
+         */
             this.formReadyResolve = resolve;
 
             /**
-       * Called when this form could not load and is rejected.
-       *
-       * @type {function}
-       */
+         * Called when this form could not load and is rejected.
+         *
+         * @type {function}
+         */
             this.formReadyReject = reject;
         });
 
         /**
-     * Promise that executes when the submission is ready and rendered.
-     * @type {Promise}
-     *
-     * @example
-     * import Webform from 'formiojs/Webform';
-     * let form = new Webform(document.getElementById('formio'));
-     * form.submissionReady.then(() => {
-     *   console.log('The submission is ready!');
-     * });
-     * form.src = 'https://examples.form.io/example/submission/234234234234234243';
-     */
+         * Promise that executes when the submission is ready and rendered.
+         * @type {Promise}
+         *
+         * @example
+         * import Webform from 'formiojs/Webform';
+         * let form = new Webform(document.getElementById('formio'));
+         * form.submissionReady.then(() => {
+         *   console.log('The submission is ready!');
+         * });
+         * form.src = 'https://examples.form.io/example/submission/234234234234234243';
+         */
         this.submissionReady = new NativePromise((resolve, reject) => {
             /**
-       * Called when the formReady state of this form has been resolved.
-       *
-       * @type {function}
-       */
+             * Called when the formReady state of this form has been resolved.
+             *
+             * @type {function}
+             */
             this.submissionReadyResolve = resolve;
 
             /**
-       * Called when this form could not load and is rejected.
-       *
-       * @type {function}
-       */
+             * Called when this form could not load and is rejected.
+             *
+             * @type {function}
+             */
             this.submissionReadyReject = reject;
         });
 
@@ -279,11 +279,11 @@ export default class Webform extends NestedDataComponent {
     /* eslint-enable max-statements */
 
     /**
-   * Sets the language for this form.
-   *
-   * @param lang
-   * @return {Promise}
-   */
+     * Sets the language for this form.
+     *
+     * @param lang
+     * @return {Promise}
+     */
     set language(lang) {
         return new NativePromise((resolve, reject) => {
             this.options.language = lang;
@@ -311,13 +311,13 @@ export default class Webform extends NestedDataComponent {
     }
 
     /**
-   * Add a language for translations
-   *
-   * @param code
-   * @param lang
-   * @param active
-   * @return {*}
-   */
+     * Add a language for translations
+     *
+     * @param code
+     * @param lang
+     * @param active
+     * @return {*}
+     */
     addLanguage(code, lang, active = false) {
         this.i18next.addResourceBundle(code, 'translation', lang, true, true);
         if (active) {
@@ -326,9 +326,9 @@ export default class Webform extends NestedDataComponent {
     }
 
     /**
-   * Perform the localization initialization.
-   * @returns {*}
-   */
+     * Perform the localization initialization.
+     * @returns {*}
+     */
     localize() {
         if (this.i18next.initialized) {
             return NativePromise.resolve(this.i18next);
