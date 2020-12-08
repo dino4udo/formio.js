@@ -451,12 +451,10 @@ export default class Webform extends NestedDataComponent {
   loadSubmission() {
       this.loadingSubmission = true;
       if (this.formio.submissionId) {
-          this.onSubmission = this.formio.loadSubmission().then(
-                  submission => this.setSubmission(submission),
-                  err => this.submissionReadyReject(err),
-          ).catch(
-                  err => this.submissionReadyReject(err),
-          );
+          this.onSubmission = this.formio.loadSubmission()
+          // TODO: check if there is no 2nd arg
+              .then(this.setSubmission, this.submissionReadyReject)
+              .catch(this.submissionReadyReject);
       }
       else {
           this.submissionReadyResolve();
@@ -473,16 +471,16 @@ export default class Webform extends NestedDataComponent {
   setSrc(value, options) {
       if (this.setUrl(value, options)) {
           this.nosubmit = false;
-          return this.formio.loadForm({ params: { live: 1 } }).then(
-                  form => {
-                      const setForm = this.setForm(form);
-                      this.loadSubmission();
-                      return setForm;
-                  },
-          ).catch(err => {
-              console.warn(err);
-              this.formReadyReject(err);
-          });
+          return this.formio.loadForm({ params: { live: 1 } })
+              .then(form => {
+                  const setForm = this.setForm(form);
+                  this.loadSubmission();
+                  return setForm;
+              })
+              .catch(err => {
+                  console.warn(err);
+                  this.formReadyReject(err);
+              });
       }
       return NativePromise.resolve();
   }
@@ -764,7 +762,7 @@ export default class Webform extends NestedDataComponent {
           ...flags,
           fromSubmission: _.has(flags, 'fromSubmission') ? flags.fromSubmission : true,
       };
-      return this.onSubmission = this.formReady
+      this.onSubmission = this.formReady
           .then(resolveFlags => {
               if (resolveFlags) {
                   flags = {
@@ -777,8 +775,10 @@ export default class Webform extends NestedDataComponent {
               this.setValue(submission, flags);
               return this.submissionReadyResolve(submission);
           },
-          err => this.submissionReadyReject(err))
+          this.submissionReadyReject)
           .catch(this.submissionReadyReject);
+
+      return this.onSubmission;
   }
 
   /**
@@ -1523,15 +1523,17 @@ export default class Webform extends NestedDataComponent {
           });
       }
       if (API_URL && settings) {
-          Formio.makeStaticRequest(API_URL, settings.method, submission, { headers: settings.headers }).then(() => {
-              this.emit('requestDone');
-              this.setAlert('success', '<p> Success </p>');
-          }).catch(e => {
-              this.showErrors(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-              this.emit('error', `${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-              console.error(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-              this.setAlert('danger', `<p> ${e.statusText ? e.statusText : ''} ${e.status ? e.status : e} </p>`);
-          });
+          Formio.makeStaticRequest(API_URL, settings.method, submission, { headers: settings.headers })
+              .then(() => {
+                  this.emit('requestDone');
+                  this.setAlert('success', '<p> Success </p>');
+              })
+              .catch(e => {
+                  this.showErrors(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+                  this.emit('error', `${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+                  console.error(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
+                  this.setAlert('danger', `<p> ${e.statusText ? e.statusText : ''} ${e.status ? e.status : e} </p>`);
+              });
       }
       else {
           this.emit('error', 'You should add a URL to this button.');

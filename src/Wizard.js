@@ -81,6 +81,7 @@ export default class Wizard extends Webform {
         return super.checkConditions(data, flags, row);
     }
 
+    // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
     set data(value) {
         this._data = value;
         _.each(this.getPages({ all: true }), component => {
@@ -127,7 +128,7 @@ export default class Wizard extends Webform {
         }
 
         this.on('subWizardsUpdated', subForm => {
-            const subWizard = this.subWizards.find(subWizard => subForm?.id && subWizard.subForm?.id === subForm?.id);
+            const subWizard = this.subWizards.find(sw => subForm?.id && sw.subForm?.id === subForm?.id);
 
             if (this.subWizards.length && subWizard) {
                 subWizard.subForm.setValue(subForm._submission, {}, true);
@@ -183,7 +184,7 @@ export default class Wizard extends Webform {
         if (currentPanel && currentPanel.buttonSettings) {
             Object.keys(currentPanel.buttonSettings).forEach(() => {
                 Object.keys(ctx.buttons).forEach(key => {
-                    if (typeof currentPanel.buttonSettings[key] !== 'undefined' && !currentPanel.buttonSettings[key] || ctx.isSubForm) {
+                    if ((currentPanel.buttonSettings[key] !== undefined) && !currentPanel.buttonSettings[key] || ctx.isSubForm) {
                         ctx.buttons[key] = null;
                     }
                 });
@@ -320,13 +321,15 @@ export default class Wizard extends Webform {
                 this.setLoading(buttonElement, true);
 
                 // Call the button method, then re-enable the button.
-                this[button.method]().then(() => {
-                    buttonElement.removeAttribute('disabled');
-                    this.setLoading(buttonElement, false);
-                }).catch(() => {
-                    buttonElement.removeAttribute('disabled');
-                    this.setLoading(buttonElement, false);
-                });
+                this[button.method]()
+                    .then(() => {
+                        buttonElement.removeAttribute('disabled');
+                        this.setLoading(buttonElement, false);
+                    })
+                    .catch(() => {
+                        buttonElement.removeAttribute('disabled');
+                        this.setLoading(buttonElement, false);
+                    });
             });
         });
     }
@@ -435,14 +438,16 @@ export default class Wizard extends Webform {
             });
         }
 
-        originalComponents?.forEach(item => {
-            if (!item.key) {
-                item.key = item.title;
-            }
-            if (currentPages[item.key]) {
-                currentComponents.push(currentPages[item.key]);
-            }
-        });
+        if (Array.isArray(originalComponents)) {
+            originalComponents.forEach(item => {
+                if (!item.key) {
+                    item.key = item.title;
+                }
+                if (currentPages[item.key]) {
+                    currentComponents.push(currentPages[item.key]);
+                }
+            });
+        }
 
         return currentComponents;
     }
@@ -762,7 +767,7 @@ export default class Wizard extends Webform {
         if (!ignoreEstablishment) {
             this.establishPages(submission.data);
         }
-        const changed = this.getPages({ all: true }).reduce((changed, page) => this.setNestedValue(page, submission.data, flags, changed) || changed, false);
+        const changed = this.getPages({ all: true }).reduce((acc, page) => this.setNestedValue(page, submission.data, flags, acc) || acc, false);
         this.pageFieldLogicHandler();
 
         if (!this.editMode && submission._id && !this.options.readOnly) {
@@ -887,9 +892,9 @@ export default class Wizard extends Webform {
     focusOnComponent(key) {
         let pageIndex = 0;
 
-        const [ page ] = this.pages.filter((page, index) => {
-            if (page.getComponent(key)) {
-                pageIndex = index;
+        const [ page ] = this.pages.filter((p, i) => {
+            if (p.getComponent(key)) {
+                pageIndex = i;
                 return true;
             }
             return false;

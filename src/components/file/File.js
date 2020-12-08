@@ -462,9 +462,11 @@ export default class FileComponent extends Field {
                 }));
             });
             if (loadingImages.length) {
-                NativePromise.all(loadingImages).then(() => {
-                    this.filesReadyResolve();
-                }).catch(() => this.filesReadyReject());
+                NativePromise.all(loadingImages)
+                    .then(() => {
+                        this.filesReadyResolve();
+                    })
+                    .catch(() => this.filesReadyReject());
             }
             else {
                 this.filesReadyResolve();
@@ -699,16 +701,17 @@ export default class FileComponent extends Field {
         if (this.component.privateDownload) {
             fileInfo.private = true;
         }
-        fileService.downloadFile(fileInfo, options).then(file => {
-            if (file) {
-                if ([ 'base64', 'indexeddb' ].includes(file.storage)) {
-                    download(file.url, file.originalName || file.name, file.type);
+        fileService.downloadFile(fileInfo, options)
+            .then(file => {
+                if (file) {
+                    if ([ 'base64', 'indexeddb' ].includes(file.storage)) {
+                        download(file.url, file.originalName || file.name, file.type);
+                    }
+                    else {
+                        window.open(file.url, '_blank');
+                    }
                 }
-                else {
-                    window.open(file.url, '_blank');
-                }
-            }
-        })
+            })
             .catch(response => {
                 // Is alert the best way to do this?
                 // User is expecting an immediate notification due to attempting to download a file.

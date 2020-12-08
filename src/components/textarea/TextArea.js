@@ -137,14 +137,16 @@ export default class TextAreaComponent extends TextFieldComponent {
                         settings = {};
                     }
                     settings.mode = `ace/mode/${this.component.as}`;
-                    this.addAce(element, settings, newValue => this.updateEditorValue(index, newValue)).then(ace => {
-                        this.editors[index] = ace;
-                        let { dataValue } = this;
-                        dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-                        ace.setValue(this.setConvertedValue(dataValue, index));
-                        editorReady(ace);
-                        return ace;
-                    }).catch(err => console.warn(err));
+                    this.addAce(element, settings, newValue => this.updateEditorValue(index, newValue))
+                        .then(ace => {
+                            this.editors[index] = ace;
+                            let { dataValue } = this;
+                            dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
+                            ace.setValue(this.setConvertedValue(dataValue, index));
+                            editorReady(ace);
+                            return ace;
+                        })
+                        .catch(err => console.warn(err));
                     break;
                 case 'quill':
                     // Normalize the configurations for quill.
@@ -156,28 +158,31 @@ export default class TextAreaComponent extends TextFieldComponent {
                     // Add the quill editor.
                     this.addQuill(
                             element,
-                            settings, () => this.updateEditorValue(index, this.editors[index].root.innerHTML),
-                    ).then(quill => {
-                        this.editors[index] = quill;
-                        if (this.component.isUploadEnabled) {
-                            const _this = this;
-                            quill.getModule('uploader').options.handler = function (...args) {
+                            settings,
+                            () => this.updateEditorValue(index, this.editors[index].root.innerHTML),
+                    )
+                        .then(quill => {
+                            this.editors[index] = quill;
+                            if (this.component.isUploadEnabled) {
+                                const _this = this;
+                                quill.getModule('uploader').options.handler = function (...args) {
                                 // we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
                                 // we also need current component instance as we use some fields and methods from it as well
-                                _this.imageHandler.call(_this, this, ...args);
-                            };
-                        }
-                        quill.root.spellcheck = this.component.spellcheck;
-                        if (this.options.readOnly || this.disabled) {
-                            quill.disable();
-                        }
+                                    _this.imageHandler.call(_this, this, ...args);
+                                };
+                            }
+                            quill.root.spellcheck = this.component.spellcheck;
+                            if (this.options.readOnly || this.disabled) {
+                                quill.disable();
+                            }
 
-                        let { dataValue } = this;
-                        dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-                        quill.setContents(quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }));
-                        editorReady(quill);
-                        return quill;
-                    }).catch(err => console.warn(err));
+                            let { dataValue } = this;
+                            dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
+                            quill.setContents(quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }));
+                            editorReady(quill);
+                            return quill;
+                        })
+                        .catch(err => console.warn(err));
                     break;
                 case 'ckeditor':
                     settings = settings || {};
@@ -260,14 +265,7 @@ export default class TextAreaComponent extends TextFieldComponent {
                 quillInstance.updateContents(new Delta()
                     .retain(range.index)
                     .delete(range.length)
-                    .insert(
-                            {
-                                image: result.url,
-                            },
-                            {
-                                alt: JSON.stringify(requestData),
-                            },
-                    ),
+                    .insert({ image: result.url }, { alt: JSON.stringify(requestData) }),
                 Quill.sources.USER);
             })
             .catch(error => {

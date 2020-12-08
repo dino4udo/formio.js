@@ -39,7 +39,7 @@ export default class WizardBuilder extends WebformBuilder {
             }
         }
 
-        this.options.hooks.attachPanel = (element, component) => {
+        this.options.hooks.attachPanel = (e, component) => {
             if (component.refs.removeComponent) {
                 this.addEventListener(component.refs.removeComponent, 'click', () => {
                     const pageIndex = this.pages.findIndex(page => page.key === component.key);
@@ -61,17 +61,17 @@ export default class WizardBuilder extends WebformBuilder {
         };
 
         const originalAttachComponentsHook = this.options.hooks.attachComponents;
-        this.options.hooks.attachComponents = (element, components, container, component) => {
+        this.options.hooks.attachComponents = (el, components, container, component) => {
             if (component.type === 'form' && !component.root) {
-                return element;
+                return el;
             }
 
-            return originalAttachComponentsHook(element, components, container, component);
+            return originalAttachComponentsHook(el, components, container, component);
         };
 
         // Wizard pages don't replace themselves in the right array. Do that here.
         this.on('saveComponent', (component, originalComponent) => {
-            const webformComponents = this.webform.components.map(({ component }) => component);
+            const webformComponents = this.webform.components.map(({ component: c }) => c);
             if (this._form.components.includes(originalComponent)) {
                 this._form.components[this._form.components.indexOf(originalComponent)] = component;
                 this.rebuild();

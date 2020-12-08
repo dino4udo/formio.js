@@ -52,23 +52,25 @@ describe('Webform tests', function() {
     const formElement = document.createElement('div');
     const formWithCondDataGridColumn = new Webform(formElement);
 
-    formWithCondDataGridColumn.setForm(formWithDataGridWithCondColumn).then(() => {
-      const condDataGridField = formWithCondDataGridColumn.element.querySelector( '[name="data[dataGrid][0][numberCond]"]');
-      assert.equal(!!condDataGridField, false);
+    formWithCondDataGridColumn.setForm(formWithDataGridWithCondColumn)
+      .then(() => {
+        const condDataGridField = formWithCondDataGridColumn.element.querySelector( '[name="data[dataGrid][0][numberCond]"]');
+        assert.equal(!!condDataGridField, false);
 
-      const textField = formWithCondDataGridColumn.element.querySelector( '[name="data[textField]"]');
-      textField.value = 'show';
+        const textField = formWithCondDataGridColumn.element.querySelector( '[name="data[textField]"]');
+        textField.value = 'show';
 
-      const inputEvent = new Event('input');
-      textField.dispatchEvent(inputEvent);
+        const inputEvent = new Event('input');
+        textField.dispatchEvent(inputEvent);
 
-      setTimeout(() => {
-        const condDataGridFieldAfterFulfillingCond = formWithCondDataGridColumn.element.querySelector( '[name="data[dataGrid][0][numberCond]"]');
-        assert.equal(!!condDataGridFieldAfterFulfillingCond, true);
+        setTimeout(() => {
+          const condDataGridFieldAfterFulfillingCond = formWithCondDataGridColumn.element.querySelector( '[name="data[dataGrid][0][numberCond]"]');
+          assert.equal(!!condDataGridFieldAfterFulfillingCond, true);
 
-        done();
-      }, 300);
-    }).catch((err) => done(err));
+          done();
+        }, 300);
+      })
+      .catch((err) => done(err));
   });
 
   it('Should remove dataGrid extra rows and components after setting value with less row number', function(done) {

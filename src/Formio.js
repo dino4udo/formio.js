@@ -519,12 +519,13 @@ class Formio {
 
         let download = this.base + apiUrl;
         return new NativePromise((resolve, reject) => {
-            this.getTempToken(3600, `GET:${apiUrl}`).then(tempToken => {
-                download += `?token=${tempToken.key}`;
-                resolve(download);
-            }, () => {
-                resolve(download);
-            }).catch(reject);
+            this.getTempToken(3600, `GET:${apiUrl}`)
+                .then(tempToken => {
+                    download += `?token=${tempToken.key}`;
+                    resolve(download);
+                }, () => {
+                    resolve(download);
+                }).catch(reject);
         });
     }
 

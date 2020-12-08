@@ -243,7 +243,7 @@ export default class PDFBuilder extends WebformBuilder {
                 this.emit('pdfUploaded', result.data);
                 this.redraw();
             })
-            .catch(err => this.setUploadError(err));
+            .catch(this.setUploadError);
     }
 
     setUploadError(message) {
