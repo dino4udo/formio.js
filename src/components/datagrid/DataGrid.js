@@ -201,7 +201,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
 
     setStaticValue(n) {
-        this.dataValue = _.range(n).map(() => ({}));
+        this.dataValue = Array(n).fill({});
     }
 
     hasExtraColumn() {

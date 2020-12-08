@@ -92,7 +92,7 @@ export default class EditTableComponent extends DataGridComponent {
     }
 
     addEmptyRows(n) {
-        this.dataValue = _.range(n).map(() => ({}));
+        this.dataValue = Array(n).fill({});
     }
 
     get emptyColumn() {
