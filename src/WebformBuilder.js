@@ -613,8 +613,10 @@ export default class WebformBuilder extends Component {
         });
     }
 
+    // TODO: Search expolodes when clearing the values
     searchFields(searchString = '') {
-        // const searchValue = searchString.toLowerCase();
+        searchString = searchString.toLowerCase();
+
         const { sidebar } = this.refs;
         const sidebarGroups = this.refs['sidebar-groups'];
 
@@ -649,12 +651,12 @@ export default class WebformBuilder extends Component {
             return null;
         };
 
-        const filterGroupOrder = (groupOrder, searchValue) => {
+        const filterGroupOrder = (groupOrder, searchValue = '') => {
             const result = _.cloneDeep(groupOrder);
             return result.filter(key => filterGroupBy(this.groups[key], searchValue));
         };
 
-        const filterSubgroups = (groups, searchValue) => {
+        const filterSubgroups = (groups, searchValue = '') => {
             const result = _.clone(groups);
             return result
                 .map(subgroup => filterGroupBy(subgroup, searchValue))
@@ -662,10 +664,10 @@ export default class WebformBuilder extends Component {
         };
 
         const toTemplate = groupKey => ({
-            group: filterGroupBy(this.groups[groupKey], searchValue),
+            group: filterGroupBy(this.groups[groupKey], searchString),
             groupKey,
             groupId: sidebar.id || sidebarGroups.id,
-            subgroups: filterSubgroups(this.groups[groupKey].subgroups, searchValue)
+            subgroups: filterSubgroups(this.groups[groupKey].subgroups, searchString)
                 .map(group => this.renderTemplate('builderSidebarGroup', {
                     group,
                     groupKey: group.key,
@@ -674,7 +676,7 @@ export default class WebformBuilder extends Component {
                 })),
         });
 
-        sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchString.toLowerCase())
+        sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchString)
             .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
             .join('');
 
@@ -744,8 +746,9 @@ export default class WebformBuilder extends Component {
         super.detach();
     }
 
-    getComponentInfo(key, group) {
+    getComponentInfo(key = '', group) {
         let info;
+
         // This is a new component
         if (_has(this.schemas, key)) {
             info = fastCloneDeep(this.schemas[key]);
@@ -776,14 +779,9 @@ export default class WebformBuilder extends Component {
         }
 
         if (info) {
-            if (!info.key) {
-                info.key = _.camelCase(
-                        info.key
-                        || info.title
-                        || info.label
-                        || info.placeholder
-                        || info.type,
-                );
+            const { title, label, placeholder, type } = info;
+            if (!key) {
+                info.key = _.camelCase(info.key || title || label || placeholder || type);
             }
         }
 
@@ -791,28 +789,27 @@ export default class WebformBuilder extends Component {
     }
 
     getComponentsPath(component, parent) {
-    // Get path to the component in the parent component.
-        let path = 'components';
-        let columnIndex = 0;
-        let tableRowIndex = 0;
-        let tableColumnIndex = 0;
-        let tabIndex = 0;
-        switch (parent.type) {
-            case 'table':
-                tableRowIndex = _.findIndex(parent.rows, row => row.some(column => column.components.some(comp => comp.key === component.key)));
-                tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column => column.components.some(comp => comp.key === component.key)));
-                path = `rows[${tableRowIndex}][${tableColumnIndex}].components`;
-                break;
-            case 'columns':
-                columnIndex = _.findIndex(parent.columns, column => column.components.some(comp => comp.key === component.key));
-                path = `columns[${columnIndex}].components`;
-                break;
-            case 'tabs':
-                tabIndex = _.findIndex(parent.components, tab => tab.components.some(comp => comp.key === component.key));
-                path = `components[${tabIndex}].components`;
-                break;
+        // Get path to the component in the parent component.
+        const cMatcher = c => c.components.some(k => k.key === component.key);
+
+        if (parent.type === 'table') {
+            const tableRowIndex = _.findIndex(parent.rows, row => row.some(cMatcher));
+            const tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], cMatcher);
+
+            return `rows[${tableRowIndex}][${tableColumnIndex}].components`;
         }
-        return path;
+        if (parent.type === 'columns') {
+            const columnIndex = _.findIndex(parent.columns, cMatcher);
+
+            return `columns[${columnIndex}].components`;
+        }
+        if (parent.type === 'tabs') {
+            const tabIndex = _.findIndex(parent.components, cMatcher);
+
+            return `components[${tabIndex}].components`;
+        }
+
+        return 'components';
     }
 
     /* eslint-disable max-statements */
