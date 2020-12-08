@@ -1,15 +1,14 @@
 import { compare, applyPatch } from 'fast-json-patch';
-import chunk from 'lodash/chunk';
-import clone from 'lodash/clone';
-import forOwn from 'lodash/forOwn';
-import get from 'lodash/get';
-import has from 'lodash/has';
-import isNil from 'lodash/isNil';
-import isPlainObject from 'lodash/isPlainObject';
-import isString from 'lodash/isString';
-import pad from 'lodash/pad';
-import round from 'lodash/round';
-import set from 'lodash/set';
+import _chunk from 'lodash/chunk';
+import _clone from 'lodash/clone';
+import _forOwn from 'lodash/forOwn';
+import _get from 'lodash/get';
+import _has from 'lodash/has';
+import _isNil from 'lodash/isNil';
+import _isPlainObject from 'lodash/isPlainObject';
+import _pad from 'lodash/pad';
+import _round from 'lodash/round';
+import _set from 'lodash/set';
 
 /**
 import Validator from '@/validator/Validator';
@@ -56,7 +55,7 @@ export function eachComponent(components, fn, includeAll, path = '', parent) {
         // Keep track of parent references.
         if (parent) {
             // Ensure we don't create infinite JSON structures.
-            component.parent = clone(parent);
+            component.parent = _clone(parent);
             delete component.parent.components;
             delete component.parent.componentMap;
             delete component.parent.columns;
@@ -116,17 +115,27 @@ export function eachComponent(components, fn, includeAll, path = '', parent) {
  * @return {boolean}
  */
 export function matchComponent(component, query) {
-    if (isString(query)) {
+    if (typeof query === 'string') {
         return (component.key === query) || (component.path === query);
     }
 
     let matches = false;
-    forOwn(query, (value, key) => {
-        matches = (get(component, key) === value);
+
+    // for (const [ key, value ] of Object.entries(query)) {
+    //     matches = (_get(component, key) === value);
+    //     if (!matches) {
+    //         return false;
+    //     }
+    // }
+
+    _forOwn(query, (value, key) => {
+        console.log('component|key', { component, key });
+        matches = (_get(component, key) === value);
         if (!matches) {
             return false;
         }
     });
+
     return matches;
 }
 
@@ -136,7 +145,7 @@ export function matchComponent(component, query) {
  * @param {Object} components
  *   The components to iterate.
  * @param {String|Object} key
- *   The key of the component to get, or a query of the component to search.
+ *   The key of the component to _get, or a query of the component to search.
  *
  * @returns {Object}
  *   The component that matches the given key, or undefined if not found.
@@ -207,7 +216,7 @@ export function findComponent(components, key, path, fn) {
         newPath.push(index);
         if (!component) return;
 
-        if (has(component, 'columns') && Array.isArray(component.columns)) {
+        if (_has(component, 'columns') && Array.isArray(component.columns)) {
             newPath.push('columns');
             component.columns.forEach((column, i) => {
                 const colPath = newPath.slice();
@@ -217,7 +226,7 @@ export function findComponent(components, key, path, fn) {
             });
         }
 
-        if (has(component, 'rows') && Array.isArray(component.rows)) {
+        if (_has(component, 'rows') && Array.isArray(component.rows)) {
             newPath.push('rows');
             component.rows.forEach((row, ind) => {
                 const rowPath = newPath.slice();
@@ -231,7 +240,7 @@ export function findComponent(components, key, path, fn) {
             });
         }
 
-        if (has(component, 'components') && Array.isArray(component.components)) {
+        if (_has(component, 'components') && Array.isArray(component.components)) {
             newPath.push('components');
             findComponent(component.components, key, newPath, fn);
         }
@@ -253,7 +262,7 @@ export function removeComponent(components, path) {
     // Using unset() leave a null value. Use Array splice instead.
     const index = path.pop();
     if (path.length !== 0) {
-        components = get(components, path);
+        components = _get(components, path);
     }
     components.splice(index, 1);
 }
@@ -302,7 +311,7 @@ export function applyFormChanges(form, changes) {
 
         switch (change.op) {
             case 'add':
-                // Find the container to set the component in.
+                // Find the container to _set the component in.
                 findComponent(form.components, change.container, null, parent => {
                     if (!change.container) {
                         parent = form;
@@ -316,14 +325,14 @@ export function applyFormChanges(form, changes) {
                     });
 
                     found = true;
-                    const container = get(parent, change.path);
+                    const container = _get(parent, change.path);
                     container.splice(change.index, 0, newComponent);
                 });
                 break;
             case 'remove':
                 findComponent(form.components, change.key, null, (component, path) => {
                     found = true;
-                    const oldComponent = get(form.components, path);
+                    const oldComponent = _get(form.components, path);
                     if (oldComponent.key !== component.key) {
                         path.pop();
                     }
@@ -334,14 +343,14 @@ export function applyFormChanges(form, changes) {
                 findComponent(form.components, change.key, null, (component, path) => {
                     found = true;
                     try {
-                        const oldComponent = get(form.components, path);
+                        const oldComponent = _get(form.components, path);
                         const newComponent = applyPatch(component, change.patches).newDocument;
 
                         if (oldComponent.key !== newComponent.key) {
                             path.pop();
                         }
 
-                        set(form.components, path, newComponent);
+                        _set(form.components, path, newComponent);
                     }
                     catch (err) {
                         failed.push(change);
@@ -382,11 +391,11 @@ export function flattenComponents(components, includeAll) {
 }
 
 /**
- * Returns if this component has a conditional statement.
+ * Returns if this component _has a conditional statement.
  *
  * @param component - The component JSON schema.
  *
- * @returns {boolean} - TRUE - This component has a conditional, FALSE - No conditional provided.
+ * @returns {boolean} - TRUE - This component _has a conditional, FALSE - No conditional provided.
  */
 export function hasCondition({ customConditional, conditional } = {}) {
     return Boolean(customConditional || conditional?.when || conditional?.json);
@@ -402,7 +411,7 @@ export function hasCondition({ customConditional, conditional } = {}) {
  *   Parsed value.
  */
 export function parseFloatExt(value) {
-    return parseFloat(isString(value)
+    return parseFloat(typeof value === 'string'
         ? value.replace(/[^\de.+-]/gi, '')
         : value);
 }
@@ -423,16 +432,16 @@ export function formatAsCurrency(value) {
         return '';
     }
 
-    const parts = round(parsedValue, 2)
+    const parts = _round(parsedValue, 2)
         .toString()
         .split('.');
-    parts[0] = chunk(Array.from(parts[0]).reverse(), 3)
+    parts[0] = _chunk(Array.from(parts[0]).reverse(), 3)
         .reverse()
         .map(part => part
             .reverse()
             .join(''))
         .join(',');
-    parts[1] = pad(parts[1], 2, '0');
+    parts[1] = _pad(parts[1], 2, '0');
 
     return parts.join('.');
 }
@@ -459,20 +468,28 @@ export function escapeRegExCharacters(value = '') {
  */
 export function getValue(submission, key) {
     const search = data => {
-        if (isPlainObject(data)) {
-            if (has(data, key)) {
-                return get(data, key);
+        if (_isPlainObject(data)) {
+            if (_has(data, key)) {
+                return _get(data, key);
             }
 
             let value = null;
 
-            forOwn(data, prop => {
+            _forOwn(data, prop => {
                 const result = search(prop);
-                if (!isNil(result)) {
+                if (!_isNil(result)) {
                     value = result;
                     return false;
                 }
             });
+
+            // for (const [ k, prop ] of Object.entries(data)) {
+            //     const result = search(prop);
+            //     if (!_isNil(result)) {
+            //         value = result;
+            //         return false;
+            //     }
+            // }
 
             return value;
         }
@@ -484,7 +501,7 @@ export function getValue(submission, key) {
 }
 
 /**
- * Iterate over all components in a form and get string values for translation.
+ * Iterate over all components in a form and _get string values for translation.
  * @param form
  */
 export function getStrings(form) {
@@ -492,7 +509,7 @@ export function getStrings(form) {
     const strings = [];
     eachComponent(form.components, component => {
         properties.forEach(property => {
-            if (has(component, property) && component[property]) {
+            if (_has(component, property) && component[property]) {
                 strings.push({
                     key: component.key,
                     type: component.type,

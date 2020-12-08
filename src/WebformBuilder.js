@@ -1,7 +1,6 @@
 // Import from "dist" because it would require and "global" would not be defined in Angular apps.
 import dragula from 'dragula/dist/dragula';
 import _ from 'lodash';
-import _has from 'lodash/has';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 
@@ -44,7 +43,7 @@ export default class WebformBuilder extends Component {
 
         const componentInfo = {};
         for (const type in Components.components) {
-            if (_has(Components.components, type)) {
+            if (_.has(Components.components, type)) {
                 const component = Components.components[type];
                 if (component.builderInfo) {
                     component.type = type;
@@ -88,7 +87,7 @@ export default class WebformBuilder extends Component {
             .map(group => group.key);
 
         for (const type in Components.components) {
-            if (_has(Components.components, type)) {
+            if (_.has(Components.components, type)) {
                 const component = Components.components[type];
                 if (component.builderInfo) {
                     this.schemas[type] = component.builderInfo.schema;
@@ -102,10 +101,10 @@ export default class WebformBuilder extends Component {
         // Filter out any extra components.
         // Add the components in each group.
         for (const group in this.groups) {
-            if (_has(this.groups, group)) {
+            if (_.has(this.groups, group)) {
                 const info = this.groups[group];
                 for (const key in info.components) {
-                    if (_has(info.components, key)) {
+                    if (_.has(info.components, key)) {
                         const comp = info.components[key];
                         if (comp) {
                             if (comp.schema) {
@@ -313,7 +312,7 @@ export default class WebformBuilder extends Component {
         if (this.options && this.options.resourceTag) {
             query.params.tags = [ this.options.resourceTag ];
         }
-        else if (!this.options || !_has(this.options, 'resourceTag')) {
+        else if (!this.options || !_.has(this.options, 'resourceTag')) {
             query.params.tags = [ 'builder' ];
         }
         const formio = new Formio(Formio.projectUrl);
@@ -631,7 +630,7 @@ export default class WebformBuilder extends Component {
 
             const matcher = (str = '') => str.toLowerCase().match(searchValue);
             for (const key in components) {
-                if (_has(components, key)) {
+                if (_.has(components, key)) {
                     const isMatchedToTitle = matcher(components[key].title);
                     const isMatchedToKey = matcher(components[key].key);
 
@@ -750,12 +749,12 @@ export default class WebformBuilder extends Component {
         let info;
 
         // This is a new component
-        if (_has(this.schemas, key)) {
+        if (_.has(this.schemas, key)) {
             info = fastCloneDeep(this.schemas[key]);
         }
-        else if (_has(this.groups, group)) {
+        else if (_.has(this.groups, group)) {
             const groupComponents = this.groups[group].components;
-            if (_has(groupComponents, key)) {
+            if (_.has(groupComponents, key)) {
                 info = fastCloneDeep(groupComponents[key].schema);
             }
         }
@@ -763,7 +762,7 @@ export default class WebformBuilder extends Component {
             // This is an existing resource field.
             const resourceGroups = this.groups.resource.subgroups;
             const resourceGroup = _.find(resourceGroups, { key: group });
-            if (resourceGroup && _has(resourceGroup.components, key)) {
+            if (resourceGroup && _.has(resourceGroup.components, key)) {
                 info = fastCloneDeep(resourceGroup.components[key].schema);
             }
         }
@@ -771,7 +770,7 @@ export default class WebformBuilder extends Component {
             const resourceGroups = this.groups.resource.subgroups;
             for (let ix = 0; ix < resourceGroups.length; ix++) {
                 const resourceGroup = resourceGroups[ix];
-                if (_has(resourceGroup.components, key)) {
+                if (_.has(resourceGroup.components, key)) {
                     info = fastCloneDeep(resourceGroup.components[key].schema);
                     break;
                 }
@@ -1270,7 +1269,7 @@ export default class WebformBuilder extends Component {
         if (this.preview) {
             this.preview.destroy();
         }
-        if (!_has(ComponentClass.builderInfo, 'preview') || ComponentClass.builderInfo.preview) {
+        if (!_.has(ComponentClass.builderInfo, 'preview') || ComponentClass.builderInfo.preview) {
             this.preview = new Webform(_.omit({ ...this.options, preview: true }, [
                 'hooks',
                 'builder',
@@ -1444,7 +1443,7 @@ export default class WebformBuilder extends Component {
 
         component = _.clone(component);
         const groupInfo = this.groups[component.group];
-        if (!_has(groupInfo.components, component.key)) {
+        if (!_.has(groupInfo.components, component.key)) {
             groupInfo.components[component.key] = component;
         }
         return component;
