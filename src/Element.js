@@ -551,22 +551,26 @@ export default class Element {
    * Allow for options to hook into the functionality of this renderer.
    * @return {*}
    */
-    hook() {
-        const name = arguments[0];
+    hook(...args) {
+        const [ name ] = args;
+
         if (
             this.options
-      && this.options.hooks
-      && this.options.hooks[name]
+            && this.options.hooks
+            && this.options.hooks[name]
         ) {
-            return this.options.hooks[name].apply(this, Array.prototype.slice.call(arguments, 1));
+            return this.options.hooks[name].apply(this, Array.prototype.slice.call(args, 1));
         }
 
         // If this is an async hook instead of a sync.
-        const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
+        const fn = (typeof args[args.length - 1] === 'function')
+            ? args[args.length - 1]
+            : null;
+
         if (fn) {
-            return fn(null, arguments[1]);
+            return fn(null, args[1]);
         }
 
-        return arguments[1];
+        return args[1];
     }
 }

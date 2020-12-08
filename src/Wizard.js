@@ -21,15 +21,15 @@ export default class Wizard extends Webform {
    *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not
    *    - allowPrevious: false (default) determines if the breadcrumb bar is clickable or not for visited tabs
    */
-    constructor() {
+    constructor(...args) {
         let element;
         let options;
-        if (arguments[0] instanceof HTMLElement || arguments[1]) {
-            element = arguments[0];
-            options = arguments[1];
+
+        if (args[0] instanceof HTMLElement || args[1]) {
+            ([ element, options ] = args);
         }
         else {
-            options = arguments[0];
+            ([ options ] = args);
         }
         super(element, options);
         this.pages = [];

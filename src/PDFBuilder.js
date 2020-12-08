@@ -9,15 +9,15 @@ import { eachComponent } from './utils/formUtils';
 import { fastCloneDeep, getElementRect } from './utils/utils';
 
 export default class PDFBuilder extends WebformBuilder {
-    constructor() {
-        let element; let
-            options;
-        if (arguments[0] instanceof HTMLElement || arguments[1]) {
-            element = arguments[0];
-            options = arguments[1];
+    constructor(...args) {
+        let element;
+        let options;
+
+        if (args[0] instanceof HTMLElement || args[1]) {
+            ([ element, options ] = args);
         }
         else {
-            options = arguments[0];
+            ([ options ] = args);
         }
 
         // Force superclass to skip the automatic init; we'll trigger it manually

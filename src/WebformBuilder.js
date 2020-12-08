@@ -18,15 +18,15 @@ require('./components/builder');
 
 export default class WebformBuilder extends Component {
     // eslint-disable-next-line max-statements
-    constructor() {
+    constructor(...args) {
         let element;
         let options;
-        if (arguments[0] instanceof HTMLElement || arguments[1]) {
-            element = arguments[0];
-            options = arguments[1];
+
+        if (args[0] instanceof HTMLElement || args[1]) {
+            ([ element, options ] = args);
         }
         else {
-            options = arguments[0];
+            ([ options ] = args);
         }
         // Reset skipInit in case PDFBuilder has set it.
         options.skipInit = false;

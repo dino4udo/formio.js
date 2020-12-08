@@ -65,16 +65,17 @@ export default class Webform extends NestedDataComponent {
    * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
    */
     /* eslint-disable max-statements */
-    constructor() {
+    constructor(...args) {
         let element;
         let options;
-        if (arguments[0] instanceof HTMLElement || arguments[1]) {
-            element = arguments[0];
-            options = arguments[1];
+
+        if (args[0] instanceof HTMLElement || args[1]) {
+            ([ element, options ] = args);
         }
         else {
-            options = arguments[0];
+            ([ options ] = args);
         }
+
         super(null, getOptions(options));
 
         this.element = element;

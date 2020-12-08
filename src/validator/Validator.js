@@ -1034,16 +1034,16 @@ class ValidationChecker {
         return this.checkComponent;
     }
 
-    get() {
-        _.get.call(this, arguments);
+    get(...args) {
+        _.get.call(this, args);
     }
 
-    each() {
-        _.each.call(this, arguments);
+    each(...args) {
+        _.each.call(this, args);
     }
 
-    has() {
-        _.has.call(this, arguments);
+    has(...args) {
+        _.has.call(this, args);
     }
 }
 
