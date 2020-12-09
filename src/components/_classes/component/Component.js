@@ -2977,8 +2977,8 @@ export default class Component extends Element {
 
     getRelativePath(path) {
         const keyPart = `.${this.key}`;
-        const thisPath = this.isInputComponent ? this.path
-                                           : this.path.slice(0).replace(keyPart, '');
+        const thisPath = this.isInputComponent ? this.path : this.path.slice(0).replace(keyPart, '');
+
         return path.replace(thisPath, '');
     }
 

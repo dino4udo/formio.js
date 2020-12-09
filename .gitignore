@@ -1,11 +1,55 @@
 _site
 lib
 dump.rdb
-.DS_Store
 .bower.json
-node_modules
 bower_components
 .jekyll-cache
-.idea
 .ruby-version
 .ruby-gemset
+
+.DS_Store
+node_modules
+/dist
+
+/tests/e2e/reports/
+selenium-debug.log
+chromedriver.log
+geckodriver.log
+
+/tests/journey/reports/
+/tests/screenshots/
+
+# Siteconfigs
+/public/static/siteConfigs/*127.0.0.1*
+/public/static/siteConfigs/*localhost*
+/public/static/siteConfigs/*10.0.2.2*
+/public/static/siteConfigs/*dominaria*
+/src/localhost*
+
+# local env files
+.env.local
+.env.*.local
+
+# aliases
+/templates/*.json
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode/*
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Vue CLi inspect file
+output.js
+output.json
+eslint-rules.json
+.eslintrc.json
