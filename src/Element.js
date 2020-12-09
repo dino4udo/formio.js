@@ -558,10 +558,10 @@ export default class Element {
      * @return {*}
      */
     hook(...args) {
-        const [ name ] = args;
+        const [ name, ...cbArgs ] = args;
 
-        if (this.options && this.options.hooks && this.options.hooks[name]) {
-            return this.options.hooks[name].apply(this, Array.prototype.slice.call(args, 1));
+        if (this.options?.hooks?.[name]) {
+            return this.options.hooks[name].apply(this, cbArgs);
         }
 
         // If this is an async hook instead of a sync.

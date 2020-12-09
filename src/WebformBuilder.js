@@ -793,15 +793,14 @@ export default class WebformBuilder extends Component {
             this.dragula.destroy();
         }
 
-        const containersArray = Array.prototype.slice.call(this.refs['sidebar-container']).filter(item => item.id !== 'group-container-resource');
+        const containersArray = Array.from(this.refs['sidebar-container'])
+            .filter(item => item.id !== 'group-container-resource');
 
         this.dragula = dragula(containersArray, {
             moves(el) {
                 let moves = true;
+                const list = Array.from(el.classList).filter(item => item.indexOf('formio-component-') === 0);
 
-                const list = Array.from(el.classList).filter(
-                        item => item.indexOf('formio-component-') === 0,
-                );
                 list.forEach(item => {
                     const key = item.slice('formio-component-'.length);
                     if (options.disabled && options.disabled.includes(key)) {

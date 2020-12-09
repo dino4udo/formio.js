@@ -462,8 +462,8 @@ export default class NestedComponent extends Field {
     attachComponents(element, components, container) {
         components = components || this.components;
         container = container || this.component.components;
-
         element = this.hook('attachComponents', element, components, container, this);
+
         if (!element) {
             // Return a non-resolving promise.
             return (new NativePromise(() => {}));
@@ -471,12 +471,14 @@ export default class NestedComponent extends Field {
 
         let index = 0;
         const promises = [];
-        Array.prototype.slice.call(element.children).forEach(child => {
+
+        Array.from(element.children).forEach(child => {
             if (!child.getAttribute('data-noattach') && components[index]) {
                 promises.push(components[index].attach(child));
                 index++;
             }
         });
+
         return NativePromise.all(promises);
     }
 
