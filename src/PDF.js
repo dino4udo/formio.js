@@ -79,70 +79,71 @@ export default class PDF extends Webform {
     }
 
     attach(element) {
-        return super.attach(element).then(() => {
-            this.loadRefs(element, {
-                button: 'single',
-                buttonMessageContainer: 'single',
-                buttonMessage: 'single',
-                zoomIn: 'single',
-                zoomOut: 'single',
-                iframeContainer: 'single',
+        return super.attach(element)
+            .then(() => {
+                this.loadRefs(element, {
+                    button: 'single',
+                    buttonMessageContainer: 'single',
+                    buttonMessage: 'single',
+                    zoomIn: 'single',
+                    zoomOut: 'single',
+                    iframeContainer: 'single',
+                });
+                this.submitButton.refs = { ...this.refs };
+                this.submitButton.attachButton();
+
+                // Reset the iframeReady promise.
+                this.iframeReady = new NativePromise((resolve, reject) => {
+                    this.iframeReadyResolve = resolve;
+                    this.iframeReadyReject = reject;
+                });
+
+                // iframes cannot be in the template so manually create it
+                this.iframeElement = this.ce('iframe', {
+                    src: this.getSrc(),
+                    id: `iframe-${this.id}`,
+                    seamless: true,
+                    class: 'formio-iframe',
+                });
+
+                this.iframeElement.formioContainer = this.component.components;
+                this.iframeElement.formioComponent = this;
+
+                // Append the iframe to the iframeContainer in the template
+                this.empty(this.refs.iframeContainer);
+                this.appendChild(this.refs.iframeContainer, this.iframeElement);
+
+                // Post the form to the iframe
+                this.form.base = Formio.getBaseUrl();
+                this.form.projectUrl = Formio.getProjectUrl();
+                this.postMessage({ name: 'form', data: this.form });
+
+                // Hide the submit button if the associated component is hidden
+                const submitButton = this.components.find(c => c.element === this.refs.button);
+                if (submitButton) {
+                    this.refs.button.classList.toggle('hidden', !submitButton.visible);
+                }
+
+                this.addEventListener(this.refs.zoomIn, 'click', event => {
+                    event.preventDefault();
+                    this.postMessage({ name: 'zoomIn' });
+                });
+
+                this.addEventListener(this.refs.zoomOut, 'click', event => {
+                    event.preventDefault();
+                    this.postMessage({ name: 'zoomOut' });
+                });
+
+                const form = fastCloneDeep(this.form);
+                if (this.formio) {
+                    form.projectUrl = this.formio.projectUrl;
+                    form.url = this.formio.formUrl;
+                    form.base = this.formio.base;
+                    this.postMessage({ name: 'token', data: this.formio.getToken() });
+                }
+
+                this.emit('attach');
             });
-            this.submitButton.refs = { ...this.refs };
-            this.submitButton.attachButton();
-
-            // Reset the iframeReady promise.
-            this.iframeReady = new NativePromise((resolve, reject) => {
-                this.iframeReadyResolve = resolve;
-                this.iframeReadyReject = reject;
-            });
-
-            // iframes cannot be in the template so manually create it
-            this.iframeElement = this.ce('iframe', {
-                src: this.getSrc(),
-                id: `iframe-${this.id}`,
-                seamless: true,
-                class: 'formio-iframe',
-            });
-
-            this.iframeElement.formioContainer = this.component.components;
-            this.iframeElement.formioComponent = this;
-
-            // Append the iframe to the iframeContainer in the template
-            this.empty(this.refs.iframeContainer);
-            this.appendChild(this.refs.iframeContainer, this.iframeElement);
-
-            // Post the form to the iframe
-            this.form.base = Formio.getBaseUrl();
-            this.form.projectUrl = Formio.getProjectUrl();
-            this.postMessage({ name: 'form', data: this.form });
-
-            // Hide the submit button if the associated component is hidden
-            const submitButton = this.components.find(c => c.element === this.refs.button);
-            if (submitButton) {
-                this.refs.button.classList.toggle('hidden', !submitButton.visible);
-            }
-
-            this.addEventListener(this.refs.zoomIn, 'click', event => {
-                event.preventDefault();
-                this.postMessage({ name: 'zoomIn' });
-            });
-
-            this.addEventListener(this.refs.zoomOut, 'click', event => {
-                event.preventDefault();
-                this.postMessage({ name: 'zoomOut' });
-            });
-
-            const form = fastCloneDeep(this.form);
-            if (this.formio) {
-                form.projectUrl = this.formio.projectUrl;
-                form.url = this.formio.formUrl;
-                form.base = this.formio.base;
-                this.postMessage({ name: 'token', data: this.formio.getToken() });
-            }
-
-            this.emit('attach');
-        });
     }
 
     /**
@@ -200,15 +201,16 @@ export default class PDF extends Webform {
     }
 
     setForm(form) {
-        return super.setForm(form).then(() => {
-            if (this.formio) {
-                form.projectUrl = this.formio.projectUrl;
-                form.url = this.formio.formUrl;
-                form.base = this.formio.base;
-                this.postMessage({ name: 'token', data: this.formio.getToken() });
-            }
-            this.postMessage({ name: 'form', data: this.form });
-        });
+        return super.setForm(form)
+            .then(() => {
+                if (this.formio) {
+                    form.projectUrl = this.formio.projectUrl;
+                    form.url = this.formio.formUrl;
+                    form.base = this.formio.base;
+                    this.postMessage({ name: 'token', data: this.formio.getToken() });
+                }
+                this.postMessage({ name: 'form', data: this.form });
+            });
     }
 
     /**
@@ -228,30 +230,32 @@ export default class PDF extends Webform {
     }
 
     setSubmission(submission) {
-        return super.setSubmission(submission).then(() => {
-            if (this.formio) {
-                this.formio.getDownloadUrl().then(url => {
-                    // Add a download button if it has a download url.
-                    if (!url) {
-                        return;
-                    }
-                    if (!this.downloadButton) {
-                        if (this.options.primaryProject) {
-                            url += `&project=${this.options.primaryProject}`;
-                        }
-                        this.downloadButton = this.ce('a', {
-                            href: url,
-                            target: '_blank',
-                            style: 'position:absolute;right:10px;top:110px;cursor:pointer;',
-                        }, this.ce('img', {
-                            src: require('./pdf.image'),
-                            style: 'width:3em;',
-                        }));
-                        this.element.insertBefore(this.downloadButton, this.iframe);
-                    }
-                });
-            }
-        });
+        return super.setSubmission(submission)
+            .then(() => {
+                if (this.formio) {
+                    this.formio.getDownloadUrl()
+                        .then(url => {
+                            // Add a download button if it has a download url.
+                            if (!url) {
+                                return;
+                            }
+                            if (!this.downloadButton) {
+                                if (this.options.primaryProject) {
+                                    url += `&project=${this.options.primaryProject}`;
+                                }
+                                this.downloadButton = this.ce('a', {
+                                    href: url,
+                                    target: '_blank',
+                                    style: 'position:absolute;right:10px;top:110px;cursor:pointer;',
+                                }, this.ce('img', {
+                                    src: require('./pdf.image'),
+                                    style: 'width:3em;',
+                                }));
+                                this.element.insertBefore(this.downloadButton, this.iframe);
+                            }
+                        });
+                }
+            });
     }
 
     postMessage(message) {
@@ -264,11 +268,12 @@ export default class PDF extends Webform {
             message.type = 'iframe-data';
         }
 
-        this.iframeReady.then(() => {
-            if (this.iframeElement && this.iframeElement.contentWindow) {
-                this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
-            }
-        });
+        this.iframeReady
+            .then(() => {
+                if (this.iframeElement && this.iframeElement.contentWindow) {
+                    this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
+                }
+            });
     }
 
     focusOnComponent(key) {

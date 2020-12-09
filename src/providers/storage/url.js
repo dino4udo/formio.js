@@ -1,7 +1,7 @@
 import _has from 'lodash/has';
 import NativePromise from 'native-promise-only';
 
-const url = formio => {
+const URL = formio => {
     const xhrRequest = (url, name, query, data, options, onprogress) => new NativePromise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         const json = (typeof data === 'string');
@@ -22,6 +22,7 @@ const url = formio => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 // Need to test if xhr.response is decoded or not.
                 let respData = {};
+
                 try {
                     respData = (typeof xhr.response === 'string') ? JSON.parse(xhr.response) : {};
                     respData = (respData && respData.data) ? respData.data : respData;
@@ -48,6 +49,7 @@ const url = formio => {
         xhr.onabort = () => reject(xhr);
 
         let requestUrl = url + (url.indexOf('?') > -1 ? '&' : '?');
+
         for (const key in query) {
             if (_has(query, key)) {
                 requestUrl += `${key}=${query[key]}&`;
@@ -91,24 +93,27 @@ const url = formio => {
                     [fileKey]: file,
                     name,
                     dir,
-                }, options, progressCallback).then(response => {
+                }, options, progressCallback)
+                    .then(response => {
                     // Store the project and form url along with the metadata.
-                    response.data = response.data || {};
-                    response.data.baseUrl = formio.projectUrl;
-                    response.data.project = form ? form.project : '';
-                    response.data.form = form ? form._id : '';
-                    return {
-                        storage: 'url',
-                        name,
-                        url: response.url,
-                        size: file.size,
-                        type: file.type,
-                        data: response.data,
-                    };
-                });
+                        response.data = response.data || {};
+                        response.data.baseUrl = formio.projectUrl;
+                        response.data.project = form ? form.project : '';
+                        response.data.form = form ? form._id : '';
+                        return {
+                            storage: 'url',
+                            name,
+                            url: response.url,
+                            size: file.size,
+                            type: file.type,
+                            data: response.data,
+                        };
+                    });
             };
             if (file.private && formio.formId) {
-                return formio.loadForm().then(form => uploadRequest(form));
+                return formio
+                    .loadForm()
+                    .then(uploadRequest);
             }
 
             return uploadRequest();
@@ -134,7 +139,8 @@ const url = formio => {
                 if (formio.submissionId && file.data) {
                     file.data.submission = formio.submissionId;
                 }
-                return xhrRequest(file.url, file.name, {}, JSON.stringify(file)).then(response => response.data);
+                return xhrRequest(file.url, file.name, {}, JSON.stringify(file))
+                    .then(response => response.data);
             }
 
             // Return the original as there is nothing to do.
@@ -143,5 +149,5 @@ const url = formio => {
     };
 };
 
-url.title = 'Url';
-export default url;
+URL.title = 'Url';
+export default URL;

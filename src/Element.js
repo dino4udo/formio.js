@@ -12,10 +12,10 @@ import * as FormioUtils from './utils/utils';
  */
 export default class Element {
     constructor(options) {
-    /**
-     * The options for this component.
-     * @type {{}}
-     */
+        /**
+         * The options for this component.
+         * @type {{}}
+         */
         this.options = {
             language: 'en',
             highlightErrors: true,
@@ -27,57 +27,61 @@ export default class Element {
         };
 
         /**
-     * The ID of this component. This value is auto-generated when the component is created, but
-     * can also be provided from the component.id value passed into the constructor.
-     * @type {string}
-     */
+         * The ID of this component. This value is auto-generated when the component is created, but
+         * can also be provided from the component.id value passed into the constructor.
+         * @type {string}
+         */
         this.id = FormioUtils.getRandomComponentId();
         /**
-     * An array of event handlers so that the destry command can deregister them.
-     * @type {Array}
-     */
+         * An array of event handlers so that the destry command can deregister them.
+         * @type {Array}
+         */
         this.eventHandlers = [];
 
         // Use the i18next that is passed in, otherwise use the global version.
         this.i18next = this.options.i18next || i18next;
 
         /**
-     * An instance of the EventEmitter class to handle the emitting and registration of events.
-     *
-     * @type {EventEmitter}
-     */
-        this.events = (options && options.events) ? options.events : new EventEmitter({
-            wildcard: false,
-            maxListeners: 0,
-        });
+         * An instance of the EventEmitter class to handle the emitting and registration of events.
+         *
+         * @type {EventEmitter}
+         */
+        this.events = options && options.events
+                ? options.events
+                : new EventEmitter({
+                    wildcard: false,
+                    maxListeners: 0,
+                });
 
         this.defaultMask = null;
 
         /**
-     * Conditional to show or hide helplinks in editForm
-     *
-     * @type {*|boolean}
-     */
-        this.helplinks = this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
+         * Conditional to show or hide helplinks in editForm
+         *
+         * @type {*|boolean}
+         */
+        this.helplinks = this.helplinks = (this.options.helplinks === 'false')
+                ? false
+                : this.options.helplinks || 'https://help.form.io';
     }
 
     /**
-   * Register for a new event within this component.
-   *
-   * @example
-   * let component = new BaseComponent({
-   *   type: 'textfield',
-   *   label: 'First Name',
-   *   key: 'firstName'
-   * });
-   * component.on('componentChange', (changed) => {
-   *   console.log('this element is changed.');
-   * });
-   *
-   *
-   * @param {string} event - The event you wish to register the handler for.
-   * @param {function} cb - The callback handler to handle this event.
-   */
+     * Register for a new event within this component.
+     *
+     * @example
+     * let component = new BaseComponent({
+     *   type: 'textfield',
+     *   label: 'First Name',
+     *   key: 'firstName'
+     * });
+     * component.on('componentChange', (changed) => {
+     *   console.log('this element is changed.');
+     * });
+     *
+     *
+     * @param {string} event - The event you wish to register the handler for.
+     * @param {function} cb - The callback handler to handle this event.
+     */
     on(event, cb, internal, once = false) {
         if (!this.events) {
             return;
@@ -93,21 +97,21 @@ export default class Element {
     }
 
     /**
-   * Register for a new single-fire event within this component.
-   *
-   * @param {string} event - The event you wish to register the handler for.
-   * @param {function} cb - The callback handler to handle this event.
-   */
+     * Register for a new single-fire event within this component.
+     *
+     * @param {string} event - The event you wish to register the handler for.
+     * @param {function} cb - The callback handler to handle this event.
+     */
     once(event, cb, internal) {
         return this.on(event, cb, internal, true);
     }
 
     /**
-   * Allow catching any event.
-   *
-   * @param cb
-   * @returns {this}
-   */
+     * Allow catching any event.
+     *
+     * @param cb
+     * @returns {this}
+     */
     onAny(cb) {
         if (!this.events) {
             return;
@@ -117,11 +121,11 @@ export default class Element {
     }
 
     /**
-   * Removes the listener that will be fired when any event is emitted.
-   *
-   * @param cb
-   * @returns {this}
-   */
+     * Removes the listener that will be fired when any event is emitted.
+     *
+     * @param cb
+     * @returns {this}
+     */
     offAny(cb) {
         if (!this.events) {
             return;
@@ -131,10 +135,10 @@ export default class Element {
     }
 
     /**
-   * Removes all listeners for a certain event.
-   *
-   * @param event
-   */
+     * Removes all listeners for a certain event.
+     *
+     * @param event
+     */
     off(event) {
         if (!this.events) {
             return;
@@ -152,11 +156,11 @@ export default class Element {
     }
 
     /**
-   * Emit a new event.
-   *
-   * @param {string} event - The event to emit.
-   * @param {Object} data - The data to emit with the handler.
-   */
+     * Emit a new event.
+     *
+     * @param {string} event - The event to emit.
+     * @param {Object} data - The data to emit with the handler.
+     */
     emit(event, ...data) {
         if (this.events) {
             this.events.emit(`${this.options.namespace}.${event}`, ...data);
@@ -164,17 +168,17 @@ export default class Element {
     }
 
     /**
-   * Wrapper method to add an event listener to an HTML element.
-   *
-   * @param obj
-   *   The DOM element to add the event to.
-   * @param type
-   *   The event name to add.
-   * @param func
-   *   The callback function to be executed when the listener is triggered.
-   * @param persistent
-   *   If this listener should persist beyond "destroy" commands.
-   */
+     * Wrapper method to add an event listener to an HTML element.
+     *
+     * @param obj
+     *   The DOM element to add the event to.
+     * @param type
+     *   The event name to add.
+     * @param func
+     *   The callback function to be executed when the listener is triggered.
+     * @param persistent
+     *   If this listener should persist beyond "destroy" commands.
+     */
     addEventListener(obj, type, func, persistent) {
         if (!obj) {
             return;
@@ -193,19 +197,19 @@ export default class Element {
     }
 
     /**
-   * Remove an event listener from the object.
-   *
-   * @param obj
-   * @param type
-   */
+     * Remove an event listener from the object.
+     *
+     * @param obj
+     * @param type
+     */
     removeEventListener(obj, type, func = null) {
         const indexes = [];
         this.eventHandlers.forEach((handler, index) => {
             if (
                 (handler.id === this.id)
-        && obj.removeEventListener
-        && (handler.type === type)
-        && (!func || handler.func === func)
+                && obj.removeEventListener
+                && (handler.type === type)
+                && (!func || handler.func === func)
             ) {
                 obj.removeEventListener(type, handler.func);
                 indexes.push(index);
@@ -238,30 +242,30 @@ export default class Element {
     }
 
     /**
-   * Removes all event listeners attached to this component.
-   */
+     * Removes all event listeners attached to this component.
+     */
     destroy() {
         this.removeEventListeners();
         this.removeAllEvents();
     }
 
     /**
-   * Append an HTML DOM element to a container.
-   *
-   * @param element
-   * @param container
-   */
+     * Append an HTML DOM element to a container.
+     *
+     * @param element
+     * @param container
+     */
     appendTo(element, container) {
         container?.appendChild(element);
         return this;
     }
 
     /**
-   * Prepend an HTML DOM element to a container.
-   *
-   * @param {HTMLElement} element - The DOM element to prepend.
-   * @param {HTMLElement} container - The DOM element that is the container of the element getting prepended.
-   */
+     * Prepend an HTML DOM element to a container.
+     *
+     * @param {HTMLElement} element - The DOM element to prepend.
+     * @param {HTMLElement} container - The DOM element that is the container of the element getting prepended.
+     */
     prependTo(element, container) {
         if (container) {
             if (container.firstChild) {
@@ -282,11 +286,11 @@ export default class Element {
     }
 
     /**
-   * Removes an HTML DOM element from its bounding container.
-   *
-   * @param {HTMLElement} element - The element to remove.
-   * @param {HTMLElement} container - The DOM element that is the container of the element to remove.
-   */
+     * Removes an HTML DOM element from its bounding container.
+     *
+     * @param {HTMLElement} element - The element to remove.
+     * @param {HTMLElement} container - The DOM element that is the container of the element to remove.
+     */
     removeChildFrom(element, container) {
         if (container && container.contains(element)) {
             try {
@@ -301,17 +305,17 @@ export default class Element {
     }
 
     /**
-   * Alias for document.createElement.
-   *
-   * @param {string} type - The type of element to create
-   * @param {Object} attr - The element attributes to add to the created element.
-   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
-   *
-   * @return {HTMLElement} - The created element.
-   */
+     * Alias for document.createElement.
+     *
+     * @param {string} type - The type of element to create
+     * @param {Object} attr - The element attributes to add to the created element.
+     * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
+     *
+     * @return {HTMLElement} - The created element.
+     */
     ce(type, attr, children = null) {
-    // console.warn('Call to deprecated this.ce(). Dom elements should be created with templates, not manually with ce.');
-    // Create the element.
+        // console.warn('Call to deprecated this.ce(). Dom elements should be created with templates, not manually with ce.');
+        // Create the element.
         const element = document.createElement(type);
 
         // Add attributes.
@@ -325,10 +329,10 @@ export default class Element {
     }
 
     /**
-   * Append different types of children.
-   *
-   * @param child
-   */
+     * Append different types of children.
+     *
+     * @param child
+     */
     appendChild(element, child) {
         if (Array.isArray(child)) {
             child.forEach(oneChild => this.appendChild(element, oneChild));
@@ -344,21 +348,21 @@ export default class Element {
     }
 
     /**
-   * Creates a new input mask placeholder.
-   * @param {HTMLElement} mask - The input mask.
-   * @returns {string} - The placeholder that will exist within the input as they type.
-   */
+     * Creates a new input mask placeholder.
+     * @param {HTMLElement} mask - The input mask.
+     * @returns {string} - The placeholder that will exist within the input as they type.
+     */
     maskPlaceholder(mask) {
         return mask.map(char => ((char instanceof RegExp) ? '_' : char)).join('');
     }
 
     /**
-   * Sets the input mask for an input.
-   *
-   * @param {HTMLElement} input - The html input to apply the mask to.
-   * @param {String} inputMask - The input mask to add to this input.
-   * @param {Boolean} placeholder - Set the mask placeholder on the input.
-   */
+     * Sets the input mask for an input.
+     *
+     * @param {HTMLElement} input - The html input to apply the mask to.
+     * @param {String} inputMask - The input mask to add to this input.
+     * @param {Boolean} placeholder - Set the mask placeholder on the input.
+     */
     setInputMask(input, inputMask, placeholder) {
         if (input && inputMask) {
             const mask = FormioUtils.getInputMask(inputMask);
@@ -388,29 +392,29 @@ export default class Element {
     }
 
     /**
-   * Translate a text using the i18n system.
-   *
-   * @param {string|Array<string>} text - The i18n identifier.
-   * @param {Object} params - The i18n parameters to use for translation.
-   */
+     * Translate a text using the i18n system.
+     *
+     * @param {string|Array<string>} text - The i18n identifier.
+     * @param {Object} params - The i18n parameters to use for translation.
+     */
     t(text, ...args) {
         return this.i18next.t(text, ...args);
     }
 
     /**
-   * Alias to create a text node.
-   * @param text
-   * @returns {Text}
-   */
+     * Alias to create a text node.
+     * @param text
+     * @returns {Text}
+     */
     text(text) {
         return document.createTextNode(this.t(text));
     }
 
     /**
-   * Adds an object of attributes onto an element.
-   * @param {HtmlElement} element - The element to add the attributes to.
-   * @param {Object} attr - The attributes to add to the input element.
-   */
+     * Adds an object of attributes onto an element.
+     * @param {HtmlElement} element - The element to add the attributes to.
+     * @param {Object} attr - The attributes to add to the input element.
+     */
     attr(element, attr) {
         if (!element) {
             return;
@@ -430,10 +434,10 @@ export default class Element {
     }
 
     /**
-   * Determines if an element has a class.
-   *
-   * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
-   */
+     * Determines if an element has a class.
+     *
+     * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
+     */
     hasClass(element, className) {
         if (!element) {
             return false;
@@ -444,13 +448,13 @@ export default class Element {
     }
 
     /**
-   * Adds a class to a DOM element.
-   *
-   * @param element
-   *   The element to add a class to.
-   * @param className
-   *   The name of the class to add.
-   */
+     * Adds a class to a DOM element.
+     *
+     * @param element
+     *   The element to add a class to.
+     * @param className
+     *   The name of the class to add.
+     */
     addClass(element, className) {
         if (!element || !(element instanceof HTMLElement)) {
             return this;
@@ -465,13 +469,13 @@ export default class Element {
     }
 
     /**
-   * Remove a class from a DOM element.
-   *
-   * @param element
-   *   The DOM element to remove the class from.
-   * @param className
-   *   The name of the class that is to be removed.
-   */
+     * Remove a class from a DOM element.
+     *
+     * @param element
+     *   The DOM element to remove the class from.
+     * @param className
+     *   The name of the class that is to be removed.
+     */
     removeClass(element, className) {
         if (!element || !className || !(element instanceof HTMLElement)) {
             return this;
@@ -487,10 +491,10 @@ export default class Element {
     }
 
     /**
-   * Empty's an HTML DOM element.
-   *
-   * @param {HTMLElement} element - The element you wish to empty.
-   */
+     * Empty's an HTML DOM element.
+     *
+     * @param {HTMLElement} element - The element you wish to empty.
+     */
     empty(element) {
         if (element) {
             while (element.firstChild) {
@@ -500,11 +504,11 @@ export default class Element {
     }
 
     /**
-   * Create an evaluation context for all script executions and interpolations.
-   *
-   * @param additional
-   * @return {*}
-   */
+     * Create an evaluation context for all script executions and interpolations.
+     *
+     * @param additional
+     * @return {*}
+     */
     evalContext(additional) {
         return {
             _,
@@ -517,55 +521,53 @@ export default class Element {
             token: Formio.getToken({
                 decode: true,
             }),
-            config: this.root && this.root.form && this.root.form.config ? this.root.form.config : {},
+            config: this.root && this.root.form && this.root.form.config
+                ? this.root.form.config
+                : {},
             ...additional,
             ..._.get(this.root, 'options.evalContext', {}),
         };
     }
 
     /**
-   * Performs an interpolation using the evaluation context of this component.
-   *
-   * @param string
-   * @param data
-   * @return {XML|string|*|void}
-   */
+     * Performs an interpolation using the evaluation context of this component.
+     *
+     * @param string
+     * @param data
+     * @return {XML|string|*|void}
+     */
     interpolate(string, data) {
         return FormioUtils.interpolate(string, this.evalContext(data));
     }
 
     /**
-   * Performs an evaluation using the evaluation context of this component.
-   *
-   * @param func
-   * @param args
-   * @param ret
-   * @param tokenize
-   * @return {*}
-   */
+     * Performs an evaluation using the evaluation context of this component.
+     *
+     * @param func
+     * @param args
+     * @param ret
+     * @param tokenize
+     * @return {*}
+     */
     evaluate(func, args, ret, tokenize) {
         return FormioUtils.evaluate(func, this.evalContext(args), ret, tokenize);
     }
 
     /**
-   * Allow for options to hook into the functionality of this renderer.
-   * @return {*}
-   */
+     * Allow for options to hook into the functionality of this renderer.
+     * @return {*}
+     */
     hook(...args) {
         const [ name ] = args;
 
-        if (
-            this.options
-            && this.options.hooks
-            && this.options.hooks[name]
-        ) {
+        if (this.options && this.options.hooks && this.options.hooks[name]) {
             return this.options.hooks[name].apply(this, Array.prototype.slice.call(args, 1));
         }
 
         // If this is an async hook instead of a sync.
-        const fn = (typeof args[args.length - 1] === 'function')
-            ? args[args.length - 1]
-            : null;
+        const fn = typeof args[args.length - 1] === 'function'
+                ? args[args.length - 1]
+                : null;
 
         if (fn) {
             return fn(null, args[1]);

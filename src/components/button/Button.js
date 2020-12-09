@@ -430,16 +430,14 @@ export default class ButtonComponent extends Field {
                     else {
                         const submission = { data: {}, oauth: {} };
                         submission.oauth[settings.provider] = params;
-                        submission.oauth[settings.provider].redirectURI = window.location.origin
-              || `${window.location.protocol}//${window.location.host}`;
+                        submission.oauth[settings.provider].redirectURI = window.location.origin || `${window.location.protocol}//${window.location.host}`;
                         requestPromise = this.root.formio.saveSubmission(submission);
                     }
-                    requestPromise.then(result => {
-                        this.root.onSubmit(result, true);
-                    })
-                        .catch(err => {
-                            this.root.onSubmissionError(err);
-                        });
+                    requestPromise
+                        .then(result => {
+                            this.root.onSubmit(result, true);
+                        })
+                        .catch(this.root.onSubmissionError);
                 }
             }
             catch (error) {

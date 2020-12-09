@@ -139,16 +139,17 @@ export default class StripeComponent extends Component {
                 cardData[key] = that.t(value);
             });
 
-            return that.stripe.createToken(that.stripeCard, cardData).then(result => {
-                if (result.error) {
-                    that.authorizeError(result.error);
-                    reject(result.error);
-                }
-                else {
-                    that.authorizeDone(result);
-                    resolve();
-                }
-            });
+            return that.stripe.createToken(that.stripeCard, cardData)
+                .then(result => {
+                    if (result.error) {
+                        that.authorizeError(result.error);
+                        reject(result.error);
+                    }
+                    else {
+                        that.authorizeDone(result);
+                        resolve();
+                    }
+                });
         }));
     }
 
@@ -212,58 +213,60 @@ export default class StripeComponent extends Component {
         this.stripeElementCard = this.ce('div');
         this.element.appendChild(this.stripeElementCard);
 
-        this.stripeReady.then(() => {
-            this.stripe = new Stripe(this.component.stripe.apiKey);
+        this.stripeReady
+            .then(() => {
+                this.stripe = new Stripe(this.component.stripe.apiKey);
 
-            // Create an instance of Elements
-            let stripeElementsOptions = {};
-            if (this.component.stripe) {
-                stripeElementsOptions = _.cloneDeep(this.component.stripe.stripeElementsOptions) || {};
-            }
-            if (typeof stripeElementsOptions.locale === 'undefined') {
-                stripeElementsOptions.locale = this.options.language;
-            }
-            const elements = this.stripe.elements(stripeElementsOptions);
-
-            // Create an instance of the card Element
-            let stripeElementOptions = {};
-            if (this.component.stripe) {
-                stripeElementOptions = this.component.stripe.stripeElementOptions || {};
-            }
-            this.stripeCard = elements.create('card', stripeElementOptions);
-
-            // Add an instance of the card Element into the `card-element` <div>
-            this.stripeCard.mount(this.stripeElementCard);
-
-            // Handle real-time validation errors from the card Element.
-            this.addEventListener(this.stripeCard, 'change', this.onElementCardChange.bind(this));
-
-            // If there is a pay button, then create it and add listener
-            if (this.component.stripe.payButton && this.component.stripe.payButton.enable) {
-                const paymentRequest = this.stripe.paymentRequest(this.component.stripe.payButton.paymentRequest);
-
-                this.addEventListener(paymentRequest, 'token', result => {
-                    this.authorizeDone(result, true);
-                    result.complete('success');
-                });
-
-                let stripeOptionsPayButton = {};
-                if (this.component.stripe.payButton) {
-                    stripeOptionsPayButton = this.component.stripe.payButton.stripeOptions || {};
+                // Create an instance of Elements
+                let stripeElementsOptions = {};
+                if (this.component.stripe) {
+                    stripeElementsOptions = _.cloneDeep(this.component.stripe.stripeElementsOptions) || {};
                 }
-                stripeOptionsPayButton.paymentRequest = paymentRequest;
+                if (typeof stripeElementsOptions.locale === 'undefined') {
+                    stripeElementsOptions.locale = this.options.language;
+                }
+                const elements = this.stripe.elements(stripeElementsOptions);
 
-                const paymentRequestElement = elements.create('paymentRequestButton', stripeOptionsPayButton);
+                // Create an instance of the card Element
+                let stripeElementOptions = {};
+                if (this.component.stripe) {
+                    stripeElementOptions = this.component.stripe.stripeElementOptions || {};
+                }
+                this.stripeCard = elements.create('card', stripeElementOptions);
 
-                paymentRequest.canMakePayment().then(result => {
-                    if (result) {
-                        // Display label separator
-                        this.stripeSeparator.style.display = 'block';
-                        paymentRequestElement.mount(this.stripeElementPayButton);
+                // Add an instance of the card Element into the `card-element` <div>
+                this.stripeCard.mount(this.stripeElementCard);
+
+                // Handle real-time validation errors from the card Element.
+                this.addEventListener(this.stripeCard, 'change', this.onElementCardChange.bind(this));
+
+                // If there is a pay button, then create it and add listener
+                if (this.component.stripe.payButton && this.component.stripe.payButton.enable) {
+                    const paymentRequest = this.stripe.paymentRequest(this.component.stripe.payButton.paymentRequest);
+
+                    this.addEventListener(paymentRequest, 'token', result => {
+                        this.authorizeDone(result, true);
+                        result.complete('success');
+                    });
+
+                    let stripeOptionsPayButton = {};
+                    if (this.component.stripe.payButton) {
+                        stripeOptionsPayButton = this.component.stripe.payButton.stripeOptions || {};
                     }
-                });
-            }
-        });
+                    stripeOptionsPayButton.paymentRequest = paymentRequest;
+
+                    const paymentRequestElement = elements.create('paymentRequestButton', stripeOptionsPayButton);
+
+                    paymentRequest.canMakePayment()
+                        .then(result => {
+                            if (result) {
+                                // Display label separator
+                                this.stripeSeparator.style.display = 'block';
+                                paymentRequestElement.mount(this.stripeElementPayButton);
+                            }
+                        });
+                }
+            });
     }
 }
 

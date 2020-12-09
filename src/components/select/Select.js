@@ -724,12 +724,13 @@ export default class SelectComponent extends Field {
                                 });
                                 resolve(responseItems);
                             };
-                        }).then(items => {
-                            if (!_.isEmpty(this.component.indexeddb.filter)) {
-                                items = _.filter(items, this.component.indexeddb.filter);
-                            }
-                            this.setItems(items);
-                        });
+                        })
+                            .then(items => {
+                                if (!_.isEmpty(this.component.indexeddb.filter)) {
+                                    items = _.filter(items, this.component.indexeddb.filter);
+                                }
+                                this.setItems(items);
+                            });
                     };
                 }
             }

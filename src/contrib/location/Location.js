@@ -69,69 +69,70 @@ export default class LocationComponent extends TextFieldComponent {
 
     attachElement(element, index) {
         super.attachElement(element, index);
-        Formio.libraryReady('googleMaps').then(() => {
-            const defaultLatlng = new google.maps.LatLng(45.5041482, -73.5574125);
-            const options = {
-                zoom: 19,
-                center: defaultLatlng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                styles: [
-                    {
-                        featureType: 'poi',
-                        stylers: [
-                            {
-                                visibility: 'off',
-                            },
-                        ],
-                    },
-                    {
-                        featureType: 'transit',
-                        stylers: [
-                            {
-                                visibility: 'off',
-                            },
-                        ],
-                    },
-                ],
-            };
+        Formio.libraryReady('googleMaps')
+            .then(() => {
+                const defaultLatlng = new google.maps.LatLng(45.5041482, -73.5574125);
+                const options = {
+                    zoom: 19,
+                    center: defaultLatlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    styles: [
+                        {
+                            featureType: 'poi',
+                            stylers: [
+                                {
+                                    visibility: 'off',
+                                },
+                            ],
+                        },
+                        {
+                            featureType: 'transit',
+                            stylers: [
+                                {
+                                    visibility: 'off',
+                                },
+                            ],
+                        },
+                    ],
+                };
 
-            if (!this.refs.gmapElement[index]) {
-                return;
-            }
-            element.map = new google.maps.Map(this.refs.gmapElement[index], options);
-            this.addMarker(defaultLatlng, 'Default Marker', element);
-
-            let autocompleteOptions = {};
-            if (this.component.map) {
-                autocompleteOptions = this.component.map.autocompleteOptions || {};
-            }
-            const autocomplete = new google.maps.places.Autocomplete(element, autocompleteOptions);
-            autocomplete.addListener('place_changed', () => {
-                const place = autocomplete.getPlace();
-                if (!place.geometry) {
-                    console.log('Autocomplete\'s returned place contains no geometry');
+                if (!this.refs.gmapElement[index]) {
                     return;
                 }
+                element.map = new google.maps.Map(this.refs.gmapElement[index], options);
+                this.addMarker(defaultLatlng, 'Default Marker', element);
 
-                // If the place has a geometry, then present it on a map.
-                if (place.geometry.viewport) {
-                    element.map.fitBounds(place.geometry.viewport);
+                let autocompleteOptions = {};
+                if (this.component.map) {
+                    autocompleteOptions = this.component.map.autocompleteOptions || {};
                 }
-                else {
-                    element.map.setCenter(place.geometry.location);
-                    element.map.setZoom(17); // Why 17? Because it looks good.
-                }
-                element.marker.setIcon(/** @type {google.maps.Icon} */({
-                    url: place.icon,
-                    size: new google.maps.Size(71, 71),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34),
-                    scaledSize: new google.maps.Size(35, 35),
-                }));
-                element.marker.setPosition(place.geometry.location);
-                this.setValue(place.name);
+                const autocomplete = new google.maps.places.Autocomplete(element, autocompleteOptions);
+                autocomplete.addListener('place_changed', () => {
+                    const place = autocomplete.getPlace();
+                    if (!place.geometry) {
+                        console.log('Autocomplete\'s returned place contains no geometry');
+                        return;
+                    }
+
+                    // If the place has a geometry, then present it on a map.
+                    if (place.geometry.viewport) {
+                        element.map.fitBounds(place.geometry.viewport);
+                    }
+                    else {
+                        element.map.setCenter(place.geometry.location);
+                        element.map.setZoom(17); // Why 17? Because it looks good.
+                    }
+                    element.marker.setIcon(/** @type {google.maps.Icon} */({
+                        url: place.icon,
+                        size: new google.maps.Size(71, 71),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(17, 34),
+                        scaledSize: new google.maps.Size(35, 35),
+                    }));
+                    element.marker.setPosition(place.geometry.location);
+                    this.setValue(place.name);
+                });
             });
-        });
     }
 
     addMarker(latlng, title, element) {

@@ -1336,7 +1336,8 @@ export default class Component extends Element {
 
         const handleCloseClick = e => {
             if (confirm) {
-                confirm().then(() => close(e))
+                confirm()
+                    .then(() => close(e))
                     .catch(() => {});
             }
             else {
@@ -2008,10 +2009,11 @@ export default class Component extends Element {
                     return NativePromise.resolve(editor);
                 }
 
-                return ClassicEditor.create(element, settings).then(editor => {
-                    editor.model.document.on('change', () => onChange(editor.data.get()));
-                    return editor;
-                });
+                return ClassicEditor.create(element, settings)
+                    .then(editor => {
+                        editor.model.document.on('change', () => onChange(editor.data.get()));
+                        return editor;
+                    });
             });
     }
 

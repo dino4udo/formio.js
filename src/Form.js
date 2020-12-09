@@ -256,10 +256,11 @@ export default class Form extends Element {
         const loader = templates[template].loader || templates.bootstrap.loader;
         this.setContent(this.element, loader.form);
 
-        return this.render().then(html => {
-            this.setContent(this.element, html);
-            return this.attach(this.element).then(() => this.instance);
-        })
+        return this.render()
+            .then(html => {
+                this.setContent(this.element, html);
+                return this.attach(this.element).then(() => this.instance);
+            })
             .then(param => {
                 this.emit('build', param);
                 return param;

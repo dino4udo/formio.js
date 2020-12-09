@@ -114,21 +114,22 @@ export default class StripeCheckoutComponent extends ButtonComponent {
         }
 
         // When stripe checkout is ready, create the handler and add event listeners
-        this.stripeCheckoutReady.then(() => {
-            const handlerConfiguration = _.cloneDeep(this.component.stripe.handlerConfiguration) || {};
-            handlerConfiguration.key = this.component.stripe.apiKey;
-            handlerConfiguration.token = this.onToken.bind(this);
-            if (typeof handlerConfiguration.locale === 'undefined') {
-                handlerConfiguration.locale = this.options.language;
-            }
-            this.handler = StripeCheckout.configure(handlerConfiguration);
+        this.stripeCheckoutReady
+            .then(() => {
+                const handlerConfiguration = _.cloneDeep(this.component.stripe.handlerConfiguration) || {};
+                handlerConfiguration.key = this.component.stripe.apiKey;
+                handlerConfiguration.token = this.onToken.bind(this);
+                if (typeof handlerConfiguration.locale === 'undefined') {
+                    handlerConfiguration.locale = this.options.language;
+                }
+                this.handler = StripeCheckout.configure(handlerConfiguration);
 
-            this.on('customEvent', this.onClickButton.bind(this));
+                this.on('customEvent', this.onClickButton.bind(this));
 
-            this.addEventListener(window, 'popstate', () => {
-                this.handler.close();
+                this.addEventListener(window, 'popstate', () => {
+                    this.handler.close();
+                });
             });
-        });
     }
 }
 

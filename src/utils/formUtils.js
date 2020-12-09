@@ -129,7 +129,6 @@ export function matchComponent(component, query) {
     // }
 
     _forOwn(query, (value, key) => {
-        console.log('component|key', { component, key });
         matches = (_get(component, key) === value);
         if (!matches) {
             return false;

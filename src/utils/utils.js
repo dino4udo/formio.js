@@ -565,19 +565,21 @@ export function loadZones(timezone) {
     if (moment.zonesPromise) {
         return moment.zonesPromise;
     }
-    return moment.zonesPromise = fetch('https://cdn.form.io/moment-timezone/data/packed/latest.json')
-        .then(resp => resp.json()
-            .then(zones => {
-                moment.tz.load(zones);
-                moment.zonesLoaded = true;
+    moment.zonesPromise = fetch('https://cdn.form.io/moment-timezone/data/packed/latest.json')
+        .then(resp => resp.json())
+        .then(zones => {
+            moment.tz.load(zones);
+            moment.zonesLoaded = true;
 
-                // Trigger a global event that the timezones have finished loading.
-                if (document && document.createEvent && document.body && document.body.dispatchEvent) {
-                    const event = document.createEvent('Event');
-                    event.initEvent('zonesLoaded', true, true);
-                    document.body.dispatchEvent(event);
-                }
-            }));
+            // Trigger a global event that the timezones have finished loading.
+            if (document && document.createEvent && document.body && document.body.dispatchEvent) {
+                const event = document.createEvent('Event');
+                event.initEvent('zonesLoaded', true, true);
+                document.body.dispatchEvent(event);
+            }
+        });
+
+    return moment.zonesPromise;
 }
 
 /**

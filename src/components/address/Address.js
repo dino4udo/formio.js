@@ -411,10 +411,10 @@ export default class AddressComponent extends ContainerComponent {
             [AddressComponent.searchInputRef]: 'multiple',
         });
 
-        this.searchInput.forEach((element, index) => {
-            if (!this.builderMode && element && this.provider) {
+        this.searchInput.forEach((el, index) => {
+            if (!this.builderMode && el && this.provider) {
                 autocompleter({
-                    input: element,
+                    input: el,
                     debounceWaitMs: 300,
                     fetch: (text, update) => {
                         const query = text;
@@ -438,31 +438,31 @@ export default class AddressComponent extends ContainerComponent {
                             modified: true,
                         });
 
-                        if (element) {
-                            element.value = this.getDisplayValue(this.isMultiple ? this.address[index] : this.address);
+                        if (el) {
+                            el.value = this.getDisplayValue(this.isMultiple ? this.address[index] : this.address);
                         }
 
                         this.updateRemoveIcon(index);
                     },
                 });
 
-                this.addEventListener(element, 'blur', () => {
-                    if (!element) {
+                this.addEventListener(el, 'blur', () => {
+                    if (!el) {
                         return;
                     }
 
-                    if (element.value) {
-                        element.value = this.getDisplayValue(this.isMultiple ? this.address[index] : this.address);
+                    if (el.value) {
+                        el.value = this.getDisplayValue(this.isMultiple ? this.address[index] : this.address);
                     }
                 });
 
-                this.addEventListener(element, 'keyup', () => {
-                    if (!element) {
+                this.addEventListener(el, 'keyup', () => {
+                    if (!el) {
                         return;
                     }
 
-                    if (!element.value) {
-                        this.clearAddress(element, index);
+                    if (!el.value) {
+                        this.clearAddress(el, index);
                     }
                 });
             }

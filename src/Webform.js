@@ -255,9 +255,10 @@ export default class Webform extends NestedDataComponent {
         this.shortcuts = [];
 
         // Set language after everything is established.
-        this.localize().then(() => {
-            this.language = this.options.language;
-        });
+        this.localize()
+            .then(() => {
+                this.language = this.options.language;
+            });
 
         // See if we need to restore the draft from a user.
         if (this.options.saveDraft && Formio.events) {
@@ -548,7 +549,9 @@ export default class Webform extends NestedDataComponent {
    * @returns {Promise} - The promise to trigger when both form and submission have loaded.
    */
   get ready() {
-      return this.formReady.then(() => super.ready.then(() => (this.loadingSubmission ? this.submissionReady : true)));
+      return this.formReady
+          .then(() => super.ready
+              .then(() => (this.loadingSubmission ? this.submissionReady : true)));
   }
 
   /**
@@ -656,9 +659,10 @@ export default class Webform extends NestedDataComponent {
       }
 
       if ('schema' in form && compareVersions(form.schema, '1.x') > 0) {
-          this.ready.then(() => {
-              this.setAlert('alert alert-danger', 'Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.');
-          });
+          this.ready
+              .then(() => {
+                  this.setAlert('alert alert-danger', 'Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.');
+              });
       }
 
       // See if they pass a module, and evaluate it if so.
@@ -803,12 +807,13 @@ export default class Webform extends NestedDataComponent {
       if (!this.savingDraft) {
           this.emit('saveDraftBegin');
           this.savingDraft = true;
-          this.formio.saveSubmission(draft).then(sub => {
-              // Set id to submission to avoid creating new draft submission
-              this.submission._id = sub._id;
-              this.savingDraft = false;
-              this.emit('saveDraft', sub);
-          });
+          this.formio.saveSubmission(draft)
+              .then(sub => {
+                  // Set id to submission to avoid creating new draft submission
+                  this.submission._id = sub._id;
+                  this.savingDraft = false;
+                  this.emit('saveDraft', sub);
+              });
       }
   }
 
@@ -828,20 +833,22 @@ export default class Webform extends NestedDataComponent {
               state: 'draft',
               owner: userId,
           },
-      }).then(submissions => {
-          if (submissions.length > 0 && !this.options.skipDraftRestore) {
-              const draft = fastCloneDeep(submissions[0]);
-              return this.setSubmission(draft).then(() => {
-                  this.draftEnabled = true;
-                  this.savingDraft = false;
-                  this.emit('restoreDraft', draft);
-              });
-          }
-          // Enable drafts so that we can keep track of changes.
-          this.draftEnabled = true;
-          this.savingDraft = false;
-          this.emit('restoreDraft', null);
-      });
+      })
+          .then(submissions => {
+              if (submissions.length > 0 && !this.options.skipDraftRestore) {
+                  const draft = fastCloneDeep(submissions[0]);
+                  return this.setSubmission(draft)
+                      .then(() => {
+                          this.draftEnabled = true;
+                          this.savingDraft = false;
+                          this.emit('restoreDraft', draft);
+                      });
+              }
+              // Enable drafts so that we can keep track of changes.
+              this.draftEnabled = true;
+              this.savingDraft = false;
+              this.emit('restoreDraft', null);
+          });
   }
 
   get schema() {
@@ -921,7 +928,8 @@ export default class Webform extends NestedDataComponent {
 
       this.addComponents();
       this.on('submitButton', options => {
-          this.submit(false, options).catch(e => e !== false && console.log(e));
+          this.submit(false, options)
+              .catch(e => e !== false && console.error(e));
       }, true);
 
       this.on('checkValidity', data => this.checkValidity(data, true, data), true);
@@ -1498,7 +1506,8 @@ export default class Webform extends NestedDataComponent {
    */
   submit(before, options) {
       if (!before) {
-          return this.beforeSubmit(options).then(() => this.executeSubmit(options));
+          return this.beforeSubmit(options)
+              .then(() => this.executeSubmit(options));
       }
 
       return this.executeSubmit(options);

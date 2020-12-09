@@ -660,11 +660,13 @@ export default class NestedComponent extends Field {
     }
 
     checkAsyncValidity(data, dirty, row, silentCheck) {
-        return this.ready.then(() => {
-            const promises = [ super.checkAsyncValidity(data, dirty, row, silentCheck) ];
-            this.eachComponent(component => promises.push(component.checkAsyncValidity(data, dirty, row, silentCheck)));
-            return NativePromise.all(promises).then(results => results.reduce((valid, result) => (valid && result), true));
-        });
+        return this.ready
+            .then(() => {
+                const promises = [ super.checkAsyncValidity(data, dirty, row, silentCheck) ];
+                this.eachComponent(component => promises.push(component.checkAsyncValidity(data, dirty, row, silentCheck)));
+                return NativePromise.all(promises)
+                    .then(results => results.reduce((valid, result) => (valid && result), true));
+            });
     }
 
     setPristine(pristine) {

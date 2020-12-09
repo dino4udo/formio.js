@@ -74,7 +74,7 @@ export default class ReCaptchaComponent extends Component {
                                 .execute(siteKey, {
                                     action: actionName,
                                 })
-                                .then(token => this.sendVerificationRequest(token))
+                                .then(this.sendVerificationRequest)
                                 .then(verificationResult => {
                                     this.setValue(verificationResult);
                                     return resolve(verificationResult);

@@ -146,7 +146,7 @@ export default class TextAreaComponent extends TextFieldComponent {
                             editorReady(ace);
                             return ace;
                         })
-                        .catch(err => console.warn(err));
+                        .catch(console.warn);
                     break;
                 case 'quill':
                     // Normalize the configurations for quill.
@@ -182,7 +182,7 @@ export default class TextAreaComponent extends TextFieldComponent {
                             editorReady(quill);
                             return quill;
                         })
-                        .catch(err => console.warn(err));
+                        .catch(console.warn);
                     break;
                 case 'ckeditor':
                     settings = settings || {};

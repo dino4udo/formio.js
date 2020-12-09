@@ -364,7 +364,7 @@ class Formio {
                         // Using object.assign so we don't cross polinate multiple form loads.
                         return { ...currentForm };
                     })
-                // If we couldn't load the revision, just return the original form.
+                    // If we couldn't load the revision, just return the original form.
                     .catch(() => ({ ...currentForm }));
             });
     }
@@ -512,12 +512,13 @@ class Formio {
 
         if (!form) {
             // Make sure to load the form first.
-            return this.loadForm().then(_form => {
-                if (!_form) {
-                    return '';
-                }
-                return this.getDownloadUrl(_form);
-            });
+            return this.loadForm()
+                .then(_form => {
+                    if (!_form) {
+                        return '';
+                    }
+                    return this.getDownloadUrl(_form);
+                });
         }
 
         let apiUrl = `/project/${form.project}`;
@@ -531,9 +532,11 @@ class Formio {
                 .then(tempToken => {
                     download += `?token=${tempToken.key}`;
                     resolve(download);
-                }, () => {
+                },
+                () => {
                     resolve(download);
-                }).catch(reject);
+                })
+                .catch(reject);
         });
     }
 
@@ -559,7 +562,7 @@ class Formio {
                             return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId);
                         }
 
-                        throw ('Storage provider not found');
+                        throw new Error('Storage provider not found');
                     }
                     return result || { url: '' };
                 }));
@@ -583,7 +586,7 @@ class Formio {
                             return provider.downloadFile(file, options);
                         }
 
-                        throw ('Storage provider not found');
+                        throw new Error('Storage provider not found');
                     }
                     return result || { url: '' };
                 }));
@@ -602,95 +605,98 @@ class Formio {
    */
     userPermissions(user, form, submission) {
         return NativePromise.all([
-      (form !== undefined) ? NativePromise.resolve(form) : this.loadForm(),
-      (user !== undefined) ? NativePromise.resolve(user) : this.currentUser(),
-      (submission !== undefined || !this.submissionId) ? NativePromise.resolve(submission) : this.loadSubmission(),
-      this.accessInfo(),
-        ]).then(results => {
-            const form = results.shift();
-            const user = results.shift() || { _id: false, roles: [] };
-            const submission = results.shift();
-            const access = results.shift();
-            const permMap = {
-                create: 'create',
-                read: 'read',
-                update: 'edit',
-                delete: 'delete',
-            };
-            const perms = {
-                user,
-                form,
-                access,
-                create: false,
-                read: false,
-                edit: false,
-                delete: false,
-            };
-            for (const roleName in access.roles) {
-                if (_has(access.roles, roleName)) {
-                    const role = access.roles[roleName];
-                    if (role.default && (user._id === false)) {
+            (form !== undefined) ? NativePromise.resolve(form) : this.loadForm(),
+            (user !== undefined) ? NativePromise.resolve(user) : this.currentUser(),
+            (submission !== undefined || !this.submissionId)
+                ? NativePromise.resolve(submission)
+                : this.loadSubmission(),
+            this.accessInfo(),
+        ])
+            .then(results => {
+                const form = results.shift();
+                const user = results.shift() || { _id: false, roles: [] };
+                const submission = results.shift();
+                const access = results.shift();
+                const permMap = {
+                    create: 'create',
+                    read: 'read',
+                    update: 'edit',
+                    delete: 'delete',
+                };
+                const perms = {
+                    user,
+                    form,
+                    access,
+                    create: false,
+                    read: false,
+                    edit: false,
+                    delete: false,
+                };
+                for (const roleName in access.roles) {
+                    if (_has(access.roles, roleName)) {
+                        const role = access.roles[roleName];
+                        if (role.default && (user._id === false)) {
                         // User is anonymous. Add the anonymous role.
-                        user.roles.push(role._id);
-                    }
-                    else if (role.admin && user.roles.indexOf(role._id) !== -1) {
-                        perms.create = true;
-                        perms.read = true;
-                        perms.delete = true;
-                        perms.edit = true;
-                        return perms;
-                    }
-                }
-            }
-            if (form && form.submissionAccess) {
-                for (let i = 0; i < form.submissionAccess.length; i++) {
-                    const permission = form.submissionAccess[i];
-                    const [ perm, scope ] = permission.type.split('_');
-                    if ([ 'create', 'read', 'update', 'delete' ].includes(perm)) {
-                        if (_intersection(permission.roles, user.roles).length) {
-                            perms[permMap[perm]] = (scope === 'all') || (!submission || (user._id === submission.owner));
+                            user.roles.push(role._id);
+                        }
+                        else if (role.admin && user.roles.indexOf(role._id) !== -1) {
+                            perms.create = true;
+                            perms.read = true;
+                            perms.delete = true;
+                            perms.edit = true;
+                            return perms;
                         }
                     }
                 }
-            }
-            // check for Group Permissions
-            if (submission) {
-                // we would anyway need to loop through components for create permission, so we'll do that for all of them
-                eachComponent(form.components, (component, path) => {
-                    if (component && component.defaultPermission) {
-                        const value = _get(submission.data, path);
-                        // make it work for single-select Group and multi-select Group
-                        const groups = Array.isArray(value) ? value : [ value ];
-                        groups.forEach(group => {
-                            if (
-                                group && group._id // group id is present
-                && user.roles.indexOf(group._id) > -1 // user has group id in his roles
-                            ) {
-                                if (component.defaultPermission === 'read') {
-                                    perms[permMap.read] = true;
-                                }
-                                if (component.defaultPermission === 'create') {
-                                    perms[permMap.create] = true;
-                                    perms[permMap.read] = true;
-                                }
-                                if (component.defaultPermission === 'write') {
-                                    perms[permMap.create] = true;
-                                    perms[permMap.read] = true;
-                                    perms[permMap.update] = true;
-                                }
-                                if (component.defaultPermission === 'admin') {
-                                    perms[permMap.create] = true;
-                                    perms[permMap.read] = true;
-                                    perms[permMap.update] = true;
-                                    perms[permMap.delete] = true;
-                                }
+                if (form && form.submissionAccess) {
+                    for (let i = 0; i < form.submissionAccess.length; i++) {
+                        const permission = form.submissionAccess[i];
+                        const [ perm, scope ] = permission.type.split('_');
+                        if ([ 'create', 'read', 'update', 'delete' ].includes(perm)) {
+                            if (_intersection(permission.roles, user.roles).length) {
+                                perms[permMap[perm]] = (scope === 'all') || (!submission || (user._id === submission.owner));
                             }
-                        });
+                        }
                     }
-                });
-            }
-            return perms;
-        });
+                }
+                // check for Group Permissions
+                if (submission) {
+                // we would anyway need to loop through components for create permission, so we'll do that for all of them
+                    eachComponent(form.components, (component, path) => {
+                        if (component && component.defaultPermission) {
+                            const value = _get(submission.data, path);
+                            // make it work for single-select Group and multi-select Group
+                            const groups = Array.isArray(value) ? value : [ value ];
+                            groups.forEach(group => {
+                                if (
+                                    group && group._id // group id is present
+                                    && user.roles.indexOf(group._id) > -1 // user has group id in his roles
+                                ) {
+                                    if (component.defaultPermission === 'read') {
+                                        perms[permMap.read] = true;
+                                    }
+                                    if (component.defaultPermission === 'create') {
+                                        perms[permMap.create] = true;
+                                        perms[permMap.read] = true;
+                                    }
+                                    if (component.defaultPermission === 'write') {
+                                        perms[permMap.create] = true;
+                                        perms[permMap.read] = true;
+                                        perms[permMap.update] = true;
+                                    }
+                                    if (component.defaultPermission === 'admin') {
+                                        perms[permMap.create] = true;
+                                        perms[permMap.read] = true;
+                                        perms[permMap.update] = true;
+                                        perms[permMap.delete] = true;
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+                return perms;
+            });
     }
 
     /**
@@ -1476,10 +1482,7 @@ class Formio {
     }
 
     static libraryReady(name) {
-        if (
-            _has(getFormio().libraries, name)
-      && getFormio().libraries[name].ready
-        ) {
+        if (_has(getFormio().libraries, name) && getFormio().libraries[name].ready) {
             return getFormio().libraries[name].ready;
         }
 

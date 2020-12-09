@@ -74,7 +74,7 @@ const registerPlugin = plugin => {
 Formio.use = (...plugins) => {
     plugins.forEach(plugin => {
         if (Array.isArray(plugin)) {
-            plugin.forEach(p => registerPlugin(p));
+            plugin.forEach(registerPlugin);
         }
         else {
             registerPlugin(plugin);

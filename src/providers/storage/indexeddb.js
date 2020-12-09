@@ -20,49 +20,50 @@ const indexeddb = () => ({
                 const db = e.target.result;
                 db.createObjectStore(options.indexeddbTable);
             };
-        }).then(db => {
-            const reader = new FileReader();
+        })
+            .then(db => {
+                const reader = new FileReader();
 
-            return new NativePromise((resolve, reject) => {
-                reader.onload = () => {
-                    const blobObject = new Blob([ file ], { type: file.type });
+                return new NativePromise((resolve, reject) => {
+                    reader.onload = () => {
+                        const blobObject = new Blob([ file ], { type: file.type });
 
-                    const id = uuidv4(blobObject);
+                        const id = uuidv4(blobObject);
 
-                    const data = {
-                        id,
-                        data: blobObject,
-                        name: file.name,
-                        size: file.size,
-                        type: file.type,
-                        url,
-                    };
-
-                    const trans = db.transaction([ options.indexeddbTable ], 'readwrite');
-                    const addReq = trans.objectStore(options.indexeddbTable).put(data, id);
-
-                    addReq.onerror = function (e) {
-                        console.log('error storing data');
-                        console.error(e);
-                    };
-
-                    trans.oncomplete = function () {
-                        resolve({
-                            storage: 'indexeddb',
+                        const data = {
+                            id,
+                            data: blobObject,
                             name: file.name,
                             size: file.size,
                             type: file.type,
                             url,
-                            id,
-                        });
+                        };
+
+                        const trans = db.transaction([ options.indexeddbTable ], 'readwrite');
+                        const addReq = trans.objectStore(options.indexeddbTable).put(data, id);
+
+                        addReq.onerror = function (e) {
+                            console.log('error storing data');
+                            console.error(e);
+                        };
+
+                        trans.oncomplete = function () {
+                            resolve({
+                                storage: 'indexeddb',
+                                name: file.name,
+                                size: file.size,
+                                type: file.type,
+                                url,
+                                id,
+                            });
+                        };
                     };
-                };
 
-                reader.onerror = () => reject(this);
+                    reader.onerror = () => reject(this);
 
-                reader.readAsDataURL(file);
+                    reader.readAsDataURL(file);
+                });
             });
-        });
     },
     downloadFile(file, options) {
         return new NativePromise(resolve => {
@@ -72,30 +73,31 @@ const indexeddb = () => ({
                 const db = event.target.result;
                 resolve(db);
             };
-        }).then(db => new NativePromise((resolve, reject) => {
-            const trans = db.transaction([ options.indexeddbTable ], 'readonly');
-            const store = trans.objectStore(options.indexeddbTable).get(file.id);
-            store.onsuccess = () => {
-                trans.oncomplete = () => {
-                    const { result } = store;
-                    const dbFile = new File([ store.result.data ], file.name, {
-                        type: store.result.type,
-                    });
+        })
+            .then(db => new NativePromise((resolve, reject) => {
+                const trans = db.transaction([ options.indexeddbTable ], 'readonly');
+                const store = trans.objectStore(options.indexeddbTable).get(file.id);
+                store.onsuccess = () => {
+                    trans.oncomplete = () => {
+                        const { result } = store;
+                        const dbFile = new File([ store.result.data ], file.name, {
+                            type: store.result.type,
+                        });
 
-                    const reader = new FileReader();
+                        const reader = new FileReader();
 
-                    reader.onload = event => {
-                        result.url = event.target.result;
-                        resolve(result);
+                        reader.onload = event => {
+                            result.url = event.target.result;
+                            resolve(result);
+                        };
+
+                        reader.onerror = () => reject(this);
+
+                        reader.readAsDataURL(dbFile);
                     };
-
-                    reader.onerror = () => reject(this);
-
-                    reader.readAsDataURL(dbFile);
                 };
-            };
-            store.onerror = () => reject(this);
-        }));
+                store.onerror = () => reject(this);
+            }));
     },
 });
 

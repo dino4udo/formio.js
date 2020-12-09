@@ -457,9 +457,10 @@ export default class FileComponent extends Field {
         if (fileService) {
             const loadingImages = [];
             this.refs.fileImage.forEach((image, index) => {
-                loadingImages.push(this.loadImage(this.dataValue[index]).then(url => {
-                    image.src = url;
-                }));
+                loadingImages.push(this.loadImage(this.dataValue[index])
+                    .then(url => {
+                        image.src = url;
+                    }));
             });
             if (loadingImages.length) {
                 NativePromise.all(loadingImages)
@@ -576,7 +577,7 @@ export default class FileComponent extends Field {
     }
 
     upload(files) {
-    // Only allow one upload if not multiple.
+        // Only allow one upload if not multiple.
         if (!this.component.multiple) {
             files = Array.prototype.slice.call(files, 0, 1);
         }
@@ -695,6 +696,7 @@ export default class FileComponent extends Field {
     getFile(fileInfo) {
         const { options = {} } = this.component;
         const { fileService } = this;
+
         if (!fileService) {
             return alert('File Service not provided');
         }

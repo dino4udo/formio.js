@@ -324,19 +324,20 @@ export default class EditGridComponent extends NestedArrayComponent {
                         className: 'editRow',
                         event: 'click',
                         action: () => {
-                            this.editRow(rowIndex).then(() => {
-                                if (this.component.rowDrafts) {
-                                    this.validateRow(editRow, false);
+                            this.editRow(rowIndex)
+                                .then(() => {
+                                    if (this.component.rowDrafts) {
+                                        this.validateRow(editRow, false);
 
-                                    const hasErrors = editRow.errors && !!editRow.errors.length;
-                                    const shouldShowRowErrorsAlert = this.component.modal && hasErrors && this.root?.submitted;
+                                        const hasErrors = editRow.errors && !!editRow.errors.length;
+                                        const shouldShowRowErrorsAlert = this.component.modal && hasErrors && this.root?.submitted;
 
-                                    if (shouldShowRowErrorsAlert) {
-                                        this.alert.showErrors(editRow.errors, false);
-                                        editRow.alerts = true;
+                                        if (shouldShowRowErrorsAlert) {
+                                            this.alert.showErrors(editRow.errors, false);
+                                            editRow.alerts = true;
+                                        }
                                     }
-                                }
-                            });
+                                });
                         },
                     },
                 ].forEach(({

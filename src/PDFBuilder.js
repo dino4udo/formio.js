@@ -189,15 +189,16 @@ export default class PDFBuilder extends WebformBuilder {
         }
 
         // Normal PDF Builder
-        return super.attach(element).then(() => {
-            this.loadRefs(this.element, {
-                'iframeDropzone': 'single',
-                'sidebar-container': 'multiple',
-            });
+        return super.attach(element)
+            .then(() => {
+                this.loadRefs(this.element, {
+                    'iframeDropzone': 'single',
+                    'sidebar-container': 'multiple',
+                });
 
-            this.afterAttach(element);
-            return this.element;
-        });
+                this.afterAttach(element);
+                return this.element;
+            });
     }
 
     afterAttach(element) {
@@ -221,8 +222,10 @@ export default class PDFBuilder extends WebformBuilder {
 
     upload(file) {
         const formio = new Formio(this.projectUrl);
+
         this.refs.dragDropText.style.display = 'none';
         this.refs.uploadProgressWrapper.style.display = 'inherit';
+
         formio.uploadFile('url', file, file, '', event => {
             const progress = Math.floor((event.loaded / event.total) * 100);
             this.refs.uploadProgress.style.width = `${progress}%`;

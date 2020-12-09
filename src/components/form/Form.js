@@ -331,50 +331,53 @@ export default class FormComponent extends Component {
    * @return {*}
    */
     createSubForm() {
-        this.subFormReady = this.loadSubForm().then(form => {
-            if (!form) {
-                return;
-            }
+        this.subFormReady = this.loadSubForm()
+            .then(form => {
+                if (!form) {
+                    return;
+                }
 
-            // Iterate through every component and hide the submit button.
-            eachComponent(form.components, component => {
-                this.hideSubmitButton(component);
-            });
-
-            // If the subform is already created then destroy the old one.
-            if (this.subForm) {
-                this.subForm.destroy();
-            }
-
-            // Render the form.
-            return (new Form(form, this.getSubOptions())).ready.then(instance => {
-                this.subForm = instance;
-                this.subForm.currentForm = this;
-                this.subForm.parent = this;
-                this.subForm.parentVisible = this.visible;
-                this.subForm.on('change', () => {
-                    if (this.subForm) {
-                        this.dataValue = this.subForm.getValue();
-                        this.triggerChange({
-                            noEmit: true,
-                        });
-                    }
+                // Iterate through every component and hide the submit button.
+                eachComponent(form.components, component => {
+                    this.hideSubmitButton(component);
                 });
-                this.subForm.url = this.formSrc;
-                this.subForm.nosubmit = true;
-                this.subForm.root = this.root;
-                this.restoreValue();
-                this.valueChanged = this.hasSetValue;
-                return this.subForm;
-            });
-        }).then(subForm => {
-            if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
-                this.root.subWizards.push(this);
-                this.emit('subWizardsUpdated', subForm);
-            }
 
-            return subForm;
-        });
+                // If the subform is already created then destroy the old one.
+                if (this.subForm) {
+                    this.subForm.destroy();
+                }
+
+                // Render the form.
+                return (new Form(form, this.getSubOptions())).ready
+                    .then(instance => {
+                        this.subForm = instance;
+                        this.subForm.currentForm = this;
+                        this.subForm.parent = this;
+                        this.subForm.parentVisible = this.visible;
+                        this.subForm.on('change', () => {
+                            if (this.subForm) {
+                                this.dataValue = this.subForm.getValue();
+                                this.triggerChange({
+                                    noEmit: true,
+                                });
+                            }
+                        });
+                        this.subForm.url = this.formSrc;
+                        this.subForm.nosubmit = true;
+                        this.subForm.root = this.root;
+                        this.restoreValue();
+                        this.valueChanged = this.hasSetValue;
+                        return this.subForm;
+                    });
+            })
+            .then(subForm => {
+                if (this.root && this.root.subWizards && subForm?._form.display === 'wizard') {
+                    this.root.subWizards.push(this);
+                    this.emit('subWizardsUpdated', subForm);
+                }
+
+                return subForm;
+            });
         return this.subFormReady;
     }
 
@@ -552,9 +555,10 @@ export default class FormComponent extends Component {
 
             if (shouldLoadOriginalRevision) {
                 this.setFormRevision(submission._fvid);
-                this.createSubForm().then(() => {
-                    this.attach(this.element);
-                });
+                this.createSubForm()
+                    .then(() => {
+                        this.attach(this.element);
+                    });
             }
             else {
                 this.setSubFormValue(submission, flags);
@@ -628,9 +632,10 @@ export default class FormComponent extends Component {
             // Form doesn't load if hidden. If it becomes visible, create the form.
             if (!this.subForm && value) {
                 this.createSubForm();
-                this.subFormReady.then(() => {
-                    this.updateSubFormVisibility();
-                });
+                this.subFormReady
+                    .then(() => {
+                        this.updateSubFormVisibility();
+                    });
                 this.redraw();
                 return;
             }
@@ -650,9 +655,10 @@ export default class FormComponent extends Component {
             // Form doesn't load if hidden. If it becomes visible, create the form.
             if (!this.subForm && value) {
                 this.createSubForm();
-                this.subFormReady.then(() => {
-                    this.updateSubFormVisibility();
-                });
+                this.subFormReady
+                    .then(() => {
+                        this.updateSubFormVisibility();
+                    });
                 this.redraw();
                 return;
             }
